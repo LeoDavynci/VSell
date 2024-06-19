@@ -10,7 +10,7 @@ const AuthForm = () => {
     const navigate = useNavigate()
     const [inputs, setInputs] = useState({
         name: '',
-        email: '',
+        email: '', 
         password: '',
         confirmPassword: ''
     })
