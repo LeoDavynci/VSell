@@ -16,7 +16,7 @@ const PageLayout = ({ children }) => {
          ) : null}
 
          {/* Page Content */}
-         <Box flex={1} h="calc(100% - 50px)" bg={"white"}>
+         <Box flex={1} h="calc(100% - 50px)" w={"100%"} bg={"white"}>
             {children}
          </Box>
       </Flex>
