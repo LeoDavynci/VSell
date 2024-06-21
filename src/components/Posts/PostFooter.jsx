@@ -10,8 +10,11 @@ const PostFooter = () => {
          pt={0}
          mb={2}
          mt={"auto"}
+         bg={"orange"}
       >
-         <Text fontSize="lg">Post Title</Text>
+         <Text fontSize="lg" bg={"red"}>
+            $50
+         </Text>
       </Flex>
    );
 };

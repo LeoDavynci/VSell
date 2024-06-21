@@ -3,20 +3,27 @@ import PostFooter from "./PostFooter";
 
 const Post = () => {
    return (
-      <VStack spacing={4} align="stretch">
-         <Box w="150px" h="0" pb="150px" position="relative">
-            <Image
-               src="/img1.png"
-               borderRadius="lg"
-               objectFit="cover"
-               position="absolute"
-               top={0}
-               left={0}
-               right={0}
-               bottom={0}
-            />
+      <VStack
+         spacing={2}
+         alignItems="center"
+         bg={"lime"}
+         justifyContent={"center"}
+         padding={2}
+      >
+         <Box bg={"purple"}>
+            <Box w="9rem" h="9rem" position="relative" mb={2}>
+               <Image
+                  src="/img4.png"
+                  borderRadius="10px"
+                  objectFit="cover"
+                  position="relative"
+                  overflow={"hidden"}
+                  w="9rem"
+                  h="9rem"
+               />
+            </Box>
+            <PostFooter />
          </Box>
-         <PostFooter />
       </VStack>
    );
 };
