@@ -1,28 +1,30 @@
 import { Box, Image, VStack } from "@chakra-ui/react";
 import PostFooter from "./PostFooter";
 
-const Post = () => {
+const Post = ({ img, name, price, location }) => {
    return (
       <VStack
          spacing={2}
          alignItems="center"
-         bg={"lime"}
          justifyContent={"center"}
          padding={2}
+         w="full"
+         minW="100px"
+         maxW="1fr"
       >
-         <Box bg={"purple"}>
-            <Box w="9rem" h="9rem" position="relative" mb={2}>
+         <Box>
+            <Box w="10rem" h="auto" position="relative">
                <Image
-                  src="/img4.png"
+                  src={img}
                   borderRadius="10px"
                   objectFit="cover"
                   position="relative"
                   overflow={"hidden"}
-                  w="9rem"
-                  h="9rem"
+                  w="10rem"
+                  h="10rem"
                />
             </Box>
-            <PostFooter />
+            <PostFooter name={name} price={price} location={location} />
          </Box>
       </VStack>
    );
