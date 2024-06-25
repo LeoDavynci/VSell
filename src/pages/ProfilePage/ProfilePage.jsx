@@ -5,28 +5,30 @@ import ProfilePosts from "../../components/Profile/ProfilePosts";
 
 const ProfilePage = () => {
    return (
-      <Container maxW={"container.lg"} py={5}>
-         <Flex
-            py={10}
-            px={4}
-            pl={{ base: 4, md: 10 }}
-            w={"full"}
-            mx={"auto"}
-            flexDirection={"column"}
-         >
-            <ProfileHeader />
-         </Flex>
-         <Flex
-            px={{ base: 2, sm: 4 }}
-            maxW={"full"}
-            mx={"auto"}
-            borderTop={"1px solid"}
-            borderColor={"white"}
-            direction={"column"}
-         >
-            <ProfileTabs />
-            <ProfilePosts />
-         </Flex>
+      <Container maxW={"100%"} bg={"white"}>
+         <Container maxW={"80%"} minHeight={"100vh"} bg={"white"} pb={20}>
+            <Flex
+               py={10}
+               px={4}
+               pl={{ base: 4, md: 10 }}
+               w={"full"}
+               mx={"auto"}
+               flexDirection={"column"}
+            >
+               <ProfileHeader />
+            </Flex>
+            <Flex
+               px={{ base: 2, sm: 4 }}
+               maxW={"full"}
+               mx={"auto"}
+               borderTop={"1px solid"}
+               borderColor={"white"}
+               direction={"column"}
+            >
+               <ProfileTabs />
+               <ProfilePosts />
+            </Flex>
+         </Container>
       </Container>
    );
 };
