@@ -57,3 +57,11 @@
     src: local("Outfit-VariableFont_wght"), url('../assets/fonts/Outfit-VariableFont_wght.ttf') format('truetype');
     font-weight: 100 900; /* Assuming this variable font covers weights from 100 to 900 */
 }
+
+html {
+    scrollbar-width: none; /* For Firefox */
+  }
+  
+  html::-webkit-scrollbar {
+    display: none; /* For Chrome, Safari, and Opera */
+  }
