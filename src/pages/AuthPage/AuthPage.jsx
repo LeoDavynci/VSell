@@ -10,7 +10,7 @@ const AuthPage = () => {
          px={4}
          bg={"linear-gradient(to right, #5E2BFF, #FC6DAB)"}
       >
-         <Container maxW={"container.md"} padding={0}>
+         <Container maxW={"xlcontainer.md"} padding={0}>
             <Flex justifyContent={"center"} alignItems={"center"} gap={20}>
                <Box display={{ base: "none", md: "block" }}>
                   <Box>

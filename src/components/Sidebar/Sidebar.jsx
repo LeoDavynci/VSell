@@ -13,9 +13,12 @@ import { IoPersonCircleSharp } from "react-icons/io5";
 import { FaAtlassian } from "react-icons/fa6";
 import { FaSearch } from "react-icons/fa";
 import { useState } from "react";
+import { FiLogOut } from "react-icons/fi";
+import useLogout from "../../hooks/useLogout";
 
 const Sidebar = () => {
    const [searchQuery, setSearchQuery] = useState("");
+   const { handleLogout, isLoggingOut } = useLogout();
 
    const handleSearch = () => {
       event.preventDefault(); // Prevent the default form submission behavior
@@ -28,7 +31,8 @@ const Sidebar = () => {
          width="100%"
          height="70px"
          borderColor={"white"}
-         padding={"3px"}
+         pl={"3px"}
+         pr={"10px"}
          position={"sticky"}
          top={0}
          left={0}
@@ -69,7 +73,7 @@ const Sidebar = () => {
             </Link>
 
             {/* Search Bar */}
-            <InputGroup size="lg" pr={"10px"} ml={2}>
+            <InputGroup size="lg" pr={"10px"} ml={2} mr={2}>
                <Input
                   pr="10px"
                   type="text"
@@ -94,13 +98,34 @@ const Sidebar = () => {
                </InputRightElement>
             </InputGroup>
 
-            <Box width={"90px"} height={"70px"} boxSizing="border-box">
-               <Flex align="center" justify="center" height="100%">
-                  <Link to={"/"} as={RouterLink} cursor="pointer">
-                     <IoPersonCircleSharp size={55} color="white" />
+            <Flex
+               flexDir={"row"}
+               width={"90px"}
+               height={"70px"}
+               gap={2}
+               align={"center"}
+               justify={"center"}
+            >
+               <Box>
+                  <Link to={"/:username"} as={RouterLink} cursor="pointer">
+                     <IoPersonCircleSharp size={50} color="white" />
                   </Link>
-               </Flex>
-            </Box>
+               </Box>
+
+               <Box ml={-2}>
+                  <Button
+                     bg="none"
+                     color={"white"}
+                     _hover={{ bg: "none" }}
+                     size={{ base: "md", md: "lg" }}
+                     p={0}
+                     isLoading={isLoggingOut}
+                     onClick={handleLogout}
+                  >
+                     <FiLogOut />
+                  </Button>
+               </Box>
+            </Flex>
          </Flex>
       </Box>
    );

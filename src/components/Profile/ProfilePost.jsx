@@ -19,20 +19,10 @@ import { useState } from "react";
 import { FaHeart } from "react-icons/fa";
 import { FaLocationDot, FaRegHeart } from "react-icons/fa6";
 
-const ProfilePost = ({ img }) => {
+const ProfilePost = ({ img, name, price, location, description }) => {
    const { isOpen, onOpen, onClose } = useDisclosure();
-   const [liked, setLiked] = useState(false);
-   const [likes, setLikes] = useState(10);
-
-   const handleLike = () => {
-      if (liked) {
-         setLiked(false);
-         setLikes(likes - 1);
-      } else {
-         setLiked(true);
-         setLikes(likes + 1);
-      }
-   };
+   const [likes] = useState(10);
+   const displayPrice = price ? `$${price}` : "Free";
 
    return (
       <>
@@ -134,7 +124,7 @@ const ProfilePost = ({ img }) => {
                            <Flex gap={1}>
                               <FaLocationDot color="gray" />
                               <Text fontSize="sm" color="gray">
-                                 Zeppos Tower
+                                 {location || "Anywhere"}
                               </Text>
                            </Flex>
                         </Box>
@@ -155,7 +145,7 @@ const ProfilePost = ({ img }) => {
                               webkitBoxOrient="vertical"
                               maxW="100%"
                            >
-                              Respawn Gaming Chair
+                              {name}
                            </Box>
                         </Flex>
 
@@ -170,17 +160,12 @@ const ProfilePost = ({ img }) => {
                               lineHeight="1.5"
                               fontWeight="semibold"
                            >
-                              $50
+                              <Text fontWeight={700}>{displayPrice}</Text>
                            </Box>
 
                            <Flex flexDirection={"row"} alignItems={"center"}>
-                              <Box
-                                 onClick={handleLike}
-                                 cursor={"pointer"}
-                                 fontSize={40}
-                                 pr={1}
-                              >
-                                 {!liked ? <FaRegHeart /> : <FaHeart />}
+                              <Box cursor={"pointer"} fontSize={40} pr={1}>
+                                 <FaRegHeart />
                               </Box>
                               <Text
                                  fontWeight={600}
@@ -195,24 +180,6 @@ const ProfilePost = ({ img }) => {
 
                         <Flex gap={{ base: 5, md: 15 }}>
                            <Button
-                              bgGradient="linear(to-r, #5E2BFF, #FC6DAB)"
-                              _hover={{
-                                 bgGradient: "linear(to-r, #8862FF, #FF99C5)",
-                              }}
-                              _active={{
-                                 bgGradient: "linear(to-r, #5E2BFF, #FC6DAB)",
-                              }}
-                              variant="solid"
-                              color={"white"}
-                              borderRadius={{ base: 35, md: 25 }}
-                              fontSize="36px"
-                              py={9}
-                              px={16}
-                           >
-                              Buy
-                           </Button>
-
-                           <Button
                               bg="#D9D9D9"
                               variant="solid"
                               color={"black"}
@@ -221,14 +188,14 @@ const ProfilePost = ({ img }) => {
                               py={9}
                               px={14}
                            >
-                              Offer
+                              Edit
                            </Button>
                         </Flex>
 
                         <Flex pr={5} py={5}>
                            <Box width="100%">
                               <Text fontWeight={"bold"}>Description</Text>
-                              <Text isTruncated>Selling this after</Text>
+                              <Text>{description}</Text>
                            </Box>
                         </Flex>
                      </Flex>

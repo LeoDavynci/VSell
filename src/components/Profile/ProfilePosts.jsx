@@ -31,10 +31,34 @@ const ProfilePosts = () => {
 
          {!isLoading && (
             <>
-               <ProfilePost img="/img1.png" />
-               <ProfilePost img="/img2.png" />
-               <ProfilePost img="/img3.png" />
-               <ProfilePost img="/img4.png" />
+               <ProfilePost
+                  img="/img1.png"
+                  name="Plastic Trays"
+                  price="50"
+                  location="Zeppos Tower"
+                  description="Durable, multipurpose trays ideal for organizing or serving. Various colors available."
+               />
+               <ProfilePost
+                  img="/img2.png"
+                  name="iPad Stand"
+                  price=""
+                  location="Zeppos Tower"
+                  description="Adjustable, portable stand for comfortable viewing and typing. Compatible with most ipads."
+               />
+               <ProfilePost
+                  img="/img3.png"
+                  name="Brita"
+                  price="10"
+                  location="Rand"
+                  description="Water filtration pitcher for clean, great-tasting water. Reduces chlorine taste and odor."
+               />
+               <ProfilePost
+                  img="/img4.png"
+                  name="Vintage Chairs"
+                  price="20"
+                  location="Sutherland House"
+                  description="Charming mid-century designs. Solid wood construction with original upholstery. Perfect for adding character to any room."
+               />
             </>
          )}
       </Grid>

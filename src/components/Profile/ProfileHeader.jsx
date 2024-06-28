@@ -58,6 +58,16 @@ const ProfileHeader = () => {
                >
                   Edit Profile
                </Button>
+
+               {/* Log Out */}
+               <Button
+                  bg="gray"
+                  color={"white"}
+                  _hover={{ bg: "gray.800" }}
+                  size={{ base: "xs", md: "sm" }}
+               >
+                  List an Item
+               </Button>
             </Flex>
          </VStack>
       </Flex>
