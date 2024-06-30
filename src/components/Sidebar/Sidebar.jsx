@@ -1,4 +1,5 @@
 import {
+   Avatar,
    Box,
    Button,
    Flex,
@@ -9,12 +10,12 @@ import {
    Link,
 } from "@chakra-ui/react";
 import { Link as RouterLink } from "react-router-dom";
-import { IoPersonCircleSharp } from "react-icons/io5";
 import { FaAtlassian } from "react-icons/fa6";
 import { FaSearch } from "react-icons/fa";
 import { useState } from "react";
 import { FiLogOut } from "react-icons/fi";
 import useLogout from "../../hooks/useLogout";
+import useAuthStore from "../../store/authStore";
 
 const Sidebar = () => {
    const [searchQuery, setSearchQuery] = useState("");
@@ -25,6 +26,8 @@ const Sidebar = () => {
       console.log(searchQuery); // Or navigate using something like `history.push(`/search?query=${searchQuery}`)`
       // You could use React Router's `useHistory` or `useNavigate` here for navigation
    };
+
+   const authUser = useAuthStore((state) => state.user);
 
    return (
       <Box
@@ -107,9 +110,15 @@ const Sidebar = () => {
                justify={"center"}
             >
                <Box>
-                  <Link to={"/:username"} as={RouterLink} cursor="pointer">
-                     <IoPersonCircleSharp size={50} color="white" />
-                  </Link>
+                  {authUser && (
+                     <Link
+                        to={`/${authUser.username}`}
+                        as={RouterLink}
+                        cursor="pointer"
+                     >
+                        <Avatar size="md" src={authUser?.profilePicURL || ""} />
+                     </Link>
+                  )}
                </Box>
 
                <Box ml={-2}>

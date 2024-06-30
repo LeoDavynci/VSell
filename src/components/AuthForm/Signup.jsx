@@ -103,9 +103,9 @@ const Signup = () => {
          {/* Sign Up */}
          <Button
             w={"full"}
+            h={"2.25rem"}
             color="white"
             bg="black"
-            colorScheme="black"
             size={"sm"}
             fontSize={14}
             borderRadius="10px"
