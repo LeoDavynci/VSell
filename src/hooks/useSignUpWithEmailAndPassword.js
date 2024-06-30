@@ -14,7 +14,7 @@ const useSignUpWithEmailAndPassword = () => {
     const loginUser = useAuthStore(state => state.login);
 
     const signup = async (inputs) => {
-        if (!inputs.email || !inputs.password || !inputs.name || !inputs.username) {
+        if (!inputs.email || !inputs.password || !inputs.fullName || !inputs.username) {
             showToast("Error", "Please fill all the fields", "error")
             return
         }
@@ -40,7 +40,7 @@ const useSignUpWithEmailAndPassword = () => {
             if (newUser) {
                 const userDoc = {
                     uid:newUser.user.uid,
-                    name:inputs.name,
+                    fullName:inputs.fullName,
                     username:inputs.username,
                     email:inputs.email,
                     profilePicURL:"",

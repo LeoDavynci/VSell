@@ -13,7 +13,7 @@ const Signup = () => {
    const [show, setShow] = React.useState(false);
    const handleClick = () => setShow(!show);
    const [inputs, setInputs] = useState({
-      name: "",
+      fullName: "",
       email: "",
       password: "",
    });
@@ -31,8 +31,8 @@ const Signup = () => {
             borderWidth="2px"
             borderRadius="10px"
             bg="white"
-            value={inputs.name}
-            onChange={(e) => setInputs({ ...inputs, name: e.target.value })}
+            value={inputs.fullName}
+            onChange={(e) => setInputs({ ...inputs, fullName: e.target.value })}
          />
 
          {/* Username */}

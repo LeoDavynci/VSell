@@ -53,7 +53,7 @@ const ProfileHeader = () => {
                w={"full"}
             >
                <Text fontSize={{ base: "md", md: "xl" }}>
-                  {userProfile.name}
+                  {userProfile.fullName}
                </Text>
             </Flex>
 
