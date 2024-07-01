@@ -47,22 +47,23 @@ const EditProfile = ({ isOpen, onClose }) => {
          <Modal isOpen={isOpen} onClose={onClose}>
             <ModalOverlay />
             <ModalContent
-               bg={"white"}
-               boxShadow={"xl"}
-               border={"1px solid gray"}
-               mx={3}
+               bg={"lime"}
+               boxShadow={"2xl"}
+               mx={5}
+               pb={7}
+               borderRadius={20}
             >
                <ModalHeader />
                <ModalCloseButton />
                <ModalBody>
                   {/* Container Flex */}
-                  <Flex bg={"white"}>
+                  <Flex>
                      <Stack
                         spacing={4}
                         w={"full"}
                         maxW={"md"}
-                        bg={"white"}
-                        p={6}
+                        bg={"salmon"}
+                        p={3}
                         my={0}
                      >
                         <Heading
@@ -75,17 +76,18 @@ const EditProfile = ({ isOpen, onClose }) => {
                            <Stack direction={["column", "row"]} spacing={6}>
                               <Center>
                                  <Avatar
-                                    size="xl"
+                                    size="2xl"
                                     src={selectedFile || authUser.profilePicURL}
-                                    border={"2px solid white "}
+                                    border={"1px solid white "}
                                  />
                               </Center>
                               <Center w="full">
                                  <Button
-                                    w="full"
+                                    w={{ base: "60%", md: "90%" }}
                                     onClick={() => fileRef.current.click()}
+                                    borderRadius={10}
                                  >
-                                    Edit Profile Picture
+                                    Change Picture
                                  </Button>
                               </Center>
                               <Input
@@ -98,9 +100,9 @@ const EditProfile = ({ isOpen, onClose }) => {
                         </FormControl>
 
                         <FormControl>
-                           <FormLabel fontSize={"sm"}>Name</FormLabel>
+                           <FormLabel fontSize={"md"}>New Name</FormLabel>
                            <Input
-                              placeholder={"Name"}
+                              placeholder={""}
                               size={"sm"}
                               type={"text"}
                               value={inputs.fullName}
@@ -110,13 +112,14 @@ const EditProfile = ({ isOpen, onClose }) => {
                                     fullName: e.target.value,
                                  })
                               }
+                              borderRadius={10}
                            />
                         </FormControl>
 
                         <FormControl>
-                           <FormLabel fontSize={"sm"}>Username</FormLabel>
+                           <FormLabel fontSize={"md"}>New Username</FormLabel>
                            <Input
-                              placeholder={"Username"}
+                              placeholder={""}
                               size={"sm"}
                               type={"text"}
                               value={inputs.username}
@@ -126,6 +129,7 @@ const EditProfile = ({ isOpen, onClose }) => {
                                     username: e.target.value,
                                  })
                               }
+                              borderRadius={10}
                            />
                         </FormControl>
 
@@ -137,6 +141,7 @@ const EditProfile = ({ isOpen, onClose }) => {
                               size="sm"
                               _hover={{ bg: "red.500" }}
                               onClick={onClose}
+                              borderRadius={10}
                            >
                               Cancel
                            </Button>
@@ -148,6 +153,7 @@ const EditProfile = ({ isOpen, onClose }) => {
                               _hover={{ bg: "blue.500" }}
                               onClick={handleEditProfile}
                               isLoading={isUpdating}
+                              borderRadius={10}
                            >
                               Submit
                            </Button>
