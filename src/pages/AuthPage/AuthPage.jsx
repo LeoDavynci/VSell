@@ -1,29 +1,40 @@
-import { Box, Container, Flex, VStack, Text } from "@chakra-ui/react";
+import {
+   Box,
+   Container,
+   Flex,
+   VStack,
+   Text,
+   useTheme,
+   Img,
+} from "@chakra-ui/react";
 import AuthForm from "../../components/AuthForm/AuthForm";
 
 const AuthPage = () => {
+   const theme = useTheme();
    return (
       <Flex
          minH={"100vh"}
          justifyContent={"center"}
          alignItems={"center"}
          px={4}
-         bg={"linear-gradient(to right, #5E2BFF, #FC6DAB)"}
+         bg={theme.colors.primary[100]}
       >
-         <Container maxW={"xlcontainer.md"} padding={0}>
-            <Flex justifyContent={"center"} alignItems={"center"} gap={20}>
-               <Box display={{ base: "none", md: "block" }}>
-                  <Box>
+         <Container maxW={"100%"} bg={"lime"}>
+            <Flex justifyContent={"center"} alignItems={"center"} gap={10}>
+               <Flex
+                  display={{ base: "none", md: "block" }}
+                  bg={"salmon"}
+                  h={"100%"}
+               >
+                  <Box bg={"blue"} gap={20}>
                      <Text fontSize="5xl" color="White" as="b">
-                        SELLING.
+                        VSELL
                      </Text>
                   </Box>
-                  <Box>
-                     <Text fontSize="5xl" color="White" as="b">
-                        BETTER.
-                     </Text>
+                  <Box boxSize={"350px"} bg={"red"}>
+                     <Img src={"/GivingW.png"} />
                   </Box>
-               </Box>
+               </Flex>
 
                <VStack spacing={4} align={"stretch"}>
                   <AuthForm />

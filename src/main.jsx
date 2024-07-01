@@ -10,7 +10,7 @@ import { BrowserRouter } from "react-router-dom";
 const styles = {
    global: (props) => ({
       body: {
-         bg: mode("primary.100")(props),
+         bg: mode("linear-gradient(to right, #5E2BFF, #FC6DAB)")(props),
          color: mode("gray.800", "whiteAlpha.900")(props),
       },
    }),
