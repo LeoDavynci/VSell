@@ -6,12 +6,14 @@ import { ChakraProvider } from "@chakra-ui/react";
 import { extendTheme } from "@chakra-ui/react";
 import { mode } from "@chakra-ui/theme-tools";
 import { BrowserRouter } from "react-router-dom";
+import "@fontsource/outfit";
 
 const styles = {
    global: (props) => ({
       body: {
          bg: mode("linear-gradient(to right, #5E2BFF, #FC6DAB)")(props),
          color: mode("gray.800", "whiteAlpha.900")(props),
+         fontFamily: "Outfit, sans-serif",
       },
    }),
 };
@@ -35,10 +37,16 @@ const colors = {
    },
 };
 
+const fonts = {
+   body: "Roboto, sans-serif", // Apply the font to body
+   heading: "Roboto, sans-serif", // Apply the font to headings
+};
+
 const theme = extendTheme({
    config,
    styles,
    colors,
+   fonts,
 });
 
 ReactDOM.createRoot(document.getElementById("root")).render(
