@@ -10,7 +10,7 @@ import { BrowserRouter } from "react-router-dom";
 const styles = {
    global: (props) => ({
       body: {
-         bg: mode("linear-gradient(to right, #5E2BFF, #FC6DAB)")(props),
+         bg: mode("primary.100")(props),
          color: mode("gray.800", "whiteAlpha.900")(props),
       },
    }),
@@ -20,9 +20,25 @@ const config = {
    useSystemColorMode: false,
 };
 
+const colors = {
+   main: {
+      100: "#FAFAFA",
+      200: "#EBEBEB",
+   },
+   primary: {
+      100: "#79A88E",
+      200: "#A2C0B0",
+   },
+   secondary: {
+      100: "#716FE9",
+      200: "#A5A4F8",
+   },
+};
+
 const theme = extendTheme({
    config,
    styles,
+   colors,
 });
 
 ReactDOM.createRoot(document.getElementById("root")).render(
