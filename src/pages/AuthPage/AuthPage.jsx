@@ -19,19 +19,24 @@ const AuthPage = () => {
          px={4}
          bg={theme.colors.primary[100]}
       >
-         <Container maxW={"100%"} bg={"lime"}>
-            <Flex justifyContent={"center"} alignItems={"center"} gap={10}>
+         <Box w={{ base: "100%", md: "70%" }}>
+            <Flex justifyContent={"center"} alignItems={"center"} gap={100}>
                <Flex
-                  display={{ base: "none", md: "block" }}
-                  bg={"salmon"}
-                  h={"100%"}
+                  display={{ base: "none", md: "flex" }}
+                  flexDir={"column"}
+                  gap={5}
+                  alignItems="center"
                >
-                  <Box bg={"blue"} gap={20}>
-                     <Text fontSize="5xl" color="White" as="b">
+                  <Box
+                     display={"flex"}
+                     justifyContent="center"
+                     alignItems="center"
+                  >
+                     <Text fontSize="90" color="White" as="b" align={"center"}>
                         VSELL
                      </Text>
                   </Box>
-                  <Box boxSize={"350px"} bg={"red"}>
+                  <Box w={"360px"} right={"10px"} ml={4}>
                      <Img src={"/GivingW.png"} />
                   </Box>
                </Flex>
@@ -40,7 +45,7 @@ const AuthPage = () => {
                   <AuthForm />
                </VStack>
             </Flex>
-         </Container>
+         </Box>
       </Flex>
    );
 };
