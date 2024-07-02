@@ -46,7 +46,7 @@ const PostFooter = ({ name, price, location }) => {
                {displayPrice}
             </Text>
             {showOBO && (
-               <Text fontWeight={700} fontSize="24" color="#5E2BFF">
+               <Text fontWeight={700} fontSize="24" color="#716FE9">
                   OBO
                </Text>
             )}

@@ -18,11 +18,17 @@ const AuthForm = () => {
             <VStack spacing={5} direction="column">
                {/* Swap */}
                <Flex direction="column" textAlign="left" w={"100%"} gap={1}>
-                  <Text fontSize="30px" color="Black" textAlign="left" as="b">
+                  <Text
+                     fontSize="30px"
+                     color="Black"
+                     textAlign="left"
+                     as="b"
+                     fontWeight={500}
+                  >
                      {isLogin ? "Log In" : "Sign Up"}
                   </Text>
                   <Flex width={"100%"} gap={1}>
-                     <Text fontSize={14} textAlign="left">
+                     <Text fontSize={14} textAlign="left" fontWeight={300}>
                         {isLogin
                            ? "Don't have an account?"
                            : "Already have an account?"}
@@ -32,6 +38,8 @@ const AuthForm = () => {
                         color={"black"}
                         cursor={"pointer"}
                         fontSize={14}
+                        fontWeight={500}
+                        textDecor={"underline"}
                      >
                         {isLogin ? "Sign up" : "Log in"}
                      </Text>

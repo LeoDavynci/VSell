@@ -121,11 +121,15 @@ const Post = ({ img, name, price, location }) => {
                            gap={{ base: "10", sm: "10", md: "10" }}
                            pt={1}
                         >
-                           <Text fontSize={{ base: 12, md: 20 }} color="gray">
+                           <Text
+                              fontSize={{ base: 12, md: 20 }}
+                              color="gray"
+                              fontWeight={400}
+                           >
                               Posted 3 hours ago
                            </Text>
                            <Flex gap={1} fontSize={{ base: 12, md: 20 }}>
-                              <FaLocationDot color="gray" />
+                              <FaLocationDot color="gray" fontWeight={400} />
                               <Text color="gray">{location || "Anywhere"}</Text>
                            </Flex>
                         </Box>
@@ -137,7 +141,7 @@ const Post = ({ img, name, price, location }) => {
                         >
                            <Box
                               fontSize={{ base: 36, md: 56 }}
-                              fontWeight="normal"
+                              fontWeight={500}
                               as="h4"
                               lineHeight="1.2"
                               overflow="hidden"
@@ -159,7 +163,7 @@ const Post = ({ img, name, price, location }) => {
                               fontSize={{ base: 64, md: 84 }}
                               as="h4"
                               lineHeight="1.5"
-                              fontWeight="semibold"
+                              fontWeight={600}
                            >
                               <Text fontWeight={700}>{displayPrice}</Text>
                            </Box>
@@ -186,13 +190,8 @@ const Post = ({ img, name, price, location }) => {
 
                         <Flex gap={{ base: 5, md: 15 }}>
                            <Button
-                              bgGradient="linear(to-r, #5E2BFF, #FC6DAB)"
-                              _hover={{
-                                 bgGradient: "linear(to-r, #8862FF, #FF99C5)",
-                              }}
-                              _active={{
-                                 bgGradient: "linear(to-r, #5E2BFF, #FC6DAB)",
-                              }}
+                              bg={"#79A88E"}
+                              _hover={{ bg: "#A2C0B0" }}
                               variant="solid"
                               color={"white"}
                               borderRadius={{ base: 35, md: 25 }}
@@ -221,7 +220,7 @@ const Post = ({ img, name, price, location }) => {
                         <Flex pr={5} py={5}>
                            <Box width="100%">
                               <Text fontWeight={"bold"}>Description</Text>
-                              <Text isTruncated>Selling this after</Text>
+                              <Text>Selling this after</Text>
                            </Box>
                         </Flex>
                      </Flex>

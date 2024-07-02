@@ -67,7 +67,7 @@ const Signup = () => {
             <Input
                pr="4.5rem"
                type={show ? "text" : "password"}
-               placeholder="password"
+               placeholder="Password"
                borderColor="black"
                borderWidth="2px"
                borderRadius="10px"

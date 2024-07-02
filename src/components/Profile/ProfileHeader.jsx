@@ -10,6 +10,7 @@ import {
 import useUserProfileStore from "../../store/userProfileStore";
 import useAuthStore from "../../store/authStore";
 import EditProfile from "./EditProfile";
+import useLogout from "../../hooks/useLogout";
 
 const ProfileHeader = () => {
    const { userProfile } = useUserProfileStore();
@@ -19,6 +20,7 @@ const ProfileHeader = () => {
    const visitingAnotherProfileAndAuth =
       authUser && authUser.username !== userProfile.username;
    const { isOpen, onOpen, onClose } = useDisclosure();
+   const { handleLogout, isLoggingOut } = useLogout();
    return (
       <Flex
          gap={{ base: 4, sm: 10 }}
@@ -69,23 +71,33 @@ const ProfileHeader = () => {
             {visitingOwnProfileAndAuth && (
                <Flex gap={4} alignItems={"center"} justifyContent={"center"}>
                   <Button
-                     bg="#5E2BFF"
+                     bg="#79A88E"
                      color={"white"}
-                     _hover={{ bg: "#C04CFD" }}
+                     _hover={{ bg: "#A2C0B0" }}
                      size={{ base: "xs", md: "sm" }}
                      onClick={onOpen}
                   >
                      Edit Profile
                   </Button>
 
-                  {/* Log Out */}
                   <Button
-                     bg="gray"
+                     bg="#79A88E"
                      color={"white"}
-                     _hover={{ bg: "gray.800" }}
+                     _hover={{ bg: "#A2C0B0" }}
                      size={{ base: "xs", md: "sm" }}
                   >
                      List an Item
+                  </Button>
+
+                  <Button
+                     bg="#79A88E"
+                     color={"white"}
+                     _hover={{ bg: "#A2C0B0" }}
+                     size={{ base: "xs", md: "sm" }}
+                     isLoading={isLoggingOut}
+                     onClick={handleLogout}
+                  >
+                     Log Out
                   </Button>
                </Flex>
             )}
