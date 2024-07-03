@@ -19,31 +19,32 @@ import {
    Textarea,
    useDisclosure,
 } from "@chakra-ui/react";
-import { useRef, useState } from "react";
+
 import { MdOutlineAddCircleOutline } from "react-icons/md";
+import { useRef, useState } from "react";
+import usePreviewImg from "../../hooks/usePreviewImg";
+import useShowToast from "../../hooks/useShowToast";
+import useAuthStore from "../../store/authStore";
+import usePostStore from "../../store/postStore";
+import useUserProfileStore from "../../store/userProfileStore";
 import { useLocation } from "react-router-dom";
 import {
    addDoc,
+   arrayUnion,
    collection,
    doc,
    updateDoc,
-   arrayUnion,
 } from "firebase/firestore";
 import { firestore, storage } from "../../firebase/firebase";
 import { getDownloadURL, ref, uploadString } from "firebase/storage";
-import useAuthStore from "./../../store/authStore";
-import usePreviewImg from "./../../hooks/usePreviewImg";
-import useShowToast from "../../hooks/useShowToast";
-import useUserProfileStore from "./../../store/userProfileStore";
-import usePostStore from "../../store/postStore";
 
 const CreatePost = () => {
    const { isOpen, onOpen, onClose } = useDisclosure();
    const [caption, setCaption] = useState("");
    const imageRef = useRef(null);
    const { handleImageChange, selectedFile, setSelectedFile } = usePreviewImg();
-   const { isLoading, handleCreatePost } = useCreatePost();
    const showToast = useShowToast();
+   const { isLoading, handleCreatePost } = useCreatePost();
 
    const handlePostCreation = async () => {
       try {
@@ -184,7 +185,7 @@ function useCreatePost() {
    const showToast = useShowToast();
    const [isLoading, setIsLoading] = useState(false);
    const authUser = useAuthStore((state) => state.user);
-   const { createPost } = usePostStore((state) => state.createPost);
+   const createPost = usePostStore((state) => state.createPost);
    const addPost = useUserProfileStore((state) => state.addPost);
    const userProfile = useUserProfileStore((state) => state.userProfile);
    const { pathname } = useLocation();
@@ -216,10 +217,13 @@ function useCreatePost() {
 
          newPost.imageURL = downloadURL;
 
-         createPost({ ...newPost, id: postDocRef.id });
-         addPost({ ...newPost, id: postDocRef.id });
+         if (userProfile.uid === authUser.uid)
+            createPost({ ...newPost, id: postDocRef.id });
 
-         showToast("Success", "Listing created", "success");
+         if (pathname !== "/" && userProfile.uid === authUser.uid)
+            addPost({ ...newPost, id: postDocRef.id });
+
+         showToast("Success", "Post created successfully", "success");
       } catch (error) {
          showToast("Error", error.message, "error");
       } finally {

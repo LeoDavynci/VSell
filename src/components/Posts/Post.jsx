@@ -146,8 +146,8 @@ const Post = ({ img, name, price, location, caption }) => {
                               lineHeight="1.2"
                               overflow="hidden"
                               display="-webkit-box"
-                              webkitLineClamp="2"
-                              webkitBoxOrient="vertical"
+                              webkitlineclamp="2"
+                              webkitboxorient="vertical"
                               maxW="100%"
                            >
                               {name}
@@ -194,23 +194,25 @@ const Post = ({ img, name, price, location, caption }) => {
                               _hover={{ bg: "#A2C0B0" }}
                               variant="solid"
                               color={"white"}
-                              borderRadius={{ base: 35, md: 25 }}
+                              borderRadius={{ base: 45, md: 35 }}
                               fontSize="36px"
                               py={9}
-                              px={16}
+                              px={14}
                            >
                               Buy
                            </Button>
 
                            {showOBO && (
                               <Button
-                                 bg="#D9D9D9"
-                                 variant="solid"
-                                 color={"black"}
-                                 borderRadius={{ base: 35, md: 25 }}
+                                 bg="clear"
+                                 variant="outline"
+                                 color={"#79A88E"}
+                                 borderRadius={{ base: 45, md: 35 }}
+                                 borderColor={"#79A88E"}
+                                 borderWidth={5}
                                  fontSize="36px"
-                                 py={9}
-                                 px={14}
+                                 py={8}
+                                 px={12}
                               >
                                  Offer
                               </Button>

@@ -25,31 +25,38 @@ import { deleteObject, ref } from "firebase/storage";
 import { firestore, storage } from "../../firebase/firebase";
 import { arrayRemove, deleteDoc, doc, updateDoc } from "firebase/firestore";
 import usePostStore from "../../store/postStore";
+import useLikePost from "./../../hooks/useLikePost";
 
 const ProfilePost = ({ post }) => {
    const { isOpen, onOpen, onClose } = useDisclosure();
-   const [likes] = useState(10);
+
    // const displayPrice = price ? `$${price}` : "Free";
    const userProfile = useUserProfileStore((state) => state.userProfile);
    const authUser = useAuthStore();
    const showToast = useShowToast();
    const [isDeleting, setIsDeleting] = useState(false);
    const deletePost = usePostStore((state) => state.deletePost);
+   const decrementPostsCount = useUserProfileStore((state) => state.deletePost);
+   const { handleLikePost, isLiked, likes } = useLikePost(post);
 
    const handleDeletePost = async () => {
       if (!window.confirm("Are you sure you want to delete this post?")) return;
       if (isDeleting) return;
+      setIsDeleting(true);
+
       try {
          const imageRef = ref(storage, `posts/${post.id}`);
          await deleteObject(imageRef);
-         const userRef = doc(firestore, "users", authUser.uid);
+         const userRef = doc(firestore, "users", authUser.user.uid);
          await deleteDoc(doc(firestore, "posts", post.id));
+
          await updateDoc(userRef, {
             posts: arrayRemove(post.id),
          });
 
          deletePost(post.id);
-         showToast("Success", "Listing deleted successfully", "success");
+         decrementPostsCount(post.id);
+         showToast("Success", "Post deleted successfully", "success");
       } catch (error) {
          showToast("Error", error.message, "error");
       } finally {
@@ -85,7 +92,7 @@ const ProfilePost = ({ post }) => {
                   <Flex color={"white"}>
                      <FaHeart size={25} />
                      <Text fontWeight={"bold"} ml={2}>
-                        7
+                        {likes}
                      </Text>
                   </Flex>
                </Flex>
@@ -204,8 +211,13 @@ const ProfilePost = ({ post }) => {
                            </Box>
 
                            <Flex flexDirection={"row"} alignItems={"center"}>
-                              <Box cursor={"pointer"} fontSize={40} pr={1}>
-                                 <FaRegHeart />
+                              <Box
+                                 cursor={"pointer"}
+                                 fontSize={40}
+                                 pr={1}
+                                 onClick={handleLikePost}
+                              >
+                                 {!isLiked ? <FaRegHeart /> : <FaHeart />}
                               </Box>
                               <Text
                                  fontWeight={600}
@@ -213,7 +225,7 @@ const ProfilePost = ({ post }) => {
                                  alignSelf={"center"}
                                  pr={1}
                               >
-                                 {post.likes.length}
+                                 {likes}
                               </Text>
                            </Flex>
                         </Flex>
