@@ -18,11 +18,44 @@ import {
 import { useState } from "react";
 import { FaHeart } from "react-icons/fa";
 import { FaLocationDot, FaRegHeart } from "react-icons/fa6";
+import useUserProfileStore from "../../store/userProfileStore";
+import useAuthStore from "../../store/authStore";
+import useShowToast from "../../hooks/useShowToast";
+import { deleteObject, ref } from "firebase/storage";
+import { firestore, storage } from "../../firebase/firebase";
+import { arrayRemove, deleteDoc, doc, updateDoc } from "firebase/firestore";
+import usePostStore from "../../store/postStore";
 
-const ProfilePost = ({ img, name, price, location, description }) => {
+const ProfilePost = ({ post }) => {
    const { isOpen, onOpen, onClose } = useDisclosure();
    const [likes] = useState(10);
-   const displayPrice = price ? `$${price}` : "Free";
+   // const displayPrice = price ? `$${price}` : "Free";
+   const userProfile = useUserProfileStore((state) => state.userProfile);
+   const authUser = useAuthStore();
+   const showToast = useShowToast();
+   const [isDeleting, setIsDeleting] = useState(false);
+   const deletePost = usePostStore((state) => state.deletePost);
+
+   const handleDeletePost = async () => {
+      if (!window.confirm("Are you sure you want to delete this post?")) return;
+      if (isDeleting) return;
+      try {
+         const imageRef = ref(storage, `posts/${post.id}`);
+         await deleteObject(imageRef);
+         const userRef = doc(firestore, "users", authUser.uid);
+         await deleteDoc(doc(firestore, "posts", post.id));
+         await updateDoc(userRef, {
+            posts: arrayRemove(post.id),
+         });
+
+         deletePost(post.id);
+         showToast("Success", "Listing deleted successfully", "success");
+      } catch (error) {
+         showToast("Error", error.message, "error");
+      } finally {
+         setIsDeleting(false);
+      }
+   };
 
    return (
       <>
@@ -58,7 +91,12 @@ const ProfilePost = ({ img, name, price, location, description }) => {
                </Flex>
             </Flex>
 
-            <Img src={img} w={"100%"} h={"100%"} objectFit={"cover"} />
+            <Img
+               src={post.imageURL}
+               w={"100%"}
+               h={"100%"}
+               objectFit={"cover"}
+            />
          </GridItem>
 
          <Modal
@@ -90,7 +128,7 @@ const ProfilePost = ({ img, name, price, location, description }) => {
                         }}
                      >
                         <Image
-                           src={img}
+                           src={post.imageURL}
                            objectFit="cover"
                            position="absolute"
                            top="0"
@@ -124,7 +162,7 @@ const ProfilePost = ({ img, name, price, location, description }) => {
                            <Flex gap={1}>
                               <FaLocationDot color="gray" />
                               <Text fontSize="sm" color="gray">
-                                 {location || "Anywhere"}
+                                 Sutherland House
                               </Text>
                            </Flex>
                         </Box>
@@ -141,11 +179,13 @@ const ProfilePost = ({ img, name, price, location, description }) => {
                               lineHeight="1.2"
                               overflow="hidden"
                               display="-webkit-box"
-                              webkitLineClamp="2"
-                              webkitBoxOrient="vertical"
+                              style={{
+                                 WebkitLineClamp: 2,
+                                 WebkitBoxOrient: "vertical",
+                              }}
                               maxW="100%"
                            >
-                              {name}
+                              Item
                            </Box>
                         </Flex>
 
@@ -160,7 +200,7 @@ const ProfilePost = ({ img, name, price, location, description }) => {
                               lineHeight="1.5"
                               fontWeight="semibold"
                            >
-                              <Text fontWeight={700}>{displayPrice}</Text>
+                              <Text fontWeight={700}>Price</Text>
                            </Box>
 
                            <Flex flexDirection={"row"} alignItems={"center"}>
@@ -173,29 +213,44 @@ const ProfilePost = ({ img, name, price, location, description }) => {
                                  alignSelf={"center"}
                                  pr={1}
                               >
-                                 {likes}
+                                 {post.likes.length}
                               </Text>
                            </Flex>
                         </Flex>
 
-                        <Flex gap={{ base: 5, md: 15 }}>
-                           <Button
-                              bg="#D9D9D9"
-                              variant="solid"
-                              color={"black"}
-                              borderRadius={{ base: 35, md: 25 }}
-                              fontSize="36px"
-                              py={9}
-                              px={14}
-                           >
-                              Edit
-                           </Button>
-                        </Flex>
+                        {authUser?.user.uid === userProfile.uid && (
+                           <Flex gap={{ base: 3, md: 15 }} flexDir={"row"}>
+                              <Button
+                                 bg="#D9D9D9"
+                                 variant="solid"
+                                 color={"black"}
+                                 borderRadius={{ base: 35, md: 25 }}
+                                 fontSize="36px"
+                                 py={9}
+                                 px={14}
+                              >
+                                 Edit
+                              </Button>
+                              <Button
+                                 bg="#D9D9D9"
+                                 variant="solid"
+                                 color={"black"}
+                                 borderRadius={{ base: 35, md: 25 }}
+                                 fontSize="36px"
+                                 py={9}
+                                 px={14}
+                                 onClick={handleDeletePost}
+                                 isLoading={isDeleting}
+                              >
+                                 Delete
+                              </Button>
+                           </Flex>
+                        )}
 
                         <Flex pr={5} py={5}>
                            <Box width="100%">
                               <Text fontWeight={"bold"}>Description</Text>
-                              <Text>{description}</Text>
+                              <Text>{post.caption}</Text>
                            </Box>
                         </Flex>
                      </Flex>

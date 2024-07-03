@@ -19,7 +19,7 @@ import { useState } from "react";
 import { FaHeart } from "react-icons/fa";
 import { FaLocationDot, FaRegHeart } from "react-icons/fa6";
 
-const Post = ({ img, name, price, location }) => {
+const Post = ({ img, name, price, location, caption }) => {
    const { isOpen, onOpen, onClose } = useDisclosure();
    const [liked, setLiked] = useState(false);
    const [likes, setLikes] = useState(10);
@@ -220,7 +220,7 @@ const Post = ({ img, name, price, location }) => {
                         <Flex pr={5} py={5}>
                            <Box width="100%">
                               <Text fontWeight={"bold"}>Description</Text>
-                              <Text>Selling this after</Text>
+                              <Text>{caption}</Text>
                            </Box>
                         </Flex>
                      </Flex>

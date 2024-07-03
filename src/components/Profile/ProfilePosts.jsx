@@ -1,15 +1,12 @@
-import { Box, Grid, Skeleton, VStack } from "@chakra-ui/react";
-import { useEffect, useState } from "react";
+import { Box, Flex, Grid, Skeleton, Text, VStack } from "@chakra-ui/react";
 import ProfilePost from "./ProfilePost";
+import useGetUserPosts from "../../hooks/useGetUserPosts";
 
 const ProfilePosts = () => {
-   const [isLoading, setIsLoading] = useState(true);
+   const { isLoading, posts } = useGetUserPosts();
 
-   useEffect(() => {
-      setTimeout(() => {
-         setIsLoading(false);
-      }, 2000);
-   }, []);
+   const noPostsFound = !isLoading && posts.length === 0;
+   if (noPostsFound) return <NoPostsFound />;
 
    return (
       <Grid
@@ -21,7 +18,7 @@ const ProfilePosts = () => {
          columnGap={3}
       >
          {isLoading &&
-            [0, 1, 2, 3, 4, 5, 6, 7, 8].map((_, idx) => (
+            [0, 1, 2].map((_, idx) => (
                <VStack key={idx} alignItems={"flex-start"} gap={4}>
                   <Skeleton w={"full"}>
                      <Box h={"300px"}>contents wrapped</Box>
@@ -31,34 +28,9 @@ const ProfilePosts = () => {
 
          {!isLoading && (
             <>
-               <ProfilePost
-                  img="/img1.png"
-                  name="Plastic Trays"
-                  price="50"
-                  location="Zeppos Tower"
-                  description="Durable, multipurpose trays ideal for organizing or serving. Various colors available."
-               />
-               <ProfilePost
-                  img="/img2.png"
-                  name="iPad Stand"
-                  price=""
-                  location="Zeppos Tower"
-                  description="Adjustable, portable stand for comfortable viewing and typing. Compatible with most ipads."
-               />
-               <ProfilePost
-                  img="/img3.png"
-                  name="Brita"
-                  price="10"
-                  location="Rand"
-                  description="Water filtration pitcher for clean, great-tasting water. Reduces chlorine taste and odor."
-               />
-               <ProfilePost
-                  img="/img4.png"
-                  name="Vintage Chairs"
-                  price="20"
-                  location="Sutherland House"
-                  description="Charming mid-century designs. Solid wood construction with original upholstery. Perfect for adding character to any room."
-               />
+               {posts.map((post) => (
+                  <ProfilePost post={post} key={post.id} />
+               ))}
             </>
          )}
       </Grid>
@@ -66,3 +38,9 @@ const ProfilePosts = () => {
 };
 
 export default ProfilePosts;
+
+const NoPostsFound = () => {
+   <Flex flexDir={"column"} textAlign={"center"} mx={"auto"} mt={10}>
+      <Text fontSize={"2xl"}>No Listings Found</Text>
+   </Flex>;
+};

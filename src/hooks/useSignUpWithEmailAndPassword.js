@@ -35,7 +35,7 @@ const useSignUpWithEmailAndPassword = () => {
             const newUser = await createUserWithEmailAndPassword(inputs.email, inputs.password)
             if (!newUser && error) {
                 showToast("Error", error.message, "error")
-                return
+                return  
             }
             if (newUser) {
                 const userDoc = {
@@ -44,12 +44,13 @@ const useSignUpWithEmailAndPassword = () => {
                     username:inputs.username,
                     email:inputs.email,
                     profilePicURL:"",
-                    listings:[],
+                    posts:[],
                     createdAt:Date.now()
                 }
                 await setDoc(doc(firestore, "users", newUser.user.uid), userDoc);
                 localStorage.setItem("user-info", JSON.stringify(userDoc));
                 loginUser(userDoc)
+                showToast("Success", "Account created successfully", "success");
             }
 
         } catch (error) {

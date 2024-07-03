@@ -37,42 +37,42 @@ const Posts = () => {
             name="Plastic Trays"
             price="50"
             location="Zeppos Tower"
-            description="Durable, multipurpose trays ideal for organizing or serving. Various colors available."
+            caption="Durable, multipurpose trays ideal for organizing or serving. Various colors available."
          />
          <Post
             img="/img2.png"
             name="iPad Stand"
             price=""
             location="Zeppos Tower"
-            description="Adjustable, portable stand for comfortable viewing and typing. Compatible with most ipads."
+            caption="Adjustable, portable stand for comfortable viewing and typing. Compatible with most ipads."
          />
          <Post
             img="/img3.png"
             name="Brita"
             price="10"
             location="Rand"
-            description="Water filtration pitcher for clean, great-tasting water. Reduces chlorine taste and odor."
+            caption="Water filtration pitcher for clean, great-tasting water. Reduces chlorine taste and odor."
          />
          <Post
             img="/img4.png"
             name="Vintage Chairs"
             price="20"
             location="Sutherland House"
-            description="Charming mid-century designs. Solid wood construction with original upholstery. Perfect for adding character to any room."
+            caption="Charming mid-century designs. Solid wood construction with original upholstery. Perfect for adding character to any room."
          />
          <Post
             img="/img5.png"
             name="24' monitor"
             price=""
             location="Kissam"
-            description="Pre-owned 24 inch computer display. Good condition, various sizes available. Perfect for home office or dual-screen setup."
+            caption="Pre-owned 24 inch computer display. Good condition, various sizes available. Perfect for home office or dual-screen setup."
          />
          <Post
             img="/img6.png"
             name="Treadmill"
             price="95"
             location="EBI"
-            description="Home exercise equipment for walking or running indoors. Adjustable speed and incline. Foldable for easy storage."
+            caption="Home exercise equipment for walking or running indoors. Adjustable speed and incline. Foldable for easy storage."
          />
 
          <Post
@@ -80,126 +80,126 @@ const Posts = () => {
             name="Plastic Trays"
             price="50"
             location="Zeppos Tower"
-            description="Durable, multipurpose trays ideal for organizing or serving. Various colors available."
+            caption="Durable, multipurpose trays ideal for organizing or serving. Various colors available."
          />
          <Post
             img="/img2.png"
             name="iPad Stand"
             price=""
             location="Zeppos Tower"
-            description="Adjustable, portable stand for comfortable viewing and typing. Compatible with most ipads."
+            caption="Adjustable, portable stand for comfortable viewing and typing. Compatible with most ipads."
          />
          <Post
             img="/img3.png"
             name="Brita"
             price="10"
             location="Rand"
-            description="Water filtration pitcher for clean, great-tasting water. Reduces chlorine taste and odor."
+            caption="Water filtration pitcher for clean, great-tasting water. Reduces chlorine taste and odor."
          />
          <Post
             img="/img4.png"
             name="Vintage Chairs"
             price="20"
             location="Sutherland House"
-            description="Charming mid-century designs. Solid wood construction with original upholstery. Perfect for adding character to any room."
+            caption="Charming mid-century designs. Solid wood construction with original upholstery. Perfect for adding character to any room."
          />
          <Post
             img="/img5.png"
             name="24' monitor"
             price=""
             location="Kissam"
-            description="Pre-owned 24 inch computer display. Good condition, various sizes available. Perfect for home office or dual-screen setup."
+            caption="Pre-owned 24 inch computer display. Good condition, various sizes available. Perfect for home office or dual-screen setup."
          />
          <Post
             img="/img6.png"
             name="Treadmill"
             price="95"
             location="EBI"
-            description="Home exercise equipment for walking or running indoors. Adjustable speed and incline. Foldable for easy storage."
+            caption="Home exercise equipment for walking or running indoors. Adjustable speed and incline. Foldable for easy storage."
          />
          <Post
             img="/img1.png"
             name="Plastic Trays"
             price="50"
             location="Zeppos Tower"
-            description="Durable, multipurpose trays ideal for organizing or serving. Various colors available."
+            caption="Durable, multipurpose trays ideal for organizing or serving. Various colors available."
          />
          <Post
             img="/img2.png"
             name="iPad Stand"
             price=""
             location="Zeppos Tower"
-            description="Adjustable, portable stand for comfortable viewing and typing. Compatible with most ipads."
+            caption="Adjustable, portable stand for comfortable viewing and typing. Compatible with most ipads."
          />
          <Post
             img="/img3.png"
             name="Brita"
             price="10"
             location="Rand"
-            description="Water filtration pitcher for clean, great-tasting water. Reduces chlorine taste and odor."
+            caption="Water filtration pitcher for clean, great-tasting water. Reduces chlorine taste and odor."
          />
          <Post
             img="/img4.png"
             name="Vintage Chairs"
             price="20"
             location="Sutherland House"
-            description="Charming mid-century designs. Solid wood construction with original upholstery. Perfect for adding character to any room."
+            caption="Charming mid-century designs. Solid wood construction with original upholstery. Perfect for adding character to any room."
          />
          <Post
             img="/img5.png"
             name="24' monitor"
             price=""
             location="Kissam"
-            description="Pre-owned 24 inch computer display. Good condition, various sizes available. Perfect for home office or dual-screen setup."
+            caption="Pre-owned 24 inch computer display. Good condition, various sizes available. Perfect for home office or dual-screen setup."
          />
          <Post
             img="/img6.png"
             name="Treadmill"
             price="95"
             location="EBI"
-            description="Home exercise equipment for walking or running indoors. Adjustable speed and incline. Foldable for easy storage."
+            caption="Home exercise equipment for walking or running indoors. Adjustable speed and incline. Foldable for easy storage."
          />
          <Post
             img="/img1.png"
             name="Plastic Trays"
             price="50"
             location="Zeppos Tower"
-            description="Durable, multipurpose trays ideal for organizing or serving. Various colors available."
+            caption="Durable, multipurpose trays ideal for organizing or serving. Various colors available."
          />
          <Post
             img="/img2.png"
             name="iPad Stand"
             price=""
             location="Zeppos Tower"
-            description="Adjustable, portable stand for comfortable viewing and typing. Compatible with most ipads."
+            caption="Adjustable, portable stand for comfortable viewing and typing. Compatible with most ipads."
          />
          <Post
             img="/img3.png"
             name="Brita"
             price="10"
             location="Rand"
-            description="Water filtration pitcher for clean, great-tasting water. Reduces chlorine taste and odor."
+            caption="Water filtration pitcher for clean, great-tasting water. Reduces chlorine taste and odor."
          />
          <Post
             img="/img4.png"
             name="Vintage Chairs"
             price="20"
             location="Sutherland House"
-            description="Charming mid-century designs. Solid wood construction with original upholstery. Perfect for adding character to any room."
+            caption="Charming mid-century designs. Solid wood construction with original upholstery. Perfect for adding character to any room."
          />
          <Post
             img="/img5.png"
             name="24' monitor"
             price=""
             location="Kissam"
-            description="Pre-owned 24 inch computer display. Good condition, various sizes available. Perfect for home office or dual-screen setup."
+            caption="Pre-owned 24 inch computer display. Good condition, various sizes available. Perfect for home office or dual-screen setup."
          />
          <Post
             img="/img6.png"
             name="Treadmill"
             price="95"
             location="EBI"
-            description="Home exercise equipment for walking or running indoors. Adjustable speed and incline. Foldable for easy storage."
+            caption="Home exercise equipment for walking or running indoors. Adjustable speed and incline. Foldable for easy storage."
          />
       </SimpleGrid>
    );

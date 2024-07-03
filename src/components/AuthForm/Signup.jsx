@@ -14,6 +14,7 @@ const Signup = () => {
    const handleClick = () => setShow(!show);
    const [inputs, setInputs] = useState({
       fullName: "",
+      username: "",
       email: "",
       password: "",
    });
