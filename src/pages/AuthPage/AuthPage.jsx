@@ -16,32 +16,39 @@ const AuthPage = () => {
          minH={"100vh"}
          justifyContent={"center"}
          alignItems={"center"}
-         px={4}
          bg={theme.colors.primary[100]}
       >
-         <Box w={{ base: "100%", md: "70%" }}>
-            <Flex justifyContent={"center"} alignItems={"center"} gap={100}>
+         <Box w={{ base: "100%", md: "90%" }}>
+            <Flex alignItems={"center"} gap={50}>
                <Flex
                   display={{ base: "none", md: "flex" }}
                   flexDir={"column"}
                   gap={5}
-                  alignItems="center"
+                  alignItems="end"
+                  w={"50%"}
                >
-                  <Box
-                     display={"flex"}
-                     justifyContent="center"
-                     alignItems="center"
-                  >
-                     <Text fontSize="90" color="White" as="b" align={"center"}>
-                        VSELL
-                     </Text>
-                  </Box>
-                  <Box w={"360px"} right={"10px"} ml={4}>
-                     <Img src={"/GivingW.png"} />
+                  <Box>
+                     <Box
+                        display={"flex"}
+                        justifyContent="center"
+                        alignItems="center"
+                     >
+                        <Text
+                           fontSize="90"
+                           color="White"
+                           as="b"
+                           align={"center"}
+                        >
+                           VSELL
+                        </Text>
+                     </Box>
+                     <Box w={"360px"} right={"10px"} ml={4}>
+                        <Img src={"/GivingW.png"} />
+                     </Box>
                   </Box>
                </Flex>
 
-               <VStack spacing={4} align={"stretch"}>
+               <VStack align={"stretch"} bg={"blue"} h={"100%"}>
                   <AuthForm />
                </VStack>
             </Flex>

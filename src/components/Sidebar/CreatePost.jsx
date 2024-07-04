@@ -40,17 +40,34 @@ import { getDownloadURL, ref, uploadString } from "firebase/storage";
 
 const CreatePost = () => {
    const { isOpen, onOpen, onClose } = useDisclosure();
+
+   const [itemName, setItemName] = useState("");
+   const [price, setPrice] = useState("");
+   const [pickupLocation, setPickupLocation] = useState("");
+   const [isOBO, setIsOBO] = useState(false);
    const [caption, setCaption] = useState("");
    const imageRef = useRef(null);
+
    const { handleImageChange, selectedFile, setSelectedFile } = usePreviewImg();
    const showToast = useShowToast();
    const { isLoading, handleCreatePost } = useCreatePost();
 
    const handlePostCreation = async () => {
       try {
-         await handleCreatePost(selectedFile, caption);
+         await handleCreatePost(
+            selectedFile,
+            caption,
+            itemName,
+            price,
+            pickupLocation,
+            isOBO
+         );
          onClose();
          setCaption("");
+         setItemName("");
+         setPrice("");
+         setPickupLocation("");
+         setIsOBO(false);
          setSelectedFile(null);
       } catch (error) {
          showToast("Error", error.message, "error");
@@ -92,9 +109,17 @@ const CreatePost = () => {
                <ModalHeader fontSize={30}>Sell an item</ModalHeader>
                <ModalCloseButton borderRadius={15} />
                <ModalBody>
-                  <Text>Item Name</Text>
-                  <Input autoCapitalize="" maxLength={40} borderRadius={15} />
-                  <Text>Price</Text>
+                  <Text mt={-2}>Item Name</Text>
+                  <Input
+                     autoCapitalize=""
+                     maxLength={40}
+                     borderRadius={15}
+                     borderColor={"black"}
+                     borderWidth={"2px"}
+                     value={itemName}
+                     onChange={(e) => setItemName(e.target.value)}
+                  />
+                  <Text mt={2}>Price</Text>
                   <Flex align="center">
                      <InputGroup width="150px">
                         <InputLeftElement
@@ -109,18 +134,36 @@ const CreatePost = () => {
                            min="0"
                            max="999999"
                            borderRadius={15}
+                           borderColor={"black"}
+                           borderWidth={"2px"}
+                           value={price}
+                           onChange={(e) => setPrice(e.target.value)}
                         />
                      </InputGroup>
-                     <Checkbox colorScheme={"green"} color={"#79A88E"} ml={4}>
+                     <Checkbox
+                        colorScheme={"green"}
+                        color={"#79A88E"}
+                        ml={4}
+                        isChecked={isOBO}
+                        onChange={(e) => setIsOBO(e.target.checked)}
+                     >
                         OBO
                      </Checkbox>
                   </Flex>
-                  <Text>Pickup Location</Text>
-                  <Input borderRadius={15} />
-                  <Text>caption</Text>
+                  <Text mt={2}>Pickup Location</Text>
+                  <Input
+                     borderRadius={15}
+                     borderColor={"black"}
+                     borderWidth={"2px"}
+                     value={pickupLocation}
+                     onChange={(e) => setPickupLocation(e.target.value)}
+                  />
+                  <Text mt={2}>Description</Text>
                   <Textarea
                      maxLength={250}
                      borderRadius={15}
+                     borderColor={"black"}
+                     borderWidth={"2px"}
                      value={caption}
                      onChange={(e) => setCaption(e.target.value)}
                   />
@@ -133,6 +176,7 @@ const CreatePost = () => {
                   />
 
                   <Button
+                     mt={4}
                      borderRadius={15}
                      onClick={() => imageRef.current.click()}
                   >
@@ -145,8 +189,14 @@ const CreatePost = () => {
                         w={"full"}
                         position={"relative"}
                         justifyContent={"center"}
+                        borderRadius={15}
                      >
-                        <Image src={selectedFile} alt="Image" />
+                        <Image
+                           borderRadius={15}
+                           s
+                           src={selectedFile}
+                           alt="Image"
+                        />
                         <CloseButton
                            position={"absolute"}
                            top={2}
@@ -190,11 +240,22 @@ function useCreatePost() {
    const userProfile = useUserProfileStore((state) => state.userProfile);
    const { pathname } = useLocation();
 
-   const handleCreatePost = async (selectedFile, caption) => {
+   const handleCreatePost = async (
+      selectedFile,
+      caption,
+      itemName,
+      price,
+      pickupLocation,
+      isOBO
+   ) => {
       if (isLoading) return;
       if (!selectedFile) throw new Error("Please select an image");
       setIsLoading(true);
       const newPost = {
+         itemName: itemName,
+         price: parseFloat(price),
+         pickupLocation: pickupLocation,
+         isOBO: isOBO,
          caption: caption,
          likes: [],
          createdAt: Date.now(),

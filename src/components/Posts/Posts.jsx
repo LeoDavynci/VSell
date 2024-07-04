@@ -1,207 +1,44 @@
-import { SimpleGrid } from "@chakra-ui/react";
+import { SimpleGrid, Spinner, Center } from "@chakra-ui/react";
 import Post from "./Post";
 import useWindowWidth from "./useWindowWidth";
+import useGetFeedPosts from "../../hooks/useGetFeedPosts";
 
 const Posts = () => {
+   const { isLoading, posts } = useGetFeedPosts();
    const width = useWindowWidth();
-   let columns;
 
-   if (width >= 2021) {
-      columns = 11;
-   } else if (width >= 1791 && width <= 2020) {
-      columns = 10;
-   } else if (width >= 1561 && width <= 1790) {
-      columns = 9;
-   } else if (width >= 1461 && width <= 1560) {
-      columns = 8;
-   } else if (width >= 1231 && width <= 1460) {
-      columns = 7;
-   } else if (width >= 1061 && width <= 1230) {
-      columns = 6;
-   } else if (width >= 881 && width <= 1060) {
-      columns = 5;
-   } else if (width >= 701 && width <= 880) {
-      columns = 4;
-   } else if (width >= 531 && width <= 700) {
-      columns = 3;
-   } else if (width >= 360 && width <= 530) {
-      columns = 2;
-   } else {
-      columns = 1;
-   }
+   const getColumnCount = (width) => {
+      if (width >= 2021) return 11;
+      if (width >= 1791 && width <= 2020) return 10;
+      if (width >= 1561 && width <= 1790) return 9;
+      if (width >= 1461 && width <= 1560) return 8;
+      if (width >= 1231 && width <= 1460) return 7;
+      if (width >= 1061 && width <= 1230) return 6;
+      if (width >= 881 && width <= 1060) return 5;
+      if (width >= 701 && width <= 880) return 4;
+      if (width >= 531 && width <= 700) return 3;
+      if (width >= 360 && width <= 530) return 2;
+      return 1;
+   };
+
+   const columns = getColumnCount(width);
 
    return (
-      <SimpleGrid columns={columns} spacing={2} justifyContent="center">
-         <Post
-            img="/img1.png"
-            name="Plastic Trays"
-            price="50"
-            location="Zeppos Tower"
-            caption="Durable, multipurpose trays ideal for organizing or serving. Various colors available."
-         />
-         <Post
-            img="/img2.png"
-            name="iPad Stand"
-            price=""
-            location="Zeppos Tower"
-            caption="Adjustable, portable stand for comfortable viewing and typing. Compatible with most ipads."
-         />
-         <Post
-            img="/img3.png"
-            name="Brita"
-            price="10"
-            location="Rand"
-            caption="Water filtration pitcher for clean, great-tasting water. Reduces chlorine taste and odor."
-         />
-         <Post
-            img="/img4.png"
-            name="Vintage Chairs"
-            price="20"
-            location="Sutherland House"
-            caption="Charming mid-century designs. Solid wood construction with original upholstery. Perfect for adding character to any room."
-         />
-         <Post
-            img="/img5.png"
-            name="24' monitor"
-            price=""
-            location="Kissam"
-            caption="Pre-owned 24 inch computer display. Good condition, various sizes available. Perfect for home office or dual-screen setup."
-         />
-         <Post
-            img="/img6.png"
-            name="Treadmill"
-            price="95"
-            location="EBI"
-            caption="Home exercise equipment for walking or running indoors. Adjustable speed and incline. Foldable for easy storage."
-         />
-
-         <Post
-            img="/img1.png"
-            name="Plastic Trays"
-            price="50"
-            location="Zeppos Tower"
-            caption="Durable, multipurpose trays ideal for organizing or serving. Various colors available."
-         />
-         <Post
-            img="/img2.png"
-            name="iPad Stand"
-            price=""
-            location="Zeppos Tower"
-            caption="Adjustable, portable stand for comfortable viewing and typing. Compatible with most ipads."
-         />
-         <Post
-            img="/img3.png"
-            name="Brita"
-            price="10"
-            location="Rand"
-            caption="Water filtration pitcher for clean, great-tasting water. Reduces chlorine taste and odor."
-         />
-         <Post
-            img="/img4.png"
-            name="Vintage Chairs"
-            price="20"
-            location="Sutherland House"
-            caption="Charming mid-century designs. Solid wood construction with original upholstery. Perfect for adding character to any room."
-         />
-         <Post
-            img="/img5.png"
-            name="24' monitor"
-            price=""
-            location="Kissam"
-            caption="Pre-owned 24 inch computer display. Good condition, various sizes available. Perfect for home office or dual-screen setup."
-         />
-         <Post
-            img="/img6.png"
-            name="Treadmill"
-            price="95"
-            location="EBI"
-            caption="Home exercise equipment for walking or running indoors. Adjustable speed and incline. Foldable for easy storage."
-         />
-         <Post
-            img="/img1.png"
-            name="Plastic Trays"
-            price="50"
-            location="Zeppos Tower"
-            caption="Durable, multipurpose trays ideal for organizing or serving. Various colors available."
-         />
-         <Post
-            img="/img2.png"
-            name="iPad Stand"
-            price=""
-            location="Zeppos Tower"
-            caption="Adjustable, portable stand for comfortable viewing and typing. Compatible with most ipads."
-         />
-         <Post
-            img="/img3.png"
-            name="Brita"
-            price="10"
-            location="Rand"
-            caption="Water filtration pitcher for clean, great-tasting water. Reduces chlorine taste and odor."
-         />
-         <Post
-            img="/img4.png"
-            name="Vintage Chairs"
-            price="20"
-            location="Sutherland House"
-            caption="Charming mid-century designs. Solid wood construction with original upholstery. Perfect for adding character to any room."
-         />
-         <Post
-            img="/img5.png"
-            name="24' monitor"
-            price=""
-            location="Kissam"
-            caption="Pre-owned 24 inch computer display. Good condition, various sizes available. Perfect for home office or dual-screen setup."
-         />
-         <Post
-            img="/img6.png"
-            name="Treadmill"
-            price="95"
-            location="EBI"
-            caption="Home exercise equipment for walking or running indoors. Adjustable speed and incline. Foldable for easy storage."
-         />
-         <Post
-            img="/img1.png"
-            name="Plastic Trays"
-            price="50"
-            location="Zeppos Tower"
-            caption="Durable, multipurpose trays ideal for organizing or serving. Various colors available."
-         />
-         <Post
-            img="/img2.png"
-            name="iPad Stand"
-            price=""
-            location="Zeppos Tower"
-            caption="Adjustable, portable stand for comfortable viewing and typing. Compatible with most ipads."
-         />
-         <Post
-            img="/img3.png"
-            name="Brita"
-            price="10"
-            location="Rand"
-            caption="Water filtration pitcher for clean, great-tasting water. Reduces chlorine taste and odor."
-         />
-         <Post
-            img="/img4.png"
-            name="Vintage Chairs"
-            price="20"
-            location="Sutherland House"
-            caption="Charming mid-century designs. Solid wood construction with original upholstery. Perfect for adding character to any room."
-         />
-         <Post
-            img="/img5.png"
-            name="24' monitor"
-            price=""
-            location="Kissam"
-            caption="Pre-owned 24 inch computer display. Good condition, various sizes available. Perfect for home office or dual-screen setup."
-         />
-         <Post
-            img="/img6.png"
-            name="Treadmill"
-            price="95"
-            location="EBI"
-            caption="Home exercise equipment for walking or running indoors. Adjustable speed and incline. Foldable for easy storage."
-         />
-      </SimpleGrid>
+      <>
+         {isLoading ? (
+            <Center>
+               <Spinner size="xl" />
+            </Center>
+         ) : (
+            <SimpleGrid columns={columns} spacing={2} justifyContent="center">
+               {posts.length > 0 ? (
+                  posts.map((post) => <Post key={post.id} post={post} />)
+               ) : (
+                  <Center>No posts available</Center>
+               )}
+            </SimpleGrid>
+         )}
+      </>
    );
 };
 

@@ -1,23 +1,12 @@
 import { Box, Flex, Text } from "@chakra-ui/react";
 import { useState } from "react";
 import { FaRegHeart, FaHeart } from "react-icons/fa";
+import useLikePost from "../../hooks/useLikePost";
 
-const PostFooter = ({ name, price, location }) => {
-   const [liked, setLiked] = useState(false);
-   const [likes, setLikes] = useState(10);
+const PostFooter = ({ post }) => {
+   const { handleLikePost, isLiked, likes } = useLikePost(post);
 
-   const handleLike = () => {
-      if (liked) {
-         setLiked(false);
-         setLikes(likes - 1);
-      } else {
-         setLiked(true);
-         setLikes(likes + 1);
-      }
-   };
-
-   const displayPrice = price ? `$${price}` : "Free";
-   const showOBO = price && price !== "Free";
+   const displayPrice = post.price ? `$${post.price}` : "Free";
 
    return (
       <Flex
@@ -33,7 +22,7 @@ const PostFooter = ({ name, price, location }) => {
       >
          <Flex w={"160px"} overflow="hidden">
             <Text fontWeight={400} fontSize={15} isTruncated textAlign="left">
-               {name || "Item"}
+               {post.itemName || "Item"}
             </Text>
          </Flex>
          <Flex
@@ -45,19 +34,18 @@ const PostFooter = ({ name, price, location }) => {
             <Text fontSize="24" fontWeight={700}>
                {displayPrice}
             </Text>
-            {showOBO && (
-               <Text fontWeight={700} fontSize="24" color="#716FE9">
-                  OBO
-               </Text>
-            )}
+
+            <Text fontWeight={700} fontSize="24" color="#716FE9">
+               {post.isOBO ? " OBO" : ""}
+            </Text>
             <Flex flexDirection={"column"} alignItems={"center"}>
                <Box
-                  onClick={handleLike}
+                  onClick={handleLikePost}
                   cursor={"pointer"}
                   fontSize={18}
                   pr={1}
                >
-                  {!liked ? <FaRegHeart /> : <FaHeart />}
+                  {!isLiked ? <FaRegHeart /> : <FaHeart />}
                </Box>
             </Flex>
          </Flex>
@@ -68,7 +56,7 @@ const PostFooter = ({ name, price, location }) => {
             position={"relative"}
          >
             <Text fontWeight={300} fontSize={"12"} color={"gray"}>
-               {location || "Anywhere"}
+               {post.pickupLocation || "Anywhere"}
             </Text>
             <Flex flexDirection={"column"} alignItems={"center"}>
                <Text

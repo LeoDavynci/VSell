@@ -16,14 +16,17 @@ const useEditProfile = () => {
 	const showToast = useShowToast();
 
 	const editProfile = async (inputs, selectedFile) => {
-		if (isUpdating || !authUser) return;
+		if (isUpdating || !authUser) {
+            showToast("Error", "User is not authenticated", "error");
+            return;
+        }
 		setIsUpdating(true);
 
 		const storageRef = ref(storage, `profilePics/${authUser.uid}`);
 		const userDocRef = doc(firestore, "users", authUser.uid);
 
-		let URL = "";
 		try {
+			let URL = authUser.profilePicURL;
 			if (selectedFile) {
 				await uploadString(storageRef, selectedFile, "data_url");
 				URL = await getDownloadURL(ref(storage, `profilePics/${authUser.uid}`));
@@ -33,8 +36,10 @@ const useEditProfile = () => {
 				...authUser,
 				fullName: inputs.fullName || authUser.fullName,
 				username: inputs.username || authUser.username,
-				profilePicURL: URL || authUser.profilePicURL,
+				profilePicURL: URL,
+
 			};
+			console.log("Updated User Data: ", updatedUser)
 
 			await updateDoc(userDocRef, updatedUser);
 			localStorage.setItem("user-info", JSON.stringify(updatedUser));
@@ -43,7 +48,9 @@ const useEditProfile = () => {
 			showToast("Success", "Profile updated successfully", "success");
 		} catch (error) {
 			showToast("Error", error.message, "error");
-		}
+		} finally {
+            setIsUpdating(false);
+        }
 	};
 
 	return { editProfile, isUpdating };

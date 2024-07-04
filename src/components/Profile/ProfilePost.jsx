@@ -30,7 +30,7 @@ import useLikePost from "./../../hooks/useLikePost";
 const ProfilePost = ({ post }) => {
    const { isOpen, onOpen, onClose } = useDisclosure();
 
-   // const displayPrice = price ? `$${price}` : "Free";
+   const displayPrice = post.price ? `$${post.price}` : "Free";
    const userProfile = useUserProfileStore((state) => state.userProfile);
    const authUser = useAuthStore();
    const showToast = useShowToast();
@@ -38,6 +38,7 @@ const ProfilePost = ({ post }) => {
    const deletePost = usePostStore((state) => state.deletePost);
    const decrementPostsCount = useUserProfileStore((state) => state.deletePost);
    const { handleLikePost, isLiked, likes } = useLikePost(post);
+   const timeAgo = getTimeDifference(post.createdAt);
 
    const handleDeletePost = async () => {
       if (!window.confirm("Are you sure you want to delete this post?")) return;
@@ -110,7 +111,7 @@ const ProfilePost = ({ post }) => {
             isOpen={isOpen}
             onClose={onClose}
             isCentered={true}
-            size={{ base: "xs", sm: "xl", md: "2xl", lg: "6xl" }}
+            size={{ base: "sm", sm: "xl", md: "3xl", lg: "6xl" }}
          >
             <ModalOverlay backdropFilter="blur(10px)" />
             <ModalContent bg={"white"} borderRadius={40} mt={"10%"}>
@@ -160,16 +161,16 @@ const ProfilePost = ({ post }) => {
                         <Box
                            display="flex"
                            justifyContent={"space-between"}
-                           gap={{ base: "10", sm: "10", md: "10" }}
+                           gap={{ base: "2", md: "30px" }}
                            pt={1}
                         >
-                           <Text fontSize="sm" color="gray">
-                              Posted 3 hours ago
+                           <Text fontSize="14px" color="gray">
+                              Posted {timeAgo}
                            </Text>
                            <Flex gap={1}>
                               <FaLocationDot color="gray" />
-                              <Text fontSize="sm" color="gray">
-                                 Sutherland House
+                              <Text fontSize="14px" color="gray">
+                                 {post.pickupLocation || "Anywhere"}
                               </Text>
                            </Flex>
                         </Box>
@@ -180,7 +181,7 @@ const ProfilePost = ({ post }) => {
                            ml={-1}
                         >
                            <Box
-                              fontSize="56px"
+                              fontSize={{ base: "42px", md: "56px" }}
                               fontWeight="normal"
                               as="h4"
                               lineHeight="1.2"
@@ -192,28 +193,41 @@ const ProfilePost = ({ post }) => {
                               }}
                               maxW="100%"
                            >
-                              Item
+                              {post.itemName || "Item"}
                            </Box>
                         </Flex>
 
                         <Flex
                            justifyContent="space-between"
-                           gap={{ base: 0, md: 8, lg: 16 }}
-                           mt={-3}
+                           gap={{ base: 0, md: 0 }}
+                           flexDirection={{ base: "column" }}
                         >
                            <Box
-                              fontSize="86px"
+                              fontSize={{
+                                 base: "60px",
+                                 md: "80px",
+                              }}
                               as="h4"
                               lineHeight="1.5"
                               fontWeight="semibold"
+                              mt={-3}
                            >
-                              <Text fontWeight={700}>Price</Text>
+                              <Flex gap={"40px"}>
+                                 <Text fontWeight={700}>{displayPrice}</Text>
+                                 <Text fontWeight={700} color={"#716FE9"}>
+                                    {post.isOBO ? " OBO" : ""}
+                                 </Text>
+                              </Flex>
                            </Box>
 
-                           <Flex flexDirection={"row"} alignItems={"center"}>
+                           <Flex
+                              flexDirection={"row"}
+                              alignItems={"center"}
+                              mt={-3}
+                           >
                               <Box
                                  cursor={"pointer"}
-                                 fontSize={40}
+                                 fontSize={30}
                                  pr={1}
                                  onClick={handleLikePost}
                               >
@@ -231,7 +245,11 @@ const ProfilePost = ({ post }) => {
                         </Flex>
 
                         {authUser?.user.uid === userProfile.uid && (
-                           <Flex gap={{ base: 3, md: 15 }} flexDir={"row"}>
+                           <Flex
+                              gap={{ base: 3, md: 15 }}
+                              flexDir={"row"}
+                              mt={{ base: "10px", md: "20px" }}
+                           >
                               <Button
                                  bg="#D9D9D9"
                                  variant="solid"
@@ -259,6 +277,39 @@ const ProfilePost = ({ post }) => {
                            </Flex>
                         )}
 
+                        {authUser?.user.uid !== userProfile.uid && (
+                           <Flex gap={{ base: 5, md: 15 }}>
+                              <Button
+                                 bg={"#79A88E"}
+                                 _hover={{ bg: "#A2C0B0" }}
+                                 variant="solid"
+                                 color={"white"}
+                                 borderRadius={{ base: 45, md: 35 }}
+                                 fontSize="36px"
+                                 py={9}
+                                 px={14}
+                              >
+                                 Buy
+                              </Button>
+
+                              {post.isOBO && (
+                                 <Button
+                                    bg="clear"
+                                    variant="outline"
+                                    color={"#79A88E"}
+                                    borderRadius={{ base: 45, md: 35 }}
+                                    borderColor={"#79A88E"}
+                                    borderWidth={5}
+                                    fontSize="36px"
+                                    py={8}
+                                    px={12}
+                                 >
+                                    Offer
+                                 </Button>
+                              )}
+                           </Flex>
+                        )}
+
                         <Flex pr={5} py={5}>
                            <Box width="100%">
                               <Text fontWeight={"bold"}>Description</Text>
@@ -276,3 +327,19 @@ const ProfilePost = ({ post }) => {
 };
 
 export default ProfilePost;
+
+function getTimeDifference(timestamp) {
+   const now = Date.now();
+   const diffInSeconds = Math.floor((now - timestamp) / 1000);
+
+   if (diffInSeconds < 60) return `${diffInSeconds} seconds ago`;
+   if (diffInSeconds < 3600)
+      return `${Math.floor(diffInSeconds / 60)} minutes ago`;
+   if (diffInSeconds < 86400)
+      return `${Math.floor(diffInSeconds / 3600)} hours ago`;
+   if (diffInSeconds < 2592000)
+      return `${Math.floor(diffInSeconds / 86400)} days ago`;
+   if (diffInSeconds < 31536000)
+      return `${Math.floor(diffInSeconds / 2592000)} months ago`;
+   return `${Math.floor(diffInSeconds / 31536000)} years ago`;
+}

@@ -48,18 +48,21 @@ const ProfileHeader = () => {
             justifyContent={"center"}
          >
             <Flex
-               gap={4}
                direction={{ base: "column", sm: "row" }}
                justifyContent={{ base: "flex-start", md: "flex-start" }}
                alignItems={"center"}
                w={"full"}
             >
-               <Text fontSize={{ base: "md", md: "xl" }}>
+               <Text fontSize={{ base: "20px", md: "30px" }}>
                   {userProfile.fullName}
                </Text>
             </Flex>
 
-            <Flex alignItems={"center"} gap={{ base: 2, sm: 4 }}>
+            <Flex
+               alignItems={"center"}
+               gap={{ base: 2, sm: 4 }}
+               justifyItems={"center"}
+            >
                <Text>
                   <Text as={"span"} fontWeight={"bold"} mr={1}>
                      {userProfile.posts.length}
@@ -69,7 +72,12 @@ const ProfileHeader = () => {
             </Flex>
 
             {visitingOwnProfileAndAuth && (
-               <Flex gap={4} alignItems={"center"} justifyContent={"center"}>
+               <Flex
+                  gap={4}
+                  alignItems={"center"}
+                  justifyContent={"center"}
+                  mt={2}
+               >
                   <Button
                      bg="#79A88E"
                      color={"white"}
@@ -78,15 +86,6 @@ const ProfileHeader = () => {
                      onClick={onOpen}
                   >
                      Edit Profile
-                  </Button>
-
-                  <Button
-                     bg="#79A88E"
-                     color={"white"}
-                     _hover={{ bg: "#A2C0B0" }}
-                     size={{ base: "xs", md: "sm" }}
-                  >
-                     List an Item
                   </Button>
 
                   <Button

@@ -5,7 +5,6 @@ import {
    Flex,
    FormControl,
    FormLabel,
-   Heading,
    Input,
    Modal,
    ModalBody,
@@ -14,6 +13,7 @@ import {
    ModalHeader,
    ModalOverlay,
    Stack,
+   Text,
 } from "@chakra-ui/react";
 import { useRef, useState } from "react";
 import usePreviewImg from "../../hooks/usePreviewImg";
@@ -46,46 +46,35 @@ const EditProfile = ({ isOpen, onClose }) => {
       <>
          <Modal isOpen={isOpen} onClose={onClose}>
             <ModalOverlay />
-            <ModalContent
-               bg={"lime"}
-               boxShadow={"2xl"}
-               mx={5}
-               pb={7}
-               borderRadius={20}
-            >
+            <ModalContent boxShadow={"2xl"} mx={5} pb={7} borderRadius={20}>
                <ModalHeader />
                <ModalCloseButton />
                <ModalBody>
                   {/* Container Flex */}
                   <Flex>
-                     <Stack
-                        spacing={4}
-                        w={"full"}
-                        maxW={"md"}
-                        bg={"salmon"}
-                        p={3}
-                        my={0}
-                     >
-                        <Heading
+                     <Stack spacing={5} w={"full"} maxW={"md"} p={3} my={0}>
+                        <Text
                            lineHeight={1.1}
-                           fontSize={{ base: "2xl", sm: "3xl" }}
+                           fontSize={{ base: "32px", sm: "42px" }}
+                           fontWeight={600}
                         >
                            Edit Profile
-                        </Heading>
+                        </Text>
                         <FormControl>
                            <Stack direction={["column", "row"]} spacing={6}>
                               <Center>
                                  <Avatar
                                     size="2xl"
                                     src={selectedFile || authUser.profilePicURL}
-                                    border={"1px solid white "}
+                                    border={"2px solid white "}
                                  />
                               </Center>
                               <Center w="full">
                                  <Button
-                                    w={{ base: "60%", md: "90%" }}
+                                    w={{ base: "50%", md: "80%" }}
                                     onClick={() => fileRef.current.click()}
                                     borderRadius={10}
+                                    fontSize={"18px"}
                                  >
                                     Change Picture
                                  </Button>
@@ -100,7 +89,7 @@ const EditProfile = ({ isOpen, onClose }) => {
                         </FormControl>
 
                         <FormControl>
-                           <FormLabel fontSize={"md"}>New Name</FormLabel>
+                           <FormLabel fontSize={"18px"}>New Name</FormLabel>
                            <Input
                               placeholder={""}
                               size={"sm"}
@@ -113,11 +102,13 @@ const EditProfile = ({ isOpen, onClose }) => {
                                  })
                               }
                               borderRadius={10}
+                              borderWidth={"2px"}
+                              borderColor={"black"}
                            />
                         </FormControl>
 
                         <FormControl>
-                           <FormLabel fontSize={"md"}>New Username</FormLabel>
+                           <FormLabel fontSize={"18px"}>New Username</FormLabel>
                            <Input
                               placeholder={""}
                               size={"sm"}
@@ -130,30 +121,36 @@ const EditProfile = ({ isOpen, onClose }) => {
                                  })
                               }
                               borderRadius={10}
+                              borderWidth={"2px"}
+                              borderColor={"black"}
                            />
                         </FormControl>
 
-                        <Stack spacing={6} direction={["column", "row"]}>
+                        <Stack spacing={6} direction={["row", "row"]}>
                            <Button
-                              bg={"red.400"}
-                              color={"white"}
+                              color={"#79A88E"}
+                              variant={"outline"}
+                              borderColor={"#79A88E"}
+                              borderWidth={"2px"}
                               w="full"
                               size="sm"
-                              _hover={{ bg: "red.500" }}
+                              _hover={{ bg: "#79A88E", color: "white" }}
                               onClick={onClose}
                               borderRadius={10}
+                              fontSize={"18px"}
                            >
                               Cancel
                            </Button>
                            <Button
-                              bg={"blue.400"}
+                              bg={"#79A88E"}
                               color={"white"}
                               size="sm"
                               w="full"
-                              _hover={{ bg: "blue.500" }}
+                              _hover={{ bg: "#A2C0B0" }}
                               onClick={handleEditProfile}
                               isLoading={isUpdating}
                               borderRadius={10}
+                              fontSize={"18px"}
                            >
                               Submit
                            </Button>
