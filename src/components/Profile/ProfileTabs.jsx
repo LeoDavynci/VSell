@@ -35,20 +35,6 @@ const ProfileTabs = () => {
                </Text>
             </Flex>
          </Flex>
-
-         <Flex
-            alignItems={"center"}
-            justifyContent={"center"}
-            gap={1}
-            cursor={"pointer"}
-         >
-            <Box fontSize={25}>
-               <FaRegHeart />
-            </Box>
-            <Text fontSize={12} display={{ base: "none", sm: "block" }}>
-               Likes
-            </Text>
-         </Flex>
       </Flex>
    );
 };

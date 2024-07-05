@@ -6,7 +6,11 @@ import useLikePost from "../../hooks/useLikePost";
 const PostFooter = ({ post }) => {
    const { handleLikePost, isLiked, likes } = useLikePost(post);
 
-   const displayPrice = post.price ? `$${post.price}` : "Free";
+   const displayPrice = post.price ? (
+      `$${post.price}`
+   ) : (
+      <Text color={"#79A88E"}>Free</Text>
+   );
 
    return (
       <Flex

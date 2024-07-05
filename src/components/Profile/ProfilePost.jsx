@@ -244,7 +244,7 @@ const ProfilePost = ({ post }) => {
                            </Flex>
                         </Flex>
 
-                        {authUser?.user.uid === userProfile.uid && (
+                        {authUser?.user.uid === userProfile?.uid && (
                            <Flex
                               gap={{ base: 3, md: 15 }}
                               flexDir={"row"}

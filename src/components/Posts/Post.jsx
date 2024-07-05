@@ -4,6 +4,7 @@ import {
    Button,
    Flex,
    Image,
+   Link,
    Modal,
    ModalBody,
    ModalCloseButton,
@@ -14,23 +15,60 @@ import {
    Text,
    useDisclosure,
    VStack,
+   AlertDialog,
+   AlertDialogBody,
+   AlertDialogFooter,
+   AlertDialogHeader,
+   AlertDialogContent,
+   AlertDialogOverlay,
+   Input,
+   InputGroup,
+   InputRightElement,
 } from "@chakra-ui/react";
 import PostFooter from "./PostFooter";
 import { FaHeart } from "react-icons/fa";
 import { FaLocationDot, FaRegHeart } from "react-icons/fa6";
 import useLikePost from "./../../hooks/useLikePost";
 import useGetUserProfileById from "../../hooks/useGetuserProfileById";
-import useUserProfileStore from "../../store/userProfileStore";
 import useAuthStore from "../../store/authStore";
+import { useRef, useState } from "react";
 
 const Post = ({ post }) => {
    const { isOpen, onOpen, onClose } = useDisclosure();
    const { handleLikePost, isLiked, likes } = useLikePost(post);
    const timeAgo = getTimeDifference(post.createdAt);
-   const displayPrice = post.price ? `$${post.price}` : "Free";
+   const displayPrice = post.price ? (
+      `$${post.price}`
+   ) : (
+      <Text color={"#79A88E"}>Free</Text>
+   );
    const { userProfile } = useGetUserProfileById(post.createdBy);
-   const userProf = useUserProfileStore((state) => state.userProfile);
    const authUser = useAuthStore();
+
+   const [isAlertOpen, setIsAlertOpen] = useState(false);
+   const [showOfferInput, setShowOfferInput] = useState(false);
+   const [offerAmount, setOfferAmount] = useState("");
+   const cancelRef = useRef();
+
+   const handleBuyClick = () => {
+      setIsAlertOpen(true);
+   };
+
+   const handleConfirmBuy = () => {
+      // Implement buy logic here
+      setIsAlertOpen(false);
+   };
+
+   const handleOfferClick = () => {
+      setShowOfferInput(true);
+   };
+
+   const handleOfferSubmit = () => {
+      // Implement offer submission logic here
+      console.log(`Offer submitted: ${offerAmount}`);
+      setShowOfferInput(false);
+      setOfferAmount("");
+   };
 
    return (
       <>
@@ -81,12 +119,12 @@ const Post = ({ post }) => {
 
                <ModalBody py={3} px={3}>
                   <Flex flexDirection={{ base: "column", md: "row" }}>
+                     {/* Picture */}
                      <Box
                         borderRadius={30}
                         position="relative"
                         overflow="hidden"
-                        flex={1}
-                        w={"100%"}
+                        w={{ base: "100%", md: "50%" }}
                         _before={{
                            content: '""',
                            display: "block",
@@ -104,48 +142,44 @@ const Post = ({ post }) => {
                         />
                      </Box>
 
+                     {/* Info */}
                      <Flex
                         flex={1}
                         flexDirection="column"
                         pl={{ base: "0", md: "10" }}
-                        pr={{ base: "0", md: "10" }}
+                        pr={{ base: "0", md: "20" }}
                         justifyContent={{ base: "start", md: "start" }}
                         w={{
                            base: "100%",
-                           md: "300px",
+                           md: "50%",
                         }}
                         h={"550px"}
                      >
-                        <Box
-                           display="flex"
-                           justifyContent={"space-between"}
-                           gap={{ base: "10", sm: "10", md: "10" }}
-                           pt={1}
-                        >
-                           <Text
-                              fontSize={{ base: 12, md: 20 }}
-                              color="gray"
-                              fontWeight={400}
-                           >
-                              Posted {timeAgo}
-                           </Text>
-                           <Flex gap={1} fontSize={{ base: 12, md: 20 }}>
-                              <FaLocationDot color="gray" fontWeight={400} />
-                              <Text color="gray">
-                                 {post.pickupLocation || "Anywhere"}
-                              </Text>
-                           </Flex>
-                        </Box>
-
+                        {/* Time and Place */}
                         <Flex
-                           justifyContent="space-between"
-                           alignContent="flex-start"
-                           ml={-1}
+                           justifyContent={"space-between"}
+                           py={1}
+                           fontSize={{ base: 12, md: 16 }}
+                           fontWeight={400}
+                           color="gray"
                         >
+                           {/* Time */}
+                           <Text>Posted {timeAgo}</Text>
+
+                           {/* Place */}
+                           <Flex gap={1}>
+                              <Box mt={1}>
+                                 <FaLocationDot />
+                              </Box>
+                              <Text>{post.pickupLocation || "Anywhere"}</Text>
+                           </Flex>
+                        </Flex>
+
+                        {/* Item Name */}
+                        <Flex alignContent="flex-start">
                            <Box
-                              fontSize={{ base: 36, md: 56 }}
+                              fontSize={{ base: 30, md: 50 }}
                               fontWeight={500}
-                              as="h4"
                               lineHeight="1.2"
                               overflow="hidden"
                               display="-webkit-box"
@@ -157,101 +191,164 @@ const Post = ({ post }) => {
                            </Box>
                         </Flex>
 
-                        <Flex
-                           justifyContent="space-between"
-                           gap={{ base: 0, md: 0 }}
-                           flexDirection={{ base: "column" }}
+                        {/* Price */}
+                        <Box
+                           fontSize={{
+                              base: "40px",
+                              md: "60px",
+                           }}
+                           lineHeight="1.5"
+                           fontWeight="semibold"
                         >
-                           <Box
-                              fontSize={{
-                                 base: "60px",
-                                 md: "80px",
-                              }}
-                              as="h4"
-                              lineHeight="1.5"
-                              fontWeight="semibold"
-                              mt={-3}
-                           >
-                              <Flex gap={"40px"}>
-                                 <Text fontWeight={700}>{displayPrice}</Text>
-                                 <Text fontWeight={700} color={"#716FE9"}>
-                                    {post.isOBO ? " OBO" : ""}
-                                 </Text>
-                              </Flex>
-                           </Box>
+                           <Flex gap={"40px"}>
+                              <Text fontWeight={700}>{displayPrice}</Text>
+                              <Text fontWeight={700} color={"#716FE9"}>
+                                 {post.isOBO ? " OBO" : ""}
+                              </Text>
+                           </Flex>
+                        </Box>
 
+                        {/* Buttons */}
+                        <Box
+                           bg={"lime"}
+                           h={{ base: "64px", md: "64px" }}
+                           alignContent={"center"}
+                        >
                            {authUser?.user.uid !== post.createdBy && (
-                              <Flex gap={{ base: 5, md: 15 }}>
-                                 <Button
-                                    bg={"#79A88E"}
-                                    _hover={{ bg: "#A2C0B0" }}
-                                    variant="solid"
-                                    color={"white"}
-                                    borderRadius={{ base: 45, md: 35 }}
-                                    fontSize="36px"
-                                    py={9}
-                                    px={14}
-                                 >
-                                    Buy
-                                 </Button>
-
-                                 {post.isOBO && (
+                              <Flex gap={{ base: 5, md: 15 }} align={"center"}>
+                                 <Box bg={"lightblue"} h={"64px"}>
                                     <Button
-                                       bg="clear"
-                                       variant="outline"
-                                       color={"#79A88E"}
+                                       h={"100%"}
+                                       bg={"#79A88E"}
+                                       _hover={{ bg: "#A2C0B0" }}
+                                       variant="solid"
+                                       color={"white"}
                                        borderRadius={{ base: 45, md: 35 }}
-                                       borderColor={"#79A88E"}
-                                       borderWidth={5}
-                                       fontSize="36px"
-                                       py={8}
-                                       px={12}
+                                       fontSize={{ base: "24px", md: "32px" }}
+                                       onClick={handleBuyClick}
                                     >
-                                       Offer
+                                       Buy
                                     </Button>
-                                 )}
+                                 </Box>
+
+                                 <Box bg={"lightblue"} h={"64px"}>
+                                    {post.isOBO && !showOfferInput && (
+                                       <Button
+                                          h={"100%"}
+                                          bg="clear"
+                                          variant="outline"
+                                          color={"#79A88E"}
+                                          borderRadius={{ base: 45, md: 35 }}
+                                          borderColor={"#79A88E"}
+                                          borderWidth={{
+                                             base: "2px",
+                                             md: "4px",
+                                          }}
+                                          fontSize={{
+                                             base: "24px",
+                                             md: "32px",
+                                          }}
+                                          onClick={handleOfferClick}
+                                       >
+                                          Offer
+                                       </Button>
+                                    )}
+
+                                    {post.isOBO && showOfferInput && (
+                                       <Box
+                                          bg={"pink"}
+                                          h={"64px"}
+                                          alignContent={"center"}
+                                       >
+                                          <InputGroup>
+                                             <Input
+                                                placeholder="$"
+                                                value={offerAmount}
+                                                onChange={(e) =>
+                                                   setOfferAmount(
+                                                      e.target.value
+                                                   )
+                                                }
+                                                pr="4.5rem"
+                                                fontSize={{
+                                                   base: "18px",
+                                                   md: "24px",
+                                                }}
+                                                height="60px"
+                                                borderRadius="30px"
+                                                borderColor="#79A88E"
+                                                borderWidth="3px"
+                                                _focus={{
+                                                   borderColor: "#79A88E",
+                                                }}
+                                             />
+                                             <InputRightElement
+                                                width="4.5rem"
+                                                height="60px"
+                                             >
+                                                <Button
+                                                   h="50px"
+                                                   size="sm"
+                                                   onClick={handleOfferSubmit}
+                                                   bg="#79A88E"
+                                                   color="white"
+                                                   _hover={{ bg: "#A2C0B0" }}
+                                                   borderRadius="25px"
+                                                   mr={1}
+                                                >
+                                                   Offer
+                                                </Button>
+                                             </InputRightElement>
+                                          </InputGroup>
+                                       </Box>
+                                    )}
+                                 </Box>
                               </Flex>
                            )}
+                        </Box>
 
+                        {/* Name and Likes */}
+                        <Flex
+                           justifyContent={"space-between"}
+                           fontSize={"24px"}
+                           pt={5}
+                           pb={3}
+                        >
+                           {/* Name */}
                            <Flex
-                              flexDirection={"row"}
+                              justifyItems={"center"}
                               alignItems={"center"}
-                              justifyContent={"space-between"}
-                              fontSize={"24px"}
-                              pt={"20px"}
+                              gap={2}
                            >
-                              <Flex
-                                 justifyItems={"center"}
-                                 alignItems={"center"}
-                                 gap={2}
-                              >
-                                 {userProfile && (
-                                    <Avatar
-                                       src={userProfile.profilePicURL}
-                                       size={"sm"}
-                                    />
-                                 )}
+                              {userProfile && (
+                                 <Avatar
+                                    src={userProfile.profilePicURL}
+                                    size={"sm"}
+                                 />
+                              )}
 
-                                 {userProfile
-                                    ? userProfile.fullName
-                                    : "Loading..."}
-                              </Flex>
-                              <Flex
-                                 cursor={"pointer"}
-                                 pr={1}
-                                 onClick={handleLikePost}
-                                 flexDir={"row"}
-                                 alignItems={"center"}
-                                 justifyItems={"center"}
-                                 gap={1}
-                              >
-                                 {!isLiked ? <FaRegHeart /> : <FaHeart />}
-                                 {likes}
-                              </Flex>
+                              {userProfile
+                                 ? userProfile.fullName
+                                 : "Loading..."}
+                           </Flex>
+
+                           {/* Likes */}
+                           <Flex
+                              cursor={"pointer"}
+                              pr={1}
+                              onClick={handleLikePost}
+                              flexDir={"row"}
+                              alignItems={"center"}
+                              justifyItems={"center"}
+                              gap={1}
+                           >
+                              {!isLiked ? <FaRegHeart /> : <FaHeart />}
+                              {likes}
                            </Flex>
                         </Flex>
 
-                        <Flex pr={5} py={5}>
+                        {/* Description */}
+                        <Flex>
                            <Box width="100%">
                               <Text fontWeight={"bold"}>Description</Text>
                               <Text>{post.caption}</Text>
@@ -263,6 +360,40 @@ const Post = ({ post }) => {
                <ModalFooter py={5} borderBottomRadius={40}></ModalFooter>
             </ModalContent>
          </Modal>
+
+         <AlertDialog
+            isOpen={isAlertOpen}
+            leastDestructiveRef={cancelRef}
+            onClose={() => setIsAlertOpen(false)}
+         >
+            <AlertDialogOverlay>
+               <AlertDialogContent>
+                  <AlertDialogHeader fontSize="lg" fontWeight="bold">
+                     Confirm Purchase
+                  </AlertDialogHeader>
+
+                  <AlertDialogBody>
+                     Are you sure you want to buy this item?
+                  </AlertDialogBody>
+
+                  <AlertDialogFooter>
+                     <Button
+                        ref={cancelRef}
+                        onClick={() => setIsAlertOpen(false)}
+                     >
+                        Cancel
+                     </Button>
+                     <Button
+                        colorScheme="green"
+                        onClick={handleConfirmBuy}
+                        ml={3}
+                     >
+                        Confirm
+                     </Button>
+                  </AlertDialogFooter>
+               </AlertDialogContent>
+            </AlertDialogOverlay>
+         </AlertDialog>
       </>
    );
 };
