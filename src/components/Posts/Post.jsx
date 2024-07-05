@@ -1,4 +1,5 @@
 import {
+   Avatar,
    Box,
    Button,
    Flex,
@@ -15,16 +16,21 @@ import {
    VStack,
 } from "@chakra-ui/react";
 import PostFooter from "./PostFooter";
-import { useState } from "react";
 import { FaHeart } from "react-icons/fa";
 import { FaLocationDot, FaRegHeart } from "react-icons/fa6";
 import useLikePost from "./../../hooks/useLikePost";
+import useGetUserProfileById from "../../hooks/useGetuserProfileById";
+import useUserProfileStore from "../../store/userProfileStore";
+import useAuthStore from "../../store/authStore";
 
 const Post = ({ post }) => {
    const { isOpen, onOpen, onClose } = useDisclosure();
    const { handleLikePost, isLiked, likes } = useLikePost(post);
    const timeAgo = getTimeDifference(post.createdAt);
    const displayPrice = post.price ? `$${post.price}` : "Free";
+   const { userProfile } = useGetUserProfileById(post.createdBy);
+   const userProf = useUserProfileStore((state) => state.userProfile);
+   const authUser = useAuthStore();
 
    return (
       <>
@@ -174,59 +180,75 @@ const Post = ({ post }) => {
                               </Flex>
                            </Box>
 
+                           {authUser?.user.uid !== post.createdBy && (
+                              <Flex gap={{ base: 5, md: 15 }}>
+                                 <Button
+                                    bg={"#79A88E"}
+                                    _hover={{ bg: "#A2C0B0" }}
+                                    variant="solid"
+                                    color={"white"}
+                                    borderRadius={{ base: 45, md: 35 }}
+                                    fontSize="36px"
+                                    py={9}
+                                    px={14}
+                                 >
+                                    Buy
+                                 </Button>
+
+                                 {post.isOBO && (
+                                    <Button
+                                       bg="clear"
+                                       variant="outline"
+                                       color={"#79A88E"}
+                                       borderRadius={{ base: 45, md: 35 }}
+                                       borderColor={"#79A88E"}
+                                       borderWidth={5}
+                                       fontSize="36px"
+                                       py={8}
+                                       px={12}
+                                    >
+                                       Offer
+                                    </Button>
+                                 )}
+                              </Flex>
+                           )}
+
                            <Flex
                               flexDirection={"row"}
                               alignItems={"center"}
-                              mt={-3}
+                              justifyContent={"space-between"}
+                              fontSize={"24px"}
+                              pt={"20px"}
                            >
-                              <Box
+                              <Flex
+                                 justifyItems={"center"}
+                                 alignItems={"center"}
+                                 gap={2}
+                              >
+                                 {userProfile && (
+                                    <Avatar
+                                       src={userProfile.profilePicURL}
+                                       size={"sm"}
+                                    />
+                                 )}
+
+                                 {userProfile
+                                    ? userProfile.fullName
+                                    : "Loading..."}
+                              </Flex>
+                              <Flex
                                  cursor={"pointer"}
-                                 fontSize={30}
                                  pr={1}
                                  onClick={handleLikePost}
+                                 flexDir={"row"}
+                                 alignItems={"center"}
+                                 justifyItems={"center"}
+                                 gap={1}
                               >
                                  {!isLiked ? <FaRegHeart /> : <FaHeart />}
-                              </Box>
-                              <Text
-                                 fontWeight={600}
-                                 fontSize={"30"}
-                                 alignSelf={"center"}
-                                 pr={1}
-                              >
                                  {likes}
-                              </Text>
+                              </Flex>
                            </Flex>
-                        </Flex>
-
-                        <Flex gap={{ base: 5, md: 15 }}>
-                           <Button
-                              bg={"#79A88E"}
-                              _hover={{ bg: "#A2C0B0" }}
-                              variant="solid"
-                              color={"white"}
-                              borderRadius={{ base: 45, md: 35 }}
-                              fontSize="36px"
-                              py={9}
-                              px={14}
-                           >
-                              Buy
-                           </Button>
-
-                           {post.isOBO && (
-                              <Button
-                                 bg="clear"
-                                 variant="outline"
-                                 color={"#79A88E"}
-                                 borderRadius={{ base: 45, md: 35 }}
-                                 borderColor={"#79A88E"}
-                                 borderWidth={5}
-                                 fontSize="36px"
-                                 py={8}
-                                 px={12}
-                              >
-                                 Offer
-                              </Button>
-                           )}
                         </Flex>
 
                         <Flex pr={5} py={5}>

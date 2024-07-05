@@ -48,7 +48,7 @@ const AuthPage = () => {
                   </Box>
                </Flex>
 
-               <VStack align={"stretch"} bg={"blue"} h={"100%"}>
+               <VStack align={"stretch"} h={"100%"}>
                   <AuthForm />
                </VStack>
             </Flex>

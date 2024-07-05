@@ -250,7 +250,7 @@ const ProfilePost = ({ post }) => {
                               flexDir={"row"}
                               mt={{ base: "10px", md: "20px" }}
                            >
-                              <Button
+                              {/* <Button
                                  bg="#D9D9D9"
                                  variant="solid"
                                  color={"black"}
@@ -260,7 +260,7 @@ const ProfilePost = ({ post }) => {
                                  px={14}
                               >
                                  Edit
-                              </Button>
+                              </Button> */}
                               <Button
                                  bg="#D9D9D9"
                                  variant="solid"
@@ -274,39 +274,6 @@ const ProfilePost = ({ post }) => {
                               >
                                  Delete
                               </Button>
-                           </Flex>
-                        )}
-
-                        {authUser?.user.uid !== userProfile.uid && (
-                           <Flex gap={{ base: 5, md: 15 }}>
-                              <Button
-                                 bg={"#79A88E"}
-                                 _hover={{ bg: "#A2C0B0" }}
-                                 variant="solid"
-                                 color={"white"}
-                                 borderRadius={{ base: 45, md: 35 }}
-                                 fontSize="36px"
-                                 py={9}
-                                 px={14}
-                              >
-                                 Buy
-                              </Button>
-
-                              {post.isOBO && (
-                                 <Button
-                                    bg="clear"
-                                    variant="outline"
-                                    color={"#79A88E"}
-                                    borderRadius={{ base: 45, md: 35 }}
-                                    borderColor={"#79A88E"}
-                                    borderWidth={5}
-                                    fontSize="36px"
-                                    py={8}
-                                    px={12}
-                                 >
-                                    Offer
-                                 </Button>
-                              )}
                            </Flex>
                         )}
 

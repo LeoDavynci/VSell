@@ -6,7 +6,6 @@ import useGetFeedPosts from "../../hooks/useGetFeedPosts";
 const Posts = () => {
    const { isLoading, posts } = useGetFeedPosts();
    const width = useWindowWidth();
-
    const getColumnCount = (width) => {
       if (width >= 2021) return 11;
       if (width >= 1791 && width <= 2020) return 10;
@@ -20,7 +19,6 @@ const Posts = () => {
       if (width >= 360 && width <= 530) return 2;
       return 1;
    };
-
    const columns = getColumnCount(width);
 
    return (

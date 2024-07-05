@@ -38,7 +38,7 @@ const PostFooter = ({ post }) => {
             <Text fontWeight={700} fontSize="24" color="#716FE9">
                {post.isOBO ? " OBO" : ""}
             </Text>
-            <Flex flexDirection={"column"} alignItems={"center"}>
+            <Flex flexDirection={"row"} justifyContent={"center"}>
                <Box
                   onClick={handleLikePost}
                   cursor={"pointer"}
@@ -47,6 +47,14 @@ const PostFooter = ({ post }) => {
                >
                   {!isLiked ? <FaRegHeart /> : <FaHeart />}
                </Box>
+               <Text
+                  fontWeight={600}
+                  fontSize={"12"}
+                  alignSelf={"center"}
+                  pr={1}
+               >
+                  {likes}
+               </Text>
             </Flex>
          </Flex>
          <Flex
@@ -58,16 +66,6 @@ const PostFooter = ({ post }) => {
             <Text fontWeight={300} fontSize={"12"} color={"gray"}>
                {post.pickupLocation || "Anywhere"}
             </Text>
-            <Flex flexDirection={"column"} alignItems={"center"}>
-               <Text
-                  fontWeight={600}
-                  fontSize={"12"}
-                  alignSelf={"center"}
-                  pr={1}
-               >
-                  {likes}
-               </Text>
-            </Flex>
          </Flex>
       </Flex>
    );
