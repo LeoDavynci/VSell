@@ -15,18 +15,27 @@ import {
    Stack,
    Text,
 } from "@chakra-ui/react";
-import { useRef, useState } from "react";
-import usePreviewImg from "../../hooks/usePreviewImg";
+import { useEffect, useRef, useState } from "react";
 import useAuthStore from "../../store/authStore";
+import usePreviewImg from "../../hooks/usePreviewImg";
 import useEditProfile from "../../hooks/useEditProfile";
 import useShowToast from "../../hooks/useShowToast";
 
 const EditProfile = ({ isOpen, onClose }) => {
+   const authUser = useAuthStore((state) => state.user);
    const [inputs, setInputs] = useState({
       fullName: "",
       username: "",
    });
-   const authUser = useAuthStore((state) => state.user);
+
+   useEffect(() => {
+      if (authUser) {
+         setInputs({
+            fullName: authUser.fullName || "",
+            username: authUser.username || "",
+         });
+      }
+   }, [authUser]);
    const fileRef = useRef(null);
    const { handleImageChange, selectedFile, setSelectedFile } = usePreviewImg();
    const { isUpdating, editProfile } = useEditProfile();
@@ -50,7 +59,6 @@ const EditProfile = ({ isOpen, onClose }) => {
                <ModalHeader />
                <ModalCloseButton />
                <ModalBody>
-                  {/* Container Flex */}
                   <Flex>
                      <Stack spacing={5} w={"full"} maxW={"md"} p={3} my={0}>
                         <Text

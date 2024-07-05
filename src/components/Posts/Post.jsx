@@ -36,10 +36,15 @@ const Post = ({ post }) => {
             w="full"
             minW="100px"
             maxW="1fr"
-            onClick={onOpen}
          >
             <Box>
-               <Box w="10rem" h="auto" position="relative">
+               <Box
+                  w="10rem"
+                  h="auto"
+                  position="relative"
+                  onClick={onOpen}
+                  cursor={"pointer"}
+               >
                   <Image
                      src={post.imageURL}
                      borderRadius="10px"

@@ -3,7 +3,7 @@ import useAuthStore from "../store/authStore";
 import useShowToast from "./useShowToast";
 import { getDownloadURL, ref, uploadString } from "firebase/storage";
 import { firestore, storage } from "../firebase/firebase";
-import { doc, updateDoc } from "firebase/firestore";
+import { doc, getDoc, updateDoc } from "firebase/firestore";
 import useUserProfileStore from "../store/userProfileStore";
 
 const useEditProfile = () => {
@@ -32,8 +32,14 @@ const useEditProfile = () => {
 				URL = await getDownloadURL(ref(storage, `profilePics/${authUser.uid}`));
 			}
 
+			const userDoc = await getDoc(userDocRef);
+			if (!userDoc.exists()) {
+				throw new Error("User does not exist");
+			}
+			const userData = userDoc.data();
+
 			const updatedUser = {
-				...authUser,
+				...userData,
 				fullName: inputs.fullName || authUser.fullName,
 				username: inputs.username || authUser.username,
 				profilePicURL: URL,
