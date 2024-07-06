@@ -14,6 +14,7 @@ import {
    FormControl,
    FormLabel,
    Input,
+   Textarea,
 } from "@chakra-ui/react";
 
 const PurchaseModal = ({
@@ -23,12 +24,10 @@ const PurchaseModal = ({
    userProfile,
    handlePurchaseSubmit,
 }) => {
-   const [selectedDate, setSelectedDate] = useState("");
-   const [selectedTime, setSelectedTime] = useState("");
-   const [meetupLocation, setMeetupLocation] = useState("");
+   const [info, setInfo] = useState("");
 
    const handleSubmit = () => {
-      handlePurchaseSubmit(selectedDate, selectedTime, meetupLocation);
+      handlePurchaseSubmit(info);
       onClose();
    };
 
@@ -37,9 +36,7 @@ const PurchaseModal = ({
          isOpen={isOpen}
          onClose={() => {
             onClose();
-            setSelectedDate("");
-            setSelectedTime("");
-            setMeetupLocation("");
+            setInfo("");
          }}
          isCentered
          size={{ base: "sm", sm: "sm", md: "3xl", lg: "6xl" }}
@@ -56,49 +53,22 @@ const PurchaseModal = ({
                         Price: {post.price ? `$${post.price}` : "Free"}
                      </Text>
                      <Text>Sold By: {userProfile?.fullName}</Text>
+                     {post.pickupLocation && (
+                        <Text>Pickup at {post.pickupLocation}</Text>
+                     )}
                   </Box>
                   <Box pt={8}>
                      <FormControl isRequired>
-                        <FormLabel>Meetup Date</FormLabel>
-                        <Input
-                           borderRadius={{ base: "25", md: "35" }}
+                        <FormLabel>Meetup Information</FormLabel>
+                        <Textarea
+                           borderRadius={{ base: "5", md: "15" }}
                            border="2px solid black"
-                           type="date"
-                           value={selectedDate}
-                           onChange={(e) => setSelectedDate(e.target.value)}
-                        />
+                           type="text"
+                           placeholder="Contact info, meet time, location, date, etc"
+                           value={info}
+                           onChange={(e) => setInfo(e.target.value)}
+                        ></Textarea>
                      </FormControl>
-                     <FormControl isRequired>
-                        <FormLabel>Meetup Time</FormLabel>
-                        <Input
-                           borderRadius={{ base: "25", md: "35" }}
-                           border="2px solid black"
-                           type="time"
-                           value={selectedTime}
-                           onChange={(e) => setSelectedTime(e.target.value)}
-                        />
-                     </FormControl>
-
-                     {!post.pickupLocation && (
-                        <FormControl isRequired>
-                           <FormLabel>Meetup Location</FormLabel>
-                           <Input
-                              borderRadius={{ base: "25", md: "35" }}
-                              border="2px solid black"
-                              value={meetupLocation}
-                              onChange={(e) =>
-                                 setMeetupLocation(e.target.value)
-                              }
-                              placeholder="Enter a specific meetup location"
-                           />
-                        </FormControl>
-                     )}
-
-                     {post.pickupLocation && (
-                        <Text mb={4}>
-                           Meetup Location: {post.pickupLocation}
-                        </Text>
-                     )}
                   </Box>
                </Stack>
             </ModalBody>

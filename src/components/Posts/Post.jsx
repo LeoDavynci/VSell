@@ -27,11 +27,7 @@ const Post = ({ post }) => {
    const [meetupLocation, setMeetupLocation] = useState("");
    const db = getFirestore();
 
-   const handlePurchaseSubmit = async (
-      selectedDate,
-      selectedTime,
-      meetupLocation
-   ) => {
+   const handlePurchaseSubmit = async (info) => {
       await createMessage(
          post.createdBy,
          authUser.uid,
@@ -40,22 +36,12 @@ const Post = ({ post }) => {
          post.itemName,
          post.price,
          authUser.fullName,
-         selectedDate,
-         selectedTime,
-         meetupLocation
+         info
       );
-      console.log(`Item: ${post.itemName}`);
-      console.log(`Item: ${post.price}`);
-      console.log(`Bought By: ${authUser.fullName}`);
-      console.log(`Meetup date: ${selectedDate}`);
-      console.log(`Meetup time: ${selectedTime}`);
-      console.log(`Meetup location: ${meetupLocation}`);
       setIsPurchaseModalOpen(false);
       onClose();
       // Reset the selections
-      setSelectedDate("");
-      setSelectedTime("");
-      setMeetupLocation("");
+      setInfo("");
    };
 
    const handleBuyClick = () => {

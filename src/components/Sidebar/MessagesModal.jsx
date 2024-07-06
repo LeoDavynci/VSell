@@ -52,7 +52,9 @@ const MessagesModal = ({ isOpen, onClose }) => {
             receiverId: message.senderId,
             postId: message.postId,
             type: "reply",
-            content: replyText,
+            item: item,
+            price: price,
+            info: replyText,
             status: "unread",
             createdAt: serverTimestamp(),
             lastUpdated: serverTimestamp(),
@@ -78,9 +80,7 @@ const MessagesModal = ({ isOpen, onClose }) => {
             item: item,
             price: price,
             buyer: buyerName,
-            date: selectedDate,
-            time: selectedTime,
-            location: meetupLocation,
+            info: info,
             status: "unread",
             createdAt: serverTimestamp(),
             lastUpdated: serverTimestamp(),
@@ -154,40 +154,27 @@ const MessagesModal = ({ isOpen, onClose }) => {
                         </Text>
 
                         <Text>Status: {message.status}</Text>
+                        {message.info && <Text pt={5}>{message.info}</Text>}
 
-                        {/* Buy Request */}
-                        {message.type === "buy" && (
-                           <>
-                              <Text>Meetup Date: {message.date}</Text>
-                              <Text>Meetup Time: {message.time}</Text>
-                              <Text>Meetup Location: {message.location}</Text>
-                           </>
-                        )}
-
-                        {message.type === "reply" && (
-                           <>
-                              <Text>Meetup Date: {message.date}</Text>
-                              <Text>Meetup Time: {message.time}</Text>
-                              <Text>Meetup Location: {message.location}</Text>
-                           </>
-                        )}
-
-                        {message.status === "unread" && (
-                           <Button onClick={() => markAsRead(message.id)}>
-                              Mark as Read
-                           </Button>
-                        )}
-                        {message.type === "buy" && (
-                           <Button onClick={() => handleAccept(message)}>
-                              Accept
-                           </Button>
-                        )}
-
+                        {/* Reply Box */}
                         <Input
                            placeholder="Reply to this message"
                            value={replyText}
                            onChange={(e) => setReplyText(e.target.value)}
                         />
+
+                        {/* Accept */}
+                        {message.type === "buy" && (
+                           <Button
+                              onClick={() =>
+                                 handleAccept(message) && markAsRead(message.id)
+                              }
+                           >
+                              Accept
+                           </Button>
+                        )}
+
+                        {/* Reply */}
                         <Button onClick={() => handleReply(message)}>
                            Reply
                         </Button>

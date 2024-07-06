@@ -10,9 +10,7 @@ export const createMessage = async (
     item,
     price,
     buyerName,
-    selectedDate,
-    selectedTime,
-    meetupLocation
+    info
 ) => {
   try {
     await addDoc(collection(db, "messages"), {
@@ -23,9 +21,7 @@ export const createMessage = async (
       item: item,
       price: price,
       buyer: buyerName,
-      date: selectedDate,
-      time: selectedTime,
-      location: meetupLocation,
+      info: info,
       status: "unread", 
       createdAt: serverTimestamp(),
       lastUpdated: serverTimestamp(),
