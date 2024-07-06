@@ -59,8 +59,8 @@ const Messages = () => {
                <Badge
                   colorScheme="red"
                   position="absolute"
-                  top="0"
-                  right="0"
+                  top="9"
+                  right="3"
                   borderRadius="full"
                >
                   {unreadCount}

@@ -75,7 +75,12 @@ const MessagesModal = ({ isOpen, onClose }) => {
             receiverId: message.senderId,
             postId: message.postId,
             type: "confirmation",
-            content: "Your buy request has been accepted!",
+            item: item,
+            price: price,
+            buyer: buyerName,
+            date: selectedDate,
+            time: selectedTime,
+            location: meetupLocation,
             status: "unread",
             createdAt: serverTimestamp(),
             lastUpdated: serverTimestamp(),
@@ -83,6 +88,12 @@ const MessagesModal = ({ isOpen, onClose }) => {
 
          // Remove the post from the database
          await deleteDoc(doc(db, "posts", message.postId));
+
+         // Update the user's posts array
+         const userRef = doc(db, "users", authUser.uid);
+         await updateDoc(userRef, {
+            posts: arrayRemove(message.postId),
+         });
       } catch (error) {
          console.error("Error accepting buy request:", error);
       }
@@ -120,27 +131,47 @@ const MessagesModal = ({ isOpen, onClose }) => {
                      <Box
                         key={message.id}
                         p={4}
-                        borderWidth={2}
-                        borderRadius="md"
+                        border={"2px solid black"}
+                        borderRadius="25px"
                      >
                         <Text fontWeight="bold">
-                           {message.type === "buy" ? "Buy Request" : "Offer"}
+                           {message.type === "buy"
+                              ? "Buy Request"
+                              : message.type === "offer"
+                              ? "Offer"
+                              : message.type === "confirmation"
+                              ? "Confirmation"
+                              : message.type === "reply"
+                              ? "Reply"
+                              : ""}{" "}
+                           from {message.buyer}
                         </Text>
-                        <Text>Amount: ${message.amount}</Text>
+
+                        <Text>Item: {message.item}</Text>
+                        <Text>
+                           Amount:{" "}
+                           {message.price ? `$${message.price}` : "Free"}
+                        </Text>
+
                         <Text>Status: {message.status}</Text>
+
+                        {/* Buy Request */}
                         {message.type === "buy" && (
                            <>
-                              <Text>Buyer: {message.senderName}</Text>
-                              <Text>Meetup Date: {message.meetupDate}</Text>
-                              <Text>Meetup Time: {message.meetupTime}</Text>
-                              <Text>
-                                 Meetup Location: {message.meetupLocation}
-                              </Text>
+                              <Text>Meetup Date: {message.date}</Text>
+                              <Text>Meetup Time: {message.time}</Text>
+                              <Text>Meetup Location: {message.location}</Text>
                            </>
                         )}
-                        <Text fontSize={10}>
-                           {message.createdAt.toDate().toLocaleString()}
-                        </Text>
+
+                        {message.type === "reply" && (
+                           <>
+                              <Text>Meetup Date: {message.date}</Text>
+                              <Text>Meetup Time: {message.time}</Text>
+                              <Text>Meetup Location: {message.location}</Text>
+                           </>
+                        )}
+
                         {message.status === "unread" && (
                            <Button onClick={() => markAsRead(message.id)}>
                               Mark as Read
@@ -151,6 +182,7 @@ const MessagesModal = ({ isOpen, onClose }) => {
                               Accept
                            </Button>
                         )}
+
                         <Input
                            placeholder="Reply to this message"
                            value={replyText}
@@ -159,6 +191,9 @@ const MessagesModal = ({ isOpen, onClose }) => {
                         <Button onClick={() => handleReply(message)}>
                            Reply
                         </Button>
+                        <Text fontSize={10}>
+                           {message.createdAt.toDate().toLocaleString()}
+                        </Text>
                      </Box>
                   ))}
                </VStack>

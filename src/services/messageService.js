@@ -2,14 +2,31 @@ import { addDoc, collection, getFirestore, serverTimestamp } from "firebase/fire
 
 const db = getFirestore();
 
-export const createMessage = async (type, amount, postId, receiverId) => {
+export const createMessage = async (
+    sellerId,
+    buyerId,
+    postId,
+    type,
+    item,
+    price,
+    buyerName,
+    selectedDate,
+    selectedTime,
+    meetupLocation
+) => {
   try {
     await addDoc(collection(db, "messages"), {
-      senderId: authUser.uid,
-      receiverId: receiverId,
+      senderId: buyerId,
+      receiverId: sellerId,
       postId: postId,
       type: type,
-      amount: amount,
+      item: item,
+      price: price,
+      buyer: buyerName,
+      date: selectedDate,
+      time: selectedTime,
+      location: meetupLocation,
+      status: "unread", 
       createdAt: serverTimestamp(),
       lastUpdated: serverTimestamp(),
     });
