@@ -278,11 +278,25 @@ function useCreatePost() {
 
          newPost.imageURL = downloadURL;
 
-         if (userProfile.uid === authUser.uid)
-            createPost({ ...newPost, id: postDocRef.id });
+         console.log("userProfile:", userProfile);
+         console.log("authUser:", authUser);
 
-         if (pathname !== "/" && userProfile.uid === authUser.uid)
+         if (
+            userProfile &&
+            authUser.user &&
+            userProfile.uid === authUser.user.uid
+         ) {
+            createPost({ ...newPost, id: postDocRef.id });
+         }
+
+         if (
+            pathname !== "/" &&
+            userProfile &&
+            authUser.user &&
+            userProfile.uid === authUser.user.uid
+         ) {
             addPost({ ...newPost, id: postDocRef.id });
+         }
 
          showToast("Success", "Post created successfully", "success");
       } catch (error) {

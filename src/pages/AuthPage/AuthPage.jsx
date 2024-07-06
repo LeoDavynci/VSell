@@ -14,12 +14,17 @@ const AuthPage = () => {
    return (
       <Flex
          minH={"100vh"}
-         justifyContent={"center"}
-         alignItems={"center"}
+         minW={"100vw"}
+         justify={"center"}
+         align={"center"}
          bg={theme.colors.primary[100]}
       >
-         <Box w={{ base: "100%", md: "90%" }}>
-            <Flex alignItems={"center"} gap={50}>
+         <Box w={{ base: "100%", md: "85%" }} h={{ base: "90%", md: "80%" }}>
+            <Flex
+               align={"center"}
+               justify={"center"}
+               gap={{ base: "0px", md: "20px" }}
+            >
                <Flex
                   display={{ base: "none", md: "flex" }}
                   flexDir={"column"}
@@ -47,10 +52,15 @@ const AuthPage = () => {
                      </Box>
                   </Box>
                </Flex>
-
-               <VStack align={"stretch"} h={"100%"}>
-                  <AuthForm />
-               </VStack>
+               <Flex
+                  w={{ base: "100%", md: "50%" }}
+                  h={"100%"}
+                  justify={{ base: "center", md: "flex-start" }}
+               >
+                  <Box>
+                     <AuthForm />
+                  </Box>
+               </Flex>
             </Flex>
          </Box>
       </Flex>
