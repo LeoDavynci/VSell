@@ -18,8 +18,14 @@ const useSignUpWithEmailAndPassword = () => {
             showToast("Error", "Please fill all the fields", "error")
             return
         }
-        const usersRef = collection(firestore, "users");
+        
+        const emailDomain = inputs.email.split('@')[1];
+        if (emailDomain !== 'vanderbilt.edu') {
+            showToast("Error", "Please use a @vanderbilt.edu email address", "error");
+            return;
+        }
 
+        const usersRef = collection(firestore, "users");
         const q = query(usersRef, where("username", "==", inputs.username));
         const querySnapshot = await getDocs(q)
 

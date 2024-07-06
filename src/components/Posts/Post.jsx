@@ -4,7 +4,7 @@ import {
    Button,
    Flex,
    Image,
-   Link,
+   Stack,
    Modal,
    ModalBody,
    ModalCloseButton,
@@ -24,6 +24,8 @@ import {
    Input,
    InputGroup,
    InputRightElement,
+   FormControl,
+   FormLabel,
 } from "@chakra-ui/react";
 import PostFooter from "./PostFooter";
 import { FaHeart } from "react-icons/fa";
@@ -31,7 +33,7 @@ import { FaLocationDot, FaRegHeart } from "react-icons/fa6";
 import useLikePost from "./../../hooks/useLikePost";
 import useGetUserProfileById from "../../hooks/useGetuserProfileById";
 import useAuthStore from "../../store/authStore";
-import { useRef, useState } from "react";
+import { useState } from "react";
 
 const Post = ({ post }) => {
    const { isOpen, onOpen, onClose } = useDisclosure();
@@ -45,18 +47,28 @@ const Post = ({ post }) => {
    const { userProfile } = useGetUserProfileById(post.createdBy);
    const authUser = useAuthStore();
 
-   const [isAlertOpen, setIsAlertOpen] = useState(false);
    const [showOfferInput, setShowOfferInput] = useState(false);
    const [offerAmount, setOfferAmount] = useState("");
-   const cancelRef = useRef();
+
+   const [isPurchaseModalOpen, setIsPurchaseModalOpen] = useState(false);
+   const [selectedDate, setSelectedDate] = useState("");
+   const [selectedTime, setSelectedTime] = useState("");
+   const [meetupLocation, setMeetupLocation] = useState("");
 
    const handleBuyClick = () => {
-      setIsAlertOpen(true);
+      setIsPurchaseModalOpen(true);
    };
 
-   const handleConfirmBuy = () => {
-      // Implement buy logic here
-      setIsAlertOpen(false);
+   const handlePurchaseSubmit = () => {
+      // Implement logic to process the purchase with selected date, time, and location
+      console.log(`Purchase confirmed for ${selectedDate} at ${selectedTime}`);
+      console.log(`Meetup location: ${meetupLocation}`);
+      setIsPurchaseModalOpen(false);
+      onClose();
+      // Reset the selections
+      setSelectedDate("");
+      setSelectedTime("");
+      setMeetupLocation("");
    };
 
    const handleOfferClick = () => {
@@ -68,6 +80,7 @@ const Post = ({ post }) => {
       console.log(`Offer submitted: ${offerAmount}`);
       setShowOfferInput(false);
       setOfferAmount("");
+      onClose();
    };
 
    return (
@@ -107,7 +120,7 @@ const Post = ({ post }) => {
             isOpen={isOpen}
             onClose={onClose}
             isCentered={true}
-            size={{ base: "xs", sm: "xs", md: "3xl", lg: "6xl" }}
+            size={{ base: "sm", sm: "sm", md: "3xl", lg: "6xl" }}
          >
             <ModalOverlay backdropFilter="blur(10px)" />
             <ModalContent bg={"white"} borderRadius={40} mt={"10%"}>
@@ -209,14 +222,14 @@ const Post = ({ post }) => {
                         </Box>
 
                         {/* Buttons */}
-                        <Box
-                           bg={"lime"}
-                           h={{ base: "64px", md: "64px" }}
-                           alignContent={"center"}
-                        >
-                           {authUser?.user.uid !== post.createdBy && (
+
+                        {authUser?.user.uid !== post.createdBy && (
+                           <Box
+                              h={{ base: "64px", md: "64px" }}
+                              alignContent={"center"}
+                           >
                               <Flex gap={{ base: 5, md: 15 }} align={"center"}>
-                                 <Box bg={"lightblue"} h={"64px"}>
+                                 <Box h={"64px"}>
                                     <Button
                                        h={"100%"}
                                        bg={"#79A88E"}
@@ -231,7 +244,7 @@ const Post = ({ post }) => {
                                     </Button>
                                  </Box>
 
-                                 <Box bg={"lightblue"} h={"64px"}>
+                                 <Box h={"64px"}>
                                     {post.isOBO && !showOfferInput && (
                                        <Button
                                           h={"100%"}
@@ -241,7 +254,7 @@ const Post = ({ post }) => {
                                           borderRadius={{ base: 45, md: 35 }}
                                           borderColor={"#79A88E"}
                                           borderWidth={{
-                                             base: "2px",
+                                             base: "4px",
                                              md: "4px",
                                           }}
                                           fontSize={{
@@ -255,11 +268,7 @@ const Post = ({ post }) => {
                                     )}
 
                                     {post.isOBO && showOfferInput && (
-                                       <Box
-                                          bg={"pink"}
-                                          h={"64px"}
-                                          alignContent={"center"}
-                                       >
+                                       <Box h={"64px"} alignContent={"center"}>
                                           <InputGroup>
                                              <Input
                                                 placeholder="$"
@@ -274,17 +283,26 @@ const Post = ({ post }) => {
                                                    base: "18px",
                                                    md: "24px",
                                                 }}
-                                                height="60px"
-                                                borderRadius="30px"
+                                                height="64px"
+                                                borderRadius={{
+                                                   base: 45,
+                                                   md: 35,
+                                                }}
                                                 borderColor="#79A88E"
-                                                borderWidth="3px"
+                                                borderWidth={{
+                                                   base: "4px",
+                                                   md: "4px",
+                                                }}
                                                 _focus={{
                                                    borderColor: "#79A88E",
                                                 }}
+                                                type="number"
+                                                min="0"
+                                                max="9999"
                                              />
                                              <InputRightElement
                                                 width="4.5rem"
-                                                height="60px"
+                                                height="64px"
                                              >
                                                 <Button
                                                    h="50px"
@@ -304,15 +322,14 @@ const Post = ({ post }) => {
                                     )}
                                  </Box>
                               </Flex>
-                           )}
-                        </Box>
+                           </Box>
+                        )}
 
                         {/* Name and Likes */}
                         <Flex
                            justifyContent={"space-between"}
                            fontSize={"24px"}
-                           pt={5}
-                           pb={3}
+                           py={3}
                         >
                            {/* Name */}
                            <Flex
@@ -361,39 +378,96 @@ const Post = ({ post }) => {
             </ModalContent>
          </Modal>
 
-         <AlertDialog
-            isOpen={isAlertOpen}
-            leastDestructiveRef={cancelRef}
-            onClose={() => setIsAlertOpen(false)}
+         <Modal
+            isOpen={isPurchaseModalOpen}
+            onClose={() => {
+               setIsPurchaseModalOpen(false);
+               // Reset purchase-related states when closing the purchase modal
+               setSelectedDate("");
+               setSelectedTime("");
+               setMeetupLocation("");
+            }}
+            isCentered
+            size={{ base: "sm", sm: "sm", md: "3xl", lg: "6xl" }}
          >
-            <AlertDialogOverlay>
-               <AlertDialogContent>
-                  <AlertDialogHeader fontSize="lg" fontWeight="bold">
+            <ModalOverlay />
+            <ModalContent borderRadius={{ base: "25", md: "35" }}>
+               <ModalHeader fontSize={28}>Confirm Purchase</ModalHeader>
+               <ModalCloseButton />
+               <ModalBody color={"black"} fontWeight={500}>
+                  <Stack spacing={4}>
+                     <Box>
+                        <Text>Item(s): {post.itemName || "Item"}</Text>
+                        <Text>Price: {displayPrice}</Text>
+                        <Text>Sold By: {userProfile?.fullName}</Text>
+                     </Box>
+                     <Box pt={8}>
+                        <FormControl isRequired>
+                           <FormLabel>Meetup Date</FormLabel>
+
+                           <Input
+                              borderRadius={{ base: "25", md: "35" }}
+                              border={"2px solid black"}
+                              type="date"
+                              value={selectedDate}
+                              onChange={(e) => setSelectedDate(e.target.value)}
+                           />
+                        </FormControl>
+                        <FormControl isRequired>
+                           <FormLabel>Meetup Time</FormLabel>
+                           <Input
+                              borderRadius={{ base: "25", md: "35" }}
+                              border={"2px solid black"}
+                              type="time"
+                              value={selectedTime}
+                              onChange={(e) => setSelectedTime(e.target.value)}
+                           />
+                        </FormControl>
+
+                        {!post.pickupLocation && (
+                           <FormControl isRequired>
+                              <FormLabel>Meetup Location</FormLabel>
+                              <Input
+                                 borderRadius={{ base: "25", md: "35" }}
+                                 border={"2px solid black"}
+                                 value={meetupLocation}
+                                 onChange={(e) =>
+                                    setMeetupLocation(e.target.value)
+                                 }
+                                 placeholder="Enter a specific meetup location"
+                              />
+                           </FormControl>
+                        )}
+
+                        {post.pickupLocation && (
+                           <Text mb={4}>
+                              Meetup Location: {post.pickupLocation}
+                           </Text>
+                        )}
+                     </Box>
+                  </Stack>
+               </ModalBody>
+               <ModalFooter gap={5} pt={16}>
+                  <Button
+                     bg={"#79A88E"}
+                     color={"white"}
+                     borderRadius={{ base: "25", md: "35" }}
+                     onClick={handlePurchaseSubmit}
+                  >
                      Confirm Purchase
-                  </AlertDialogHeader>
-
-                  <AlertDialogBody>
-                     Are you sure you want to buy this item?
-                  </AlertDialogBody>
-
-                  <AlertDialogFooter>
-                     <Button
-                        ref={cancelRef}
-                        onClick={() => setIsAlertOpen(false)}
-                     >
-                        Cancel
-                     </Button>
-                     <Button
-                        colorScheme="green"
-                        onClick={handleConfirmBuy}
-                        ml={3}
-                     >
-                        Confirm
-                     </Button>
-                  </AlertDialogFooter>
-               </AlertDialogContent>
-            </AlertDialogOverlay>
-         </AlertDialog>
+                  </Button>
+                  <Button
+                     variant="outline"
+                     border={"3px solid #79A88E"}
+                     color={"#79A88E"}
+                     borderRadius={{ base: "25", md: "35" }}
+                     onClick={() => setIsPurchaseModalOpen(false)}
+                  >
+                     Cancel
+                  </Button>
+               </ModalFooter>
+            </ModalContent>
+         </Modal>
       </>
    );
 };

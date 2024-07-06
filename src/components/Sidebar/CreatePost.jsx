@@ -132,7 +132,7 @@ const CreatePost = () => {
                         <Input
                            type="number"
                            min="0"
-                           max="999999"
+                           max="9999"
                            borderRadius={15}
                            borderColor={"black"}
                            borderWidth={"2px"}
