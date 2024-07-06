@@ -269,7 +269,7 @@ const Post = ({ post }) => {
                                                       e.target.value
                                                    )
                                                 }
-                                                pr="4.5rem"
+                                                h={"64px"}
                                                 fontSize={{
                                                    base: "18px",
                                                    md: "24px",
