@@ -20,7 +20,8 @@ import {
    useDisclosure,
 } from "@chakra-ui/react";
 
-import { MdOutlineAddCircleOutline } from "react-icons/md";
+import { IoMdAddCircle } from "react-icons/io";
+
 import { useRef, useState } from "react";
 import usePreviewImg from "../../hooks/usePreviewImg";
 import useShowToast from "../../hooks/useShowToast";
@@ -86,14 +87,14 @@ const CreatePost = () => {
                width={"50px"}
                height={"50px"}
                borderRadius={"50%"}
-               bg={"white"}
+               bg={"none"}
                display={"flex"}
                alignItems={"center"}
                justifyContent={"center"}
                cursor="pointer"
                onClick={onOpen}
             >
-               <MdOutlineAddCircleOutline color="black" size={40} />
+               <IoMdAddCircle color="white" size={40} />
             </Box>
          </Flex>
 

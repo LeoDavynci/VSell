@@ -1,9 +1,9 @@
 import React from "react";
 import Home from "./Home";
-import Search from "./Search";
 import ProfileLink from "./ProfileLink";
 import CreatePost from "./CreatePost";
 import { Flex } from "@chakra-ui/react";
+import Messages from "./Messages";
 
 const SidebarItems = () => {
    return (
@@ -13,7 +13,7 @@ const SidebarItems = () => {
          </Flex>
 
          <Flex>
-            <Search />
+            <Messages />
             <CreatePost />
             <ProfileLink />
          </Flex>
