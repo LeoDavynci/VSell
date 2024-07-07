@@ -35,13 +35,12 @@ const Post = ({ post }) => {
          "buy",
          post.itemName,
          post.price,
+         userProfile.fullName,
          authUser.fullName,
          info
       );
       setIsPurchaseModalOpen(false);
       onClose();
-      // Reset the selections
-      setInfo("");
    };
 
    const handleBuyClick = () => {

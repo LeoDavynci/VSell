@@ -45,11 +45,11 @@ const PostModal = ({
       setShowOfferInput(true);
    };
 
-   const submitOffer = () => {
-      handleOfferSubmit(offerAmount);
-      setShowOfferInput(false);
-      setOfferAmount("");
-   };
+   // const submitOffer = () => {
+   //    handleOfferSubmit(offerAmount);
+   //    setShowOfferInput(false);
+   //    setOfferAmount("");
+   // };
 
    return (
       <Modal

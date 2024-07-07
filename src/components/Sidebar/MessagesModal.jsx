@@ -25,6 +25,7 @@ import {
    deleteDoc,
    addDoc,
    serverTimestamp,
+   arrayRemove,
 } from "firebase/firestore";
 import useAuthStore from "../../store/authStore";
 
@@ -45,47 +46,52 @@ const MessagesModal = ({ isOpen, onClose }) => {
       }
    };
 
-   const handleReply = async (message) => {
+   const handleReject = async (message) => {
       try {
          await addDoc(collection(db, "messages"), {
-            senderId: authUser.uid,
             receiverId: message.senderId,
+            senderId: authUser.uid,
             postId: message.postId,
-            type: "reply",
-            item: item,
-            price: price,
+            type: "rejection",
+            item: message.item,
+            price: message.price,
+            seller: message.seller,
+            buyer: message.buyer,
             info: replyText,
             status: "unread",
             createdAt: serverTimestamp(),
             lastUpdated: serverTimestamp(),
-            replyToId: message.id,
          });
+
          setReplyText("");
       } catch (error) {
-         console.error("Error sending reply:", error);
+         console.error("Error rejection:", error);
       }
    };
 
    const handleAccept = async (message) => {
+      console.log("Message object:", message);
       try {
-         // Delete the message
-         await deleteDoc(doc(db, "messages", message.id));
-
          // Send confirmation to the buyer
          await addDoc(collection(db, "messages"), {
-            senderId: authUser.uid,
             receiverId: message.senderId,
+            senderId: authUser.uid,
             postId: message.postId,
             type: "confirmation",
-            item: item,
-            price: price,
-            buyer: buyerName,
-            info: info,
+            item: message.item,
+            price: message.price,
+            seller: message.seller,
+            buyer: message.buyer,
+            info: replyText,
             status: "unread",
             createdAt: serverTimestamp(),
             lastUpdated: serverTimestamp(),
          });
 
+         // Remove the current message from the database
+         await deleteDoc(doc(db, "messages", message.id));
+
+         setReplyText("");
          // Remove the post from the database
          await deleteDoc(doc(db, "posts", message.postId));
 
@@ -96,6 +102,14 @@ const MessagesModal = ({ isOpen, onClose }) => {
          });
       } catch (error) {
          console.error("Error accepting buy request:", error);
+      }
+   };
+
+   const handleDelete = async (message) => {
+      try {
+         await deleteDoc(doc(db, "messages", message.id));
+      } catch (error) {
+         console.error("Error deleting message", error);
       }
    };
 
@@ -137,14 +151,21 @@ const MessagesModal = ({ isOpen, onClose }) => {
                         <Text fontWeight="bold">
                            {message.type === "buy"
                               ? "Buy Request"
-                              : message.type === "offer"
-                              ? "Offer"
+                              : message.type === "rejection"
+                              ? "Rejection"
                               : message.type === "confirmation"
                               ? "Confirmation"
                               : message.type === "reply"
                               ? "Reply"
                               : ""}{" "}
-                           from {message.buyer}
+                           from{" "}
+                           {message.type === "buy" || message.type === "offer"
+                              ? message.buyer
+                              : message.type === "confirmation"
+                              ? message.seller || authUser.displayName
+                              : message.type === "rejection"
+                              ? message.seller
+                              : "Unknown"}
                         </Text>
 
                         <Text>Item: {message.item}</Text>
@@ -157,27 +178,35 @@ const MessagesModal = ({ isOpen, onClose }) => {
                         {message.info && <Text pt={5}>{message.info}</Text>}
 
                         {/* Reply Box */}
-                        <Input
-                           placeholder="Reply to this message"
-                           value={replyText}
-                           onChange={(e) => setReplyText(e.target.value)}
-                        />
+                        {message.type !== "confirmation" && (
+                           <Input
+                              placeholder="Reply to this message with contact infomation"
+                              value={replyText}
+                              onChange={(e) => setReplyText(e.target.value)}
+                           />
+                        )}
 
-                        {/* Accept */}
+                        {/* Accept Button */}
                         {message.type === "buy" && (
-                           <Button
-                              onClick={() =>
-                                 handleAccept(message) && markAsRead(message.id)
-                              }
-                           >
+                           <Button onClick={() => handleAccept(message)}>
                               Accept
                            </Button>
                         )}
 
-                        {/* Reply */}
-                        <Button onClick={() => handleReply(message)}>
-                           Reply
-                        </Button>
+                        {/* Reject Button */}
+                        {message.type === "buy" && (
+                           <Button onClick={() => handleReject(message)}>
+                              Reject
+                           </Button>
+                        )}
+
+                        {/* Delete Button */}
+                        {message.type !== "buy" && (
+                           <Button onClick={() => handleDelete(message)}>
+                              Delete
+                           </Button>
+                        )}
+
                         <Text fontSize={10}>
                            {message.createdAt.toDate().toLocaleString()}
                         </Text>

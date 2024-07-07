@@ -28,6 +28,7 @@ const PurchaseModal = ({
 
    const handleSubmit = () => {
       handlePurchaseSubmit(info);
+      setInfo("");
       onClose();
    };
 
@@ -59,12 +60,12 @@ const PurchaseModal = ({
                   </Box>
                   <Box pt={8}>
                      <FormControl isRequired>
-                        <FormLabel>Meetup Information</FormLabel>
+                        <FormLabel>Contact Information</FormLabel>
                         <Textarea
                            borderRadius={{ base: "5", md: "15" }}
                            border="2px solid black"
                            type="text"
-                           placeholder="Contact info, meet time, location, date, etc"
+                           placeholder="Contact info, offer amount if OBO, meet time, location, date, etc"
                            value={info}
                            onChange={(e) => setInfo(e.target.value)}
                         ></Textarea>

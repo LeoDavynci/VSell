@@ -9,17 +9,19 @@ export const createMessage = async (
     type,
     item,
     price,
+    sellerName,
     buyerName,
     info
 ) => {
   try {
     await addDoc(collection(db, "messages"), {
-      senderId: buyerId,
       receiverId: sellerId,
+      senderId: buyerId,
       postId: postId,
       type: type,
       item: item,
       price: price,
+      seller: sellerName,
       buyer: buyerName,
       info: info,
       status: "unread", 
