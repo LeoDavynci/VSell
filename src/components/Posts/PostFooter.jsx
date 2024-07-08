@@ -35,13 +35,13 @@ const PostFooter = ({ post }) => {
             alignItems={"center"}
             h={"25px"}
          >
-            <Text fontSize={{ base: "16px", md: "20px" }} fontWeight={700}>
+            <Text fontSize={{ base: "20px", md: "20px" }} fontWeight={700}>
                {displayPrice}
             </Text>
 
             <Text
                fontWeight={700}
-               fontSize={{ base: "16px", md: "20px" }}
+               fontSize={{ base: "20px", md: "20px" }}
                color="#716FE9"
             >
                {post.isOBO ? " OBO" : ""}

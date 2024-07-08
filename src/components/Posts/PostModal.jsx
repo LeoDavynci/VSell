@@ -139,7 +139,7 @@ const PostModal = ({
                         <>
                            <Button
                               position="absolute"
-                              left="39%"
+                              left="30%"
                               bottom="10px"
                               onClick={prevImage}
                               bg="rgba(0, 0, 0, 0.4)"
@@ -151,7 +151,7 @@ const PostModal = ({
                            </Button>
                            <Button
                               position="absolute"
-                              right="38%"
+                              left="60%"
                               bottom="10px"
                               onClick={nextImage}
                               bg="rgba(0, 0, 0, 0.4)"
@@ -168,7 +168,7 @@ const PostModal = ({
                               position="absolute"
                               height={"30px"}
                               bottom="10px"
-                              left="45%"
+                              left="41%"
                               bg="rgba(0, 0, 0, 0.4)"
                               color="white"
                               px={4}
