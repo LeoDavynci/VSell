@@ -104,7 +104,7 @@ const MessagesModal = ({ isOpen, onClose }) => {
       }
    };
 
-   const handleOfferAccept = async (message) => {
+   const handleOfferAccept = async (message, newPrice) => {
       try {
          // Send confirmation to the buyer
          await addDoc(collection(db, "messages"), {
@@ -116,7 +116,7 @@ const MessagesModal = ({ isOpen, onClose }) => {
             price: message.price,
             seller: message.seller,
             buyer: message.buyer,
-            info: replyText,
+            info: newPrice,
             status: "unread",
             createdAt: serverTimestamp(),
             lastUpdated: serverTimestamp(),
@@ -129,7 +129,7 @@ const MessagesModal = ({ isOpen, onClose }) => {
       }
    };
 
-   const handleOfferReject = async (message) => {
+   const handleOfferReject = async (message, newPrice) => {
       try {
          // Send rejection to the buyer
          await addDoc(collection(db, "messages"), {
@@ -141,7 +141,7 @@ const MessagesModal = ({ isOpen, onClose }) => {
             price: message.price,
             seller: message.seller,
             buyer: message.buyer,
-            info: replyText,
+            info: newPrice,
             status: "unread",
             createdAt: serverTimestamp(),
             lastUpdated: serverTimestamp(),
@@ -198,37 +198,25 @@ const MessagesModal = ({ isOpen, onClose }) => {
                      <Box
                         key={message.id}
                         p={3}
-                        border={"2px solid black"}
                         borderRadius={{ base: "20px", md: "30px" }}
+                        bg={"#EBEBEB"}
                      >
                         <Text fontWeight="bold">
                            {message.type === "buy"
-                              ? "Buy Request"
+                              ? `Buy Request from ${message.buyer}`
                               : message.type === "offer"
-                              ? "Offer"
+                              ? `Offer from ${message.buyer}`
                               : message.type === "confirmation"
-                              ? "Confirmation"
+                              ? `Confirmation from ${
+                                   message.seller || authUser.displayName
+                                }`
                               : message.type === "rejection"
-                              ? "Rejection"
+                              ? `Rejection from ${message.seller}`
                               : message.type === "offerConfirmation"
-                              ? `${message.seller} accepts your offer`
-                              : message.type === "rejectConfirmation"
-                              ? `${message.seller} rejects your offer`
-                              : ""}{" "}
-                           {message.type ===
-                              "confirmation"(
-                                 <>
-                                    from{" "}
-                                    {message.type === "buy" ||
-                                    message.type === "offer"
-                                       ? message.buyer
-                                       : message.type === "confirmation"
-                                       ? message.seller || authUser.displayName
-                                       : message.type === "rejection"
-                                       ? message.seller
-                                       : "Unknown"}
-                                 </>
-                              )}
+                              ? `${message.seller} has accepted your offer`
+                              : message.type === "offerRejection"
+                              ? `${message.seller} has rejected your offer`
+                              : ""}
                         </Text>
 
                         {/* Item Name */}
@@ -236,59 +224,103 @@ const MessagesModal = ({ isOpen, onClose }) => {
 
                         <Text>
                            Amount:{" "}
-                           {message.type === "buy" ? (
+                           {["buy", "confirmation", "rejection"].includes(
+                              message.type
+                           ) ? (
                               `$${message.price || "Free"}`
-                           ) : message.type === "offer" ? (
+                           ) : [
+                                "offer",
+                                "offerConfirmation",
+                                "offerRejection",
+                             ].includes(message.type) ? (
                               <>
-                                 <s>${message.price}</s> {message.info}
+                                 <s>${message.price}</s>{" "}
+                                 {message.info || "Free"}
                               </>
                            ) : (
                               "Free"
                            )}
                         </Text>
 
-                        {/* Reply Box if Buy */}
-                        {message.type === "buy" && (
-                           <Input
-                              placeholder="Reply to this message with contact infomation"
-                              value={replyText}
-                              onChange={(e) => setReplyText(e.target.value)}
-                           />
-                        )}
+                        {/* Message */}
+                        {["buy", "confirmation", "rejection"].includes(
+                           message.type
+                        ) && <Text pt={5}>Message: {message.info}</Text>}
+                        <Box pt={5}>
+                           {/* Reply Box if Buy */}
+                           {message.type === "buy" && (
+                              <Input
+                                 variant={"flushed"}
+                                 fontSize={16}
+                                 placeholder="Reply to this message with contact info"
+                                 value={replyText}
+                                 onChange={(e) => setReplyText(e.target.value)}
+                              />
+                           )}
+                        </Box>
+                        <Box pt={5}>
+                           {/* Accept Button if buy */}
+                           {message.type === "buy" && (
+                              <Button
+                                 onClick={() => handleAccept(message)}
+                                 bg="#79A88E"
+                                 _hover={{ bg: "#A2C0B0" }}
+                                 variant="solid"
+                                 color="white"
+                                 borderRadius={"15px"}
+                              >
+                                 Accept
+                              </Button>
+                           )}
 
-                        {/* Accept Button if buy */}
-                        {message.type === "buy" && (
-                           <Button onClick={() => handleAccept(message)}>
-                              Accept
-                           </Button>
-                        )}
+                           {/* Accept Button if offer*/}
+                           {message.type === "offer" && (
+                              <Button
+                                 onClick={() =>
+                                    handleOfferAccept(message, message.info)
+                                 }
+                                 bg="#79A88E"
+                                 _hover={{ bg: "#A2C0B0" }}
+                                 variant="solid"
+                                 color="white"
+                                 borderRadius={"15px"}
+                              >
+                                 Accept
+                              </Button>
+                           )}
 
-                        {/* Accept Button if offer*/}
-                        {message.type === "offer" && (
-                           <Button onClick={() => handleOfferAccept(message)}>
-                              Accept
-                           </Button>
-                        )}
+                           {/* Reject Button if offer*/}
+                           {message.type === "offer" && (
+                              <Button
+                                 onClick={() =>
+                                    handleOfferReject(message, message.info)
+                                 }
+                                 borderRadius={"15px"}
+                              >
+                                 Reject
+                              </Button>
+                           )}
 
-                        {/* Reject Button if offer*/}
-                        {message.type === "offer" && (
-                           <Button onClick={() => handleOfferReject(message)}>
-                              Reject
-                           </Button>
-                        )}
-
-                        {/* Delete Button if confirmation or rejection*/}
-                        {(message.type === "confirmation" ||
-                           message.type === "rejection" ||
-                           message.type === "offerConfirmation" ||
-                           message.type === "offerRejection") && (
-                           <Button onClick={() => handleDelete(message)}>
-                              Delete
-                           </Button>
-                        )}
+                           {/* Delete Button if confirmation or rejection*/}
+                           {(message.type === "confirmation" ||
+                              message.type === "rejection" ||
+                              message.type === "offerConfirmation" ||
+                              message.type === "offerRejection") && (
+                              <Button
+                                 onClick={() => handleDelete(message)}
+                                 bg="#716FE9"
+                                 _hover={{ bg: "#A5A4F8" }}
+                                 variant="solid"
+                                 color="white"
+                                 borderRadius={"15px"}
+                              >
+                                 Delete
+                              </Button>
+                           )}
+                        </Box>
 
                         {/* Date and time request was sent*/}
-                        <Text fontSize={10}>
+                        <Text fontSize={10} pt={2}>
                            Sent {message.createdAt.toDate().toLocaleString()}
                         </Text>
                      </Box>
