@@ -16,6 +16,7 @@ import {
    Input,
    InputGroup,
    InputRightElement,
+   Tooltip,
 } from "@chakra-ui/react";
 import { FaLocationDot, FaRegHeart, FaHeart } from "react-icons/fa6";
 import useLikePost from "../../hooks/useLikePost";
@@ -216,7 +217,7 @@ const PostModal = ({
                      {/* Item Name */}
                      <Flex alignContent="flex-start">
                         <Box
-                           fontSize={{ base: 30, md: 50 }}
+                           fontSize={{ base: "30px", md: "50px" }}
                            fontWeight={500}
                            lineHeight="1.2"
                            overflow="hidden"
@@ -229,17 +230,52 @@ const PostModal = ({
                         </Box>
                      </Flex>
 
+                     {/* Quality */}
+                     {post.itemQuality && (
+                        <Box>
+                           <Flex
+                              fontSize={{ base: "15px", md: "25px" }}
+                              fontWeight="semibold"
+                              flexDir={"row"}
+                              gap={"5px"}
+                           >
+                              <Box>Quality:</Box>
+                              <Box
+                                 bg={"#716FE9"}
+                                 px={2}
+                                 borderRadius={50}
+                                 color={"white"}
+                              >
+                                 {" "}
+                                 {post.itemQuality}
+                              </Box>
+                           </Flex>
+                        </Box>
+                     )}
+
                      {/* Price */}
                      <Box
                         fontSize={{ base: "40px", md: "60px" }}
-                        lineHeight="1.5"
+                        lineHeight="1.25"
                         fontWeight="semibold"
                      >
                         <Flex gap="40px">
                            <Text fontWeight={700}>{displayPrice}</Text>
-                           <Text fontWeight={700} color="#716FE9">
-                              {post.isOBO ? " OBO" : ""}
-                           </Text>
+                           {post.isOBO && (
+                              <Tooltip
+                                 label="Or Best Offer"
+                                 borderRadius={50}
+                                 top={-15}
+                              >
+                                 <Text
+                                    fontWeight={700}
+                                    color="#716FE9"
+                                    cursor="help"
+                                 >
+                                    OBO
+                                 </Text>
+                              </Tooltip>
+                           )}
                         </Flex>
                      </Box>
 

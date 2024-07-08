@@ -19,10 +19,9 @@ import {
    Text,
    Textarea,
    useDisclosure,
+   Select,
 } from "@chakra-ui/react";
 import { IoMdAddCircle } from "react-icons/io";
-import Compressor from "compressorjs";
-import Resizer from "react-image-file-resizer";
 import useShowToast from "../../hooks/useShowToast";
 import useAuthStore from "../../store/authStore";
 import usePostStore from "../../store/postStore";
@@ -37,6 +36,7 @@ import {
 } from "firebase/firestore";
 import { firestore, storage } from "../../firebase/firebase";
 import { getDownloadURL, ref, uploadString } from "firebase/storage";
+import { handleImageChange } from "../../utils/imageUtils";
 
 const CreatePost = () => {
    const { isOpen, onOpen, onClose } = useDisclosure();
@@ -46,63 +46,85 @@ const CreatePost = () => {
    const [isOBO, setIsOBO] = useState(false);
    const [caption, setCaption] = useState("");
    const [selectedFiles, setSelectedFiles] = useState([]);
-
    const imageRef = useRef(null);
    const showToast = useShowToast();
    const { isLoading, handleCreatePost } = useCreatePost();
 
-   const handleImageChange = (event) => {
-      const files = Array.from(event.target.files);
-      if (files.length + selectedFiles.length > 4) {
-         showToast("Error", "You can only upload up to 4 images", "error");
-         return;
-      }
+   const [itemQuality, setItemQuality] = useState("");
+   const qualityOptions = [
+      { value: "new", label: "New" },
+      { value: "likeNew", label: "Like New" },
+      { value: "veryGood", label: "Very Good" },
+      { value: "good", label: "Good" },
+      { value: "fair", label: "Fair" },
+      { value: "poor", label: "Poor" },
+   ];
 
-      files.forEach((file) => {
-         Resizer.imageFileResizer(
-            file,
-            800, // max width
-            800, // max height
-            "JPEG", // output format
-            80, // quality
-            0, // rotation
-            (uri) => {
-               const blob = dataURLtoBlob(uri);
-               new Compressor(blob, {
-                  quality: 0.8, // quality of the compressed image
-                  success: (compressedResult) => {
-                     const compressedFile = new File(
-                        [compressedResult],
-                        file.name,
-                        { type: compressedResult.type }
-                     );
-                     const fileReader = new FileReader();
-                     fileReader.onload = () => {
-                        setSelectedFiles((prev) => [
-                           ...prev,
-                           fileReader.result,
-                        ]);
-                     };
-                     fileReader.readAsDataURL(compressedFile);
-                  },
-               });
-            },
-            "base64" // output type
-         );
-      });
+   const [suggestedLocations, setSuggestedLocations] = useState([]);
+   const fetchSuggestedLocations = (input) => {
+      // This is a mock function. In a real scenario, you'd call an API here.
+      const mockLocations = [
+         "Crawford House",
+         "East House",
+         "Hank Ingram House",
+         "Gillette House",
+         "Memorial House",
+         "Murray House",
+         "North House",
+         "Stambaugh House",
+         "Sutherland House",
+         "West House",
+         "Warren College",
+         "Moore College",
+         "Mayfields",
+         "McGills",
+         "McTyeire",
+         "Barnard Hall",
+         "Cole Hall",
+         "Lupton House",
+         "Scales House",
+         "Stapleton House",
+         "Tolman Hall",
+         "Vanderbilt Hall",
+         "Vaughn House",
+         "Blakemore House",
+         "Chaffins",
+         "Lewis",
+         "Morgan",
+         "Carmichael College",
+         "Stevenson Library",
+         "MRB",
+         "FGH",
+         "Buttrick",
+         "Sony Building",
+         "Divinity School",
+         "Rand",
+         "Wilson",
+         "Kirkland",
+         "EBI",
+         "Olin",
+         "The Wondry",
+         "Blair",
+         "Central Library",
+         "Peabody Library",
+         "Commons Center",
+         "The Rec",
+         "The Pub",
+         "Alumni Hall",
+         "Kissam",
+         "Rothschild",
+         "Zeppos",
+      ];
+
+      return mockLocations.filter((location) =>
+         location.toLowerCase().includes(input.toLowerCase())
+      );
    };
 
-   const dataURLtoBlob = (dataurl) => {
-      const arr = dataurl.split(",");
-      const mime = arr[0].match(/:(.*?);/)[1];
-      const bstr = atob(arr[1]);
-      let n = bstr.length;
-      const u8arr = new Uint8Array(n);
-      while (n--) {
-         u8arr[n] = bstr.charCodeAt(n);
-      }
-      return new Blob([u8arr], { type: mime });
+   const handleImageChangeWrapper = (event) => {
+      handleImageChange(event, selectedFiles, setSelectedFiles, showToast);
    };
+
    const handlePostCreation = async () => {
       try {
          await handleCreatePost(
@@ -111,7 +133,8 @@ const CreatePost = () => {
             itemName,
             price,
             pickupLocation,
-            isOBO
+            isOBO,
+            itemQuality
          );
          onClose();
          setCaption("");
@@ -120,6 +143,7 @@ const CreatePost = () => {
          setPickupLocation("");
          setIsOBO(false);
          setSelectedFiles([]);
+         setItemQuality("");
       } catch (error) {
          showToast("Error", error.message, "error");
       }
@@ -233,6 +257,21 @@ const CreatePost = () => {
                         OBO
                      </Checkbox>
                   </Flex>
+                  <Text mt={2}>Item Quality</Text>
+                  <Select
+                     placeholder="Select quality"
+                     borderRadius={15}
+                     borderColor={"black"}
+                     borderWidth={"2px"}
+                     value={itemQuality}
+                     onChange={(e) => setItemQuality(e.target.value)}
+                  >
+                     {qualityOptions.map((option) => (
+                        <option key={option.value} value={option.value}>
+                           {option.label}
+                        </option>
+                     ))}
+                  </Select>
                   <Text mt={2}>Pickup Location</Text>
                   <Input
                      borderRadius={15}
@@ -242,8 +281,39 @@ const CreatePost = () => {
                      onChange={(e) => {
                         const newValue = e.target.value.slice(0, 20);
                         setPickupLocation(newValue);
+                        if (newValue.length > 1) {
+                           const suggestions =
+                              fetchSuggestedLocations(newValue);
+                           setSuggestedLocations(suggestions);
+                        } else {
+                           setSuggestedLocations([]);
+                        }
                      }}
                   />
+                  {suggestedLocations.length > 0 && (
+                     <Box
+                        mt={2}
+                        borderWidth={1}
+                        borderRadius={15}
+                        maxH="200px"
+                        overflowY="auto"
+                     >
+                        {suggestedLocations.map((location, index) => (
+                           <Box
+                              key={index}
+                              p={2}
+                              _hover={{ bg: "gray.100" }}
+                              cursor="pointer"
+                              onClick={() => {
+                                 setPickupLocation(location);
+                                 setSuggestedLocations([]);
+                              }}
+                           >
+                              {location}
+                           </Box>
+                        ))}
+                     </Box>
+                  )}
                   <Text mt={2}>Description</Text>
                   <Textarea
                      maxLength={250}
@@ -261,7 +331,7 @@ const CreatePost = () => {
                      type="file"
                      hidden
                      ref={imageRef}
-                     onChange={handleImageChange}
+                     onChange={handleImageChangeWrapper}
                   />
 
                   <Text mt={2}>Upload up to 4 photos</Text>
@@ -341,7 +411,8 @@ function useCreatePost() {
       itemName,
       price,
       pickupLocation,
-      isOBO
+      isOBO,
+      itemQuality
    ) => {
       if (isLoading) return;
       if (selectedFiles.length === 0)
@@ -353,6 +424,7 @@ function useCreatePost() {
          pickupLocation: pickupLocation,
          isOBO: isOBO,
          caption: caption,
+         itemQuality: itemQuality,
          likes: [],
          createdAt: Date.now(),
          createdBy: authUser.uid,
