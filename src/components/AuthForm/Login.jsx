@@ -5,6 +5,7 @@ import {
    Input,
    InputGroup,
    InputRightElement,
+   Text,
 } from "@chakra-ui/react";
 import React, { useState } from "react";
 import useLogin from "../../hooks/useLogin";
@@ -17,10 +18,12 @@ const Login = () => {
       password: "",
    });
    const { loading, error, login } = useLogin();
+
+   const isEmailUnverified = error?.message?.includes("verify your email");
+
    return (
       <>
          {/* Email */}
-
          <Input
             placeholder="Email"
             fontSize={14}
@@ -69,6 +72,13 @@ const Login = () => {
                <AlertIcon fontSize={12} />
                {error.message}
             </Alert>
+         )}
+
+         {isEmailUnverified && (
+            <Text fontSize={13} color="red.500" mt={2}>
+               Please check your email and verify your account before logging
+               in.
+            </Text>
          )}
 
          {/* Log In */}

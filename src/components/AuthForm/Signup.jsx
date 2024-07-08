@@ -9,8 +9,10 @@ import {
 } from "@chakra-ui/react";
 import React, { useState } from "react";
 import useSignUpWithEmailAndPassword from "../../hooks/useSignUpWithEmailAndPassword";
+import { useNavigate } from "react-router-dom";
 
 const Signup = () => {
+   const navigate = useNavigate();
    const [show, setShow] = React.useState(false);
    const handleClick = () => setShow(!show);
    const [inputs, setInputs] = useState({
@@ -29,6 +31,7 @@ const Signup = () => {
          email: "",
          password: "",
       });
+      navigate("/auth");
    };
 
    const { loading, error, signup } = useSignUpWithEmailAndPassword();
