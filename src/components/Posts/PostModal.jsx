@@ -158,7 +158,7 @@ const PostModal = ({
                            h={{ base: "64px", md: "64px" }}
                            alignContent="center"
                         >
-                           <Flex gap={{ base: 5, md: 15 }} align="center">
+                           <Flex gap={{ base: 7, md: 19 }} align="center">
                               <Box h="64px">
                                  <Button
                                     h="100%"
@@ -192,14 +192,52 @@ const PostModal = ({
                                  )}
 
                                  {post.isOBO && showOfferInput && (
-                                    <Box h="64px" alignContent="center">
+                                    <Box
+                                       h="64px"
+                                       alignContent="center"
+                                       w={"140px"}
+                                    >
                                        <InputGroup>
                                           <Input
                                              placeholder="$"
                                              value={offerAmount}
-                                             onChange={(e) =>
-                                                setOfferAmount(e.target.value)
-                                             }
+                                             onChange={(e) => {
+                                                const value = e.target.value;
+
+                                                // Allow empty input
+                                                if (value === "") {
+                                                   setOfferAmount("");
+                                                   return;
+                                                }
+
+                                                // Only allow numbers and one decimal point
+                                                const regex = /^\d*\.?\d{0,2}$/;
+                                                if (regex.test(value)) {
+                                                   const numValue =
+                                                      parseFloat(value);
+                                                   if (
+                                                      !isNaN(numValue) &&
+                                                      numValue >= 0 &&
+                                                      numValue <= 9999.99
+                                                   ) {
+                                                      setOfferAmount(value);
+                                                   }
+                                                }
+                                             }}
+                                             onKeyPress={(e) => {
+                                                const charCode = e.which
+                                                   ? e.which
+                                                   : e.keyCode;
+                                                if (
+                                                   charCode > 31 &&
+                                                   (charCode < 48 ||
+                                                      charCode > 57) &&
+                                                   charCode !== 46
+                                                ) {
+                                                   e.preventDefault();
+                                                }
+                                             }}
+                                             inputMode="decimal"
                                              h="64px"
                                              fontSize={{
                                                 base: "18px",

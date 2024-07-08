@@ -35,31 +35,17 @@ const PostFooter = ({ post }) => {
             alignItems={"center"}
             h={"25px"}
          >
-            <Text fontSize="24" fontWeight={700}>
+            <Text fontSize={{ base: "16px", md: "20px" }} fontWeight={700}>
                {displayPrice}
             </Text>
 
-            <Text fontWeight={700} fontSize="24" color="#716FE9">
+            <Text
+               fontWeight={700}
+               fontSize={{ base: "16px", md: "20px" }}
+               color="#716FE9"
+            >
                {post.isOBO ? " OBO" : ""}
             </Text>
-            <Flex flexDirection={"row"} justifyContent={"center"}>
-               <Box
-                  onClick={handleLikePost}
-                  cursor={"pointer"}
-                  fontSize={18}
-                  pr={1}
-               >
-                  {!isLiked ? <FaRegHeart /> : <FaHeart />}
-               </Box>
-               <Text
-                  fontWeight={600}
-                  fontSize={"12"}
-                  alignSelf={"center"}
-                  pr={1}
-               >
-                  {likes}
-               </Text>
-            </Flex>
          </Flex>
          <Flex
             w={"full"}
@@ -70,6 +56,24 @@ const PostFooter = ({ post }) => {
             <Text fontWeight={300} fontSize={"12"} color={"gray"}>
                {post.pickupLocation || "Anywhere"}
             </Text>
+            <Flex flexDirection={"row"} justifyContent={"center"}>
+               <Box
+                  onClick={handleLikePost}
+                  cursor={"pointer"}
+                  fontSize={{ base: "12px", md: "16px" }}
+                  pr={1}
+               >
+                  {!isLiked ? <FaRegHeart /> : <FaHeart />}
+               </Box>
+               <Text
+                  fontWeight={600}
+                  fontSize={{ base: "8px", md: "12px" }}
+                  alignSelf={"center"}
+                  pr={1}
+               >
+                  {likes}
+               </Text>
+            </Flex>
          </Flex>
       </Flex>
    );

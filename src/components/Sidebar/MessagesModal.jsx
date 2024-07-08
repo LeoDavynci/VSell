@@ -254,7 +254,13 @@ const MessagesModal = ({ isOpen, onClose }) => {
                                  fontSize={16}
                                  placeholder="Reply to this message with contact info"
                                  value={replyText}
-                                 onChange={(e) => setReplyText(e.target.value)}
+                                 onChange={(e) => {
+                                    const newValue = e.target.value.slice(
+                                       0,
+                                       50
+                                    );
+                                    setReplyText(newValue);
+                                 }}
                               />
                            )}
                         </Box>

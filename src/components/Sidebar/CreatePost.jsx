@@ -118,7 +118,10 @@ const CreatePost = () => {
                      borderColor={"black"}
                      borderWidth={"2px"}
                      value={itemName}
-                     onChange={(e) => setItemName(e.target.value)}
+                     onChange={(e) => {
+                        const newValue = e.target.value.slice(0, 40);
+                        setItemName(newValue);
+                     }}
                   />
                   <Text mt={2}>Price</Text>
                   <Flex align="center">
@@ -131,14 +134,43 @@ const CreatePost = () => {
                            $
                         </InputLeftElement>
                         <Input
-                           type="number"
-                           min="0"
-                           max="9999"
-                           borderRadius={15}
-                           borderColor={"black"}
-                           borderWidth={"2px"}
                            value={price}
-                           onChange={(e) => setPrice(e.target.value)}
+                           onChange={(e) => {
+                              const value = e.target.value;
+
+                              // Allow empty input
+                              if (value === "") {
+                                 setPrice("");
+                                 return;
+                              }
+
+                              // Only allow numbers and one decimal point
+                              const regex = /^\d*\.?\d{0,2}$/;
+                              if (regex.test(value)) {
+                                 const numValue = parseFloat(value);
+                                 if (
+                                    !isNaN(numValue) &&
+                                    numValue >= 0 &&
+                                    numValue <= 9999.99
+                                 ) {
+                                    setPrice(value);
+                                 }
+                              }
+                           }}
+                           onKeyPress={(e) => {
+                              const charCode = e.which ? e.which : e.keyCode;
+                              if (
+                                 charCode > 31 &&
+                                 (charCode < 48 || charCode > 57) &&
+                                 charCode !== 46
+                              ) {
+                                 e.preventDefault();
+                              }
+                           }}
+                           inputMode="decimal"
+                           borderRadius={15}
+                           borderColor="black"
+                           borderWidth="2px"
                         />
                      </InputGroup>
                      <Checkbox
@@ -157,7 +189,10 @@ const CreatePost = () => {
                      borderColor={"black"}
                      borderWidth={"2px"}
                      value={pickupLocation}
-                     onChange={(e) => setPickupLocation(e.target.value)}
+                     onChange={(e) => {
+                        const newValue = e.target.value.slice(0, 20);
+                        setPickupLocation(newValue);
+                     }}
                   />
                   <Text mt={2}>Description</Text>
                   <Textarea
@@ -166,7 +201,10 @@ const CreatePost = () => {
                      borderColor={"black"}
                      borderWidth={"2px"}
                      value={caption}
-                     onChange={(e) => setCaption(e.target.value)}
+                     onChange={(e) => {
+                        const newValue = e.target.value.slice(0, 250);
+                        setCaption(newValue);
+                     }}
                   />
 
                   <Input
