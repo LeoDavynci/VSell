@@ -19,6 +19,17 @@ const Signup = () => {
       password: "",
    });
 
+   const handleSignup = async () => {
+      await signup(inputs);
+      // Clear the form after signup
+      setInputs({
+         fullName: "",
+         username: "",
+         email: "",
+         password: "",
+      });
+   };
+
    const { loading, error, signup } = useSignUpWithEmailAndPassword();
 
    return (
@@ -101,7 +112,7 @@ const Signup = () => {
             </Alert>
          )}
 
-         {/* Sign Up */}
+         {/* Sign Up Button */}
          <Button
             w={"full"}
             h={"2.25rem"}
@@ -111,10 +122,18 @@ const Signup = () => {
             fontSize={14}
             borderRadius="10px"
             isLoading={loading}
-            onClick={() => signup(inputs)}
+            onClick={handleSignup}
          >
             Sign Up
          </Button>
+
+         {!error && (
+            <Alert status="info" fontSize={13} p={2} borderRadius={4}>
+               <AlertIcon fontSize={12} />
+               After signing up, please check your email to verify your account
+               before logging in.
+            </Alert>
+         )}
       </>
    );
 };
