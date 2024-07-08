@@ -26,6 +26,8 @@ import { firestore, storage } from "../../firebase/firebase";
 import { arrayRemove, deleteDoc, doc, updateDoc } from "firebase/firestore";
 import usePostStore from "../../store/postStore";
 import useLikePost from "./../../hooks/useLikePost";
+import { useSwipeable } from "react-swipeable";
+import { IoIosArrowDropleft, IoIosArrowDropright } from "react-icons/io";
 
 const ProfilePost = ({ post }) => {
    const { isOpen, onOpen, onClose } = useDisclosure();
@@ -39,6 +41,8 @@ const ProfilePost = ({ post }) => {
    const decrementPostsCount = useUserProfileStore((state) => state.deletePost);
    const { handleLikePost, isLiked, likes } = useLikePost(post);
    const timeAgo = getTimeDifference(post.createdAt);
+   const [currentImageIndex, setCurrentImageIndex] = useState(0);
+   const [swipeDirection, setSwipeDirection] = useState(null);
 
    const handleDeletePost = async () => {
       if (!window.confirm("Are you sure you want to delete this post?")) return;
@@ -46,8 +50,12 @@ const ProfilePost = ({ post }) => {
       setIsDeleting(true);
 
       try {
-         const imageRef = ref(storage, `posts/${post.id}`);
-         await deleteObject(imageRef);
+         // Delete all images associated with the post
+         for (const imageURL of post.imageURLs) {
+            const imageRef = ref(storage, imageURL);
+            await deleteObject(imageRef);
+         }
+
          const userRef = doc(firestore, "users", authUser.user.uid);
          await deleteDoc(doc(firestore, "posts", post.id));
 
@@ -63,6 +71,33 @@ const ProfilePost = ({ post }) => {
       } finally {
          setIsDeleting(false);
       }
+   };
+
+   const handlers = useSwipeable({
+      onSwipedLeft: () => {
+         nextImage();
+         setSwipeDirection("left");
+         setTimeout(() => setSwipeDirection(null), 500);
+      },
+      onSwipedRight: () => {
+         prevImage();
+         setSwipeDirection("right");
+         setTimeout(() => setSwipeDirection(null), 500);
+      },
+      preventDefaultTouchmoveEvent: true,
+      trackMouse: true,
+   });
+
+   const prevImage = () => {
+      setCurrentImageIndex((prevIndex) =>
+         prevIndex === 0 ? post.imageURLs.length - 1 : prevIndex - 1
+      );
+   };
+
+   const nextImage = () => {
+      setCurrentImageIndex(
+         (prevIndex) => (prevIndex + 1) % post.imageURLs.length
+      );
    };
 
    return (
@@ -100,7 +135,7 @@ const ProfilePost = ({ post }) => {
             </Flex>
 
             <Img
-               src={post.imageURL}
+               src={post.imageURLs[0]}
                w={"100%"}
                h={"100%"}
                objectFit={"cover"}
@@ -124,11 +159,11 @@ const ProfilePost = ({ post }) => {
                <ModalBody py={3} px={3}>
                   <Flex flexDirection={{ base: "column", md: "row" }}>
                      <Box
+                        {...handlers}
                         borderRadius={30}
                         position="relative"
                         overflow="hidden"
-                        flex={1}
-                        w={"100%"}
+                        w={{ base: "100%", md: "50%" }}
                         _before={{
                            content: '""',
                            display: "block",
@@ -136,14 +171,74 @@ const ProfilePost = ({ post }) => {
                         }}
                      >
                         <Image
-                           src={post.imageURL}
+                           src={post.imageURLs[currentImageIndex]}
                            objectFit="cover"
                            position="absolute"
                            top="0"
                            left="0"
                            width="100%"
                            height="100%"
+                           transition="transform 0.3s ease-out"
+                           transform={
+                              swipeDirection === "left"
+                                 ? "translateX(-10%)"
+                                 : swipeDirection === "right"
+                                 ? "translateX(10%)"
+                                 : "translateX(0)"
+                           }
                         />
+                        {post.imageURLs.length > 1 && (
+                           <>
+                              <Button
+                                 position="absolute"
+                                 left="39%"
+                                 bottom="10px"
+                                 onClick={prevImage}
+                                 bg="rgba(0, 0, 0, 0.4)"
+                                 _hover={{ bg: "rgba(0, 0, 0, 0.6)" }}
+                                 size={"40px"}
+                                 borderRadius={"50px"}
+                              >
+                                 <IoIosArrowDropleft
+                                    color="white"
+                                    size={"30px"}
+                                 />
+                              </Button>
+                              <Button
+                                 position="absolute"
+                                 right="38%"
+                                 bottom="10px"
+                                 onClick={nextImage}
+                                 bg="rgba(0, 0, 0, 0.4)"
+                                 _hover={{ bg: "rgba(0, 0, 0, 0.6)" }}
+                                 size={"40px"}
+                                 borderRadius={"50px"}
+                              >
+                                 <IoIosArrowDropright
+                                    color="white"
+                                    size={"30px"}
+                                 />
+                              </Button>
+                              <Box
+                                 position="absolute"
+                                 height={"30px"}
+                                 bottom="10px"
+                                 left="45%"
+                                 bg="rgba(0, 0, 0, 0.4)"
+                                 color="white"
+                                 px={4}
+                                 py={1}
+                                 borderRadius={50}
+                                 alignItems={"center"}
+                                 justifyItems={"center"}
+                              >
+                                 <Text>
+                                    {currentImageIndex + 1} /{" "}
+                                    {post.imageURLs.length}
+                                 </Text>
+                              </Box>
+                           </>
+                        )}
                      </Box>
 
                      <Flex
@@ -250,17 +345,6 @@ const ProfilePost = ({ post }) => {
                               flexDir={"row"}
                               mt={{ base: "10px", md: "20px" }}
                            >
-                              {/* <Button
-                                 bg="#D9D9D9"
-                                 variant="solid"
-                                 color={"black"}
-                                 borderRadius={{ base: 35, md: 25 }}
-                                 fontSize="36px"
-                                 py={9}
-                                 px={14}
-                              >
-                                 Edit
-                              </Button> */}
                               <Button
                                  bg="#D9D9D9"
                                  variant="solid"

@@ -20,6 +20,8 @@ import {
 import { FaLocationDot, FaRegHeart, FaHeart } from "react-icons/fa6";
 import useLikePost from "../../hooks/useLikePost";
 import { getTimeDifference } from "../../utils/getTimeDifference";
+import { useSwipeable } from "react-swipeable";
+import { IoIosArrowDropleft, IoIosArrowDropright } from "react-icons/io";
 
 const PostModal = ({
    isOpen,
@@ -33,6 +35,36 @@ const PostModal = ({
    const { handleLikePost, isLiked, likes } = useLikePost(post);
    const [showOfferInput, setShowOfferInput] = useState(false);
    const [offerAmount, setOfferAmount] = useState("");
+   const [currentImageIndex, setCurrentImageIndex] = useState(0);
+   const [swipeDirection, setSwipeDirection] = useState(null);
+
+   const nextImage = () => {
+      setCurrentImageIndex(
+         (prevIndex) => (prevIndex + 1) % post.imageURLs.length
+      );
+   };
+
+   const prevImage = () => {
+      setCurrentImageIndex(
+         (prevIndex) =>
+            (prevIndex - 1 + post.imageURLs.length) % post.imageURLs.length
+      );
+   };
+
+   const handlers = useSwipeable({
+      onSwipedLeft: () => {
+         nextImage();
+         setSwipeDirection("left");
+         setTimeout(() => setSwipeDirection(null), 500);
+      },
+      onSwipedRight: () => {
+         prevImage();
+         setSwipeDirection("right");
+         setTimeout(() => setSwipeDirection(null), 500);
+      },
+      preventDefaultTouchmoveEvent: true,
+      trackMouse: true,
+   });
 
    const timeAgo = getTimeDifference(post.createdAt);
    const displayPrice = post.price ? (
@@ -73,7 +105,9 @@ const PostModal = ({
             <ModalBody py={3} px={3}>
                <Flex flexDirection={{ base: "column", md: "row" }}>
                   {/* Picture */}
+
                   <Box
+                     {...handlers}
                      borderRadius={30}
                      position="relative"
                      overflow="hidden"
@@ -85,14 +119,71 @@ const PostModal = ({
                      }}
                   >
                      <Image
-                        src={post.imageURL}
+                        src={post.imageURLs[currentImageIndex]}
                         objectFit="cover"
                         position="absolute"
                         top="0"
                         left="0"
                         width="100%"
                         height="100%"
+                        transition="transform 0.3s ease-out"
+                        transform={
+                           swipeDirection === "left"
+                              ? "translateX(-10%)"
+                              : swipeDirection === "right"
+                              ? "translateX(10%)"
+                              : "translateX(0)"
+                        }
                      />
+                     {post.imageURLs.length > 1 && (
+                        <>
+                           <Button
+                              position="absolute"
+                              left="39%"
+                              bottom="10px"
+                              onClick={prevImage}
+                              bg="rgba(0, 0, 0, 0.4)"
+                              _hover={{ bg: "rgba(0, 0, 0, 0.6)" }}
+                              size={"40px"}
+                              borderRadius={"50px"}
+                           >
+                              <IoIosArrowDropleft color="white" size={"30px"} />
+                           </Button>
+                           <Button
+                              position="absolute"
+                              right="38%"
+                              bottom="10px"
+                              onClick={nextImage}
+                              bg="rgba(0, 0, 0, 0.4)"
+                              _hover={{ bg: "rgba(0, 0, 0, 0.6)" }}
+                              size={"40px"}
+                              borderRadius={"50px"}
+                           >
+                              <IoIosArrowDropright
+                                 color="white"
+                                 size={"30px"}
+                              />
+                           </Button>
+                           <Box
+                              position="absolute"
+                              height={"30px"}
+                              bottom="10px"
+                              left="45%"
+                              bg="rgba(0, 0, 0, 0.4)"
+                              color="white"
+                              px={4}
+                              py={1}
+                              borderRadius={50}
+                              alignItems={"center"}
+                              justifyItems={"center"}
+                           >
+                              <Text>
+                                 {currentImageIndex + 1} /{" "}
+                                 {post.imageURLs.length}
+                              </Text>
+                           </Box>
+                        </>
+                     )}
                   </Box>
 
                   {/* Info */}

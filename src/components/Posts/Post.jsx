@@ -86,7 +86,7 @@ const Post = ({ post }) => {
                   cursor={"pointer"}
                >
                   <Image
-                     src={post.imageURL}
+                     src={post.imageURLs[0]}
                      borderRadius="10px"
                      objectFit="cover"
                      position="relative"

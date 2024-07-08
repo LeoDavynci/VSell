@@ -45,14 +45,20 @@ const CreatePost = () => {
    const [pickupLocation, setPickupLocation] = useState("");
    const [isOBO, setIsOBO] = useState(false);
    const [caption, setCaption] = useState("");
-   const [selectedFile, setSelectedFile] = useState(null);
+   const [selectedFiles, setSelectedFiles] = useState([]);
+
    const imageRef = useRef(null);
    const showToast = useShowToast();
    const { isLoading, handleCreatePost } = useCreatePost();
 
    const handleImageChange = (event) => {
-      const file = event.target.files[0];
-      if (file) {
+      const files = Array.from(event.target.files);
+      if (files.length + selectedFiles.length > 4) {
+         showToast("Error", "You can only upload up to 4 images", "error");
+         return;
+      }
+
+      files.forEach((file) => {
          Resizer.imageFileResizer(
             file,
             800, // max width
@@ -72,7 +78,10 @@ const CreatePost = () => {
                      );
                      const fileReader = new FileReader();
                      fileReader.onload = () => {
-                        setSelectedFile(fileReader.result);
+                        setSelectedFiles((prev) => [
+                           ...prev,
+                           fileReader.result,
+                        ]);
                      };
                      fileReader.readAsDataURL(compressedFile);
                   },
@@ -80,7 +89,7 @@ const CreatePost = () => {
             },
             "base64" // output type
          );
-      }
+      });
    };
 
    const dataURLtoBlob = (dataurl) => {
@@ -94,11 +103,10 @@ const CreatePost = () => {
       }
       return new Blob([u8arr], { type: mime });
    };
-
    const handlePostCreation = async () => {
       try {
          await handleCreatePost(
-            selectedFile,
+            selectedFiles,
             caption,
             itemName,
             price,
@@ -111,7 +119,7 @@ const CreatePost = () => {
          setPrice("");
          setPickupLocation("");
          setIsOBO(false);
-         setSelectedFile(null);
+         setSelectedFiles([]);
       } catch (error) {
          showToast("Error", error.message, "error");
       }
@@ -256,35 +264,42 @@ const CreatePost = () => {
                      onChange={handleImageChange}
                   />
 
+                  <Text mt={2}>Upload up to 4 photos</Text>
                   <Button
-                     mt={4}
                      borderRadius={15}
                      onClick={() => imageRef.current.click()}
                   >
                      Upload Photo
                   </Button>
 
-                  {selectedFile && (
+                  {selectedFiles.length > 0 && (
                      <Flex
                         mt={5}
                         w={"full"}
-                        position={"relative"}
+                        flexWrap="wrap"
                         justifyContent={"center"}
-                        borderRadius={15}
                      >
-                        <Image
-                           borderRadius={15}
-                           src={selectedFile}
-                           alt="Image"
-                        />
-                        <CloseButton
-                           position={"absolute"}
-                           top={2}
-                           right={2}
-                           onClick={() => {
-                              setSelectedFile(null);
-                           }}
-                        />
+                        {selectedFiles.map((file, index) => (
+                           <Box key={index} position="relative" m={2}>
+                              <Image
+                                 borderRadius={15}
+                                 src={file}
+                                 alt={`Image ${index + 1}`}
+                                 maxH="200px"
+                                 maxW="200px"
+                              />
+                              <CloseButton
+                                 position={"absolute"}
+                                 top={2}
+                                 right={2}
+                                 onClick={() => {
+                                    setSelectedFiles((prev) =>
+                                       prev.filter((_, i) => i !== index)
+                                    );
+                                 }}
+                              />
+                           </Box>
+                        ))}
                      </Flex>
                   )}
                </ModalBody>
@@ -321,7 +336,7 @@ function useCreatePost() {
    const { pathname } = useLocation();
 
    const handleCreatePost = async (
-      selectedFile,
+      selectedFiles,
       caption,
       itemName,
       price,
@@ -329,7 +344,8 @@ function useCreatePost() {
       isOBO
    ) => {
       if (isLoading) return;
-      if (!selectedFile) throw new Error("Please select an image");
+      if (selectedFiles.length === 0)
+         throw new Error("Please select at least one image");
       setIsLoading(true);
       const newPost = {
          itemName: itemName,
@@ -348,18 +364,20 @@ function useCreatePost() {
             newPost
          );
          const userDocRef = doc(firestore, "users", authUser.uid);
-         const imageRef = ref(storage, `posts/${postDocRef.id}`);
 
          await updateDoc(userDocRef, { posts: arrayUnion(postDocRef.id) });
-         await uploadString(imageRef, selectedFile, "data_url");
-         const downloadURL = await getDownloadURL(imageRef);
 
-         await updateDoc(postDocRef, { imageURL: downloadURL });
+         const imageURLs = await Promise.all(
+            selectedFiles.map(async (file, index) => {
+               const imageRef = ref(storage, `posts/${postDocRef.id}_${index}`);
+               await uploadString(imageRef, file, "data_url");
+               return getDownloadURL(imageRef);
+            })
+         );
 
-         newPost.imageURL = downloadURL;
+         await updateDoc(postDocRef, { imageURLs: imageURLs });
 
-         console.log("userProfile:", userProfile);
-         console.log("authUser:", authUser);
+         newPost.imageURLs = imageURLs;
 
          if (
             userProfile &&
