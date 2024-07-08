@@ -1,3 +1,4 @@
+import React, { useRef, useState } from "react";
 import {
    Box,
    Button,
@@ -19,11 +20,9 @@ import {
    Textarea,
    useDisclosure,
 } from "@chakra-ui/react";
-
 import { IoMdAddCircle } from "react-icons/io";
-
-import { useRef, useState } from "react";
-import usePreviewImg from "../../hooks/usePreviewImg";
+import Compressor from "compressorjs";
+import Resizer from "react-image-file-resizer";
 import useShowToast from "../../hooks/useShowToast";
 import useAuthStore from "../../store/authStore";
 import usePostStore from "../../store/postStore";
@@ -41,17 +40,60 @@ import { getDownloadURL, ref, uploadString } from "firebase/storage";
 
 const CreatePost = () => {
    const { isOpen, onOpen, onClose } = useDisclosure();
-
    const [itemName, setItemName] = useState("");
    const [price, setPrice] = useState("");
    const [pickupLocation, setPickupLocation] = useState("");
    const [isOBO, setIsOBO] = useState(false);
    const [caption, setCaption] = useState("");
+   const [selectedFile, setSelectedFile] = useState(null);
    const imageRef = useRef(null);
-
-   const { handleImageChange, selectedFile, setSelectedFile } = usePreviewImg();
    const showToast = useShowToast();
    const { isLoading, handleCreatePost } = useCreatePost();
+
+   const handleImageChange = (event) => {
+      const file = event.target.files[0];
+      if (file) {
+         Resizer.imageFileResizer(
+            file,
+            800, // max width
+            800, // max height
+            "JPEG", // output format
+            80, // quality
+            0, // rotation
+            (uri) => {
+               const blob = dataURLtoBlob(uri);
+               new Compressor(blob, {
+                  quality: 0.8, // quality of the compressed image
+                  success: (compressedResult) => {
+                     const compressedFile = new File(
+                        [compressedResult],
+                        file.name,
+                        { type: compressedResult.type }
+                     );
+                     const fileReader = new FileReader();
+                     fileReader.onload = () => {
+                        setSelectedFile(fileReader.result);
+                     };
+                     fileReader.readAsDataURL(compressedFile);
+                  },
+               });
+            },
+            "base64" // output type
+         );
+      }
+   };
+
+   const dataURLtoBlob = (dataurl) => {
+      const arr = dataurl.split(",");
+      const mime = arr[0].match(/:(.*?);/)[1];
+      const bstr = atob(arr[1]);
+      let n = bstr.length;
+      const u8arr = new Uint8Array(n);
+      while (n--) {
+         u8arr[n] = bstr.charCodeAt(n);
+      }
+      return new Blob([u8arr], { type: mime });
+   };
 
    const handlePostCreation = async () => {
       try {
@@ -232,7 +274,6 @@ const CreatePost = () => {
                      >
                         <Image
                            borderRadius={15}
-                           s
                            src={selectedFile}
                            alt="Image"
                         />
