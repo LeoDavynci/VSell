@@ -45,11 +45,11 @@ const PostModal = ({
       setShowOfferInput(true);
    };
 
-   // const submitOffer = () => {
-   //    handleOfferSubmit(offerAmount);
-   //    setShowOfferInput(false);
-   //    setOfferAmount("");
-   // };
+   const submitOffer = () => {
+      handleOfferSubmit(offerAmount);
+      setShowOfferInput(false);
+      setOfferAmount("");
+   };
 
    return (
       <Modal
@@ -59,8 +59,12 @@ const PostModal = ({
          size={{ base: "sm", sm: "sm", md: "3xl", lg: "6xl" }}
       >
          <ModalOverlay backdropFilter="blur(10px)" />
-         <ModalContent bg="white" borderRadius={40} mt="10%">
-            <ModalHeader py={5} borderTopRadius={40}>
+         <ModalContent
+            bg="white"
+            borderRadius={{ base: "25px", md: "35px" }}
+            mt="10%"
+         >
+            <ModalHeader py={5}>
                <Box position="static" top="10px" left="10px">
                   <ModalCloseButton size="lg" _hover={{ bg: "none" }} />
                </Box>
@@ -278,7 +282,7 @@ const PostModal = ({
                   </Flex>
                </Flex>
             </ModalBody>
-            <ModalFooter py={5} borderBottomRadius={40}></ModalFooter>
+            <ModalFooter py={5}></ModalFooter>
          </ModalContent>
       </Modal>
    );

@@ -46,31 +46,30 @@ const MessagesModal = ({ isOpen, onClose }) => {
       }
    };
 
-   const handleReject = async (message) => {
-      try {
-         await addDoc(collection(db, "messages"), {
-            receiverId: message.senderId,
-            senderId: authUser.uid,
-            postId: message.postId,
-            type: "rejection",
-            item: message.item,
-            price: message.price,
-            seller: message.seller,
-            buyer: message.buyer,
-            info: replyText,
-            status: "unread",
-            createdAt: serverTimestamp(),
-            lastUpdated: serverTimestamp(),
-         });
+   //    const handleReject = async (message) => {
+   //       try {
+   //          await addDoc(collection(db, "messages"), {
+   //             receiverId: message.senderId,
+   //             senderId: authUser.uid,
+   //             postId: message.postId,
+   //             type: "rejection",
+   //             item: message.item,
+   //             price: message.price,
+   //             seller: message.seller,
+   //             buyer: message.buyer,
+   //             info: replyText,
+   //             status: "unread",
+   //             createdAt: serverTimestamp(),
+   //             lastUpdated: serverTimestamp(),
+   //          });
 
-         setReplyText("");
-      } catch (error) {
-         console.error("Error rejection:", error);
-      }
-   };
+   //          setReplyText("");
+   //       } catch (error) {
+   //          console.error("Error rejection:", error);
+   //       }
+   //    };
 
    const handleAccept = async (message) => {
-      console.log("Message object:", message);
       try {
          // Send confirmation to the buyer
          await addDoc(collection(db, "messages"), {
@@ -105,6 +104,56 @@ const MessagesModal = ({ isOpen, onClose }) => {
       }
    };
 
+   const handleOfferAccept = async (message) => {
+      try {
+         // Send confirmation to the buyer
+         await addDoc(collection(db, "messages"), {
+            receiverId: message.senderId,
+            senderId: authUser.uid,
+            postId: message.postId,
+            type: "offerConfirmation",
+            item: message.item,
+            price: message.price,
+            seller: message.seller,
+            buyer: message.buyer,
+            info: replyText,
+            status: "unread",
+            createdAt: serverTimestamp(),
+            lastUpdated: serverTimestamp(),
+         });
+
+         // Remove the current message from the database
+         await deleteDoc(doc(db, "messages", message.id));
+      } catch (error) {
+         console.error("Error accepting buy request:", error);
+      }
+   };
+
+   const handleOfferReject = async (message) => {
+      try {
+         // Send rejection to the buyer
+         await addDoc(collection(db, "messages"), {
+            receiverId: message.senderId,
+            senderId: authUser.uid,
+            postId: message.postId,
+            type: "offerRejection",
+            item: message.item,
+            price: message.price,
+            seller: message.seller,
+            buyer: message.buyer,
+            info: replyText,
+            status: "unread",
+            createdAt: serverTimestamp(),
+            lastUpdated: serverTimestamp(),
+         });
+
+         // Remove the current message from the database
+         await deleteDoc(doc(db, "messages", message.id));
+      } catch (error) {
+         console.error("Error rejecting buy request:", error);
+      }
+   };
+
    const handleDelete = async (message) => {
       try {
          await deleteDoc(doc(db, "messages", message.id));
@@ -134,51 +183,72 @@ const MessagesModal = ({ isOpen, onClose }) => {
    }, [authUser]);
 
    return (
-      <Modal isOpen={isOpen} onClose={onClose} size="xl">
+      <Modal
+         isOpen={isOpen}
+         onClose={onClose}
+         size={{ base: "sm", sm: "sm", md: "3xl", lg: "6xl" }}
+      >
          <ModalOverlay />
-         <ModalContent>
+         <ModalContent borderRadius={{ base: "25px", md: "35px" }} mt={"70px"}>
             <ModalHeader>Your Messages</ModalHeader>
             <ModalCloseButton />
-            <ModalBody>
+            <ModalBody px={"10px"} pb={"10px"}>
                <VStack spacing={4} align="stretch">
                   {messages.map((message) => (
                      <Box
                         key={message.id}
-                        p={4}
+                        p={3}
                         border={"2px solid black"}
-                        borderRadius="25px"
+                        borderRadius={{ base: "20px", md: "30px" }}
                      >
                         <Text fontWeight="bold">
                            {message.type === "buy"
                               ? "Buy Request"
-                              : message.type === "rejection"
-                              ? "Rejection"
+                              : message.type === "offer"
+                              ? "Offer"
                               : message.type === "confirmation"
                               ? "Confirmation"
-                              : message.type === "reply"
-                              ? "Reply"
-                              : ""}{" "}
-                           from{" "}
-                           {message.type === "buy" || message.type === "offer"
-                              ? message.buyer
-                              : message.type === "confirmation"
-                              ? message.seller || authUser.displayName
                               : message.type === "rejection"
-                              ? message.seller
-                              : "Unknown"}
+                              ? "Rejection"
+                              : message.type === "offerConfirmation"
+                              ? `${message.seller} accepts your offer`
+                              : message.type === "rejectConfirmation"
+                              ? `${message.seller} rejects your offer`
+                              : ""}{" "}
+                           {message.type ===
+                              "confirmation"(
+                                 <>
+                                    from{" "}
+                                    {message.type === "buy" ||
+                                    message.type === "offer"
+                                       ? message.buyer
+                                       : message.type === "confirmation"
+                                       ? message.seller || authUser.displayName
+                                       : message.type === "rejection"
+                                       ? message.seller
+                                       : "Unknown"}
+                                 </>
+                              )}
                         </Text>
 
+                        {/* Item Name */}
                         <Text>Item: {message.item}</Text>
+
                         <Text>
                            Amount:{" "}
-                           {message.price ? `$${message.price}` : "Free"}
+                           {message.type === "buy" ? (
+                              `$${message.price || "Free"}`
+                           ) : message.type === "offer" ? (
+                              <>
+                                 <s>${message.price}</s> {message.info}
+                              </>
+                           ) : (
+                              "Free"
+                           )}
                         </Text>
 
-                        <Text>Status: {message.status}</Text>
-                        {message.info && <Text pt={5}>{message.info}</Text>}
-
-                        {/* Reply Box */}
-                        {message.type !== "confirmation" && (
+                        {/* Reply Box if Buy */}
+                        {message.type === "buy" && (
                            <Input
                               placeholder="Reply to this message with contact infomation"
                               value={replyText}
@@ -186,39 +256,45 @@ const MessagesModal = ({ isOpen, onClose }) => {
                            />
                         )}
 
-                        {/* Accept Button */}
+                        {/* Accept Button if buy */}
                         {message.type === "buy" && (
                            <Button onClick={() => handleAccept(message)}>
                               Accept
                            </Button>
                         )}
 
-                        {/* Reject Button */}
-                        {message.type === "buy" && (
-                           <Button onClick={() => handleReject(message)}>
+                        {/* Accept Button if offer*/}
+                        {message.type === "offer" && (
+                           <Button onClick={() => handleOfferAccept(message)}>
+                              Accept
+                           </Button>
+                        )}
+
+                        {/* Reject Button if offer*/}
+                        {message.type === "offer" && (
+                           <Button onClick={() => handleOfferReject(message)}>
                               Reject
                            </Button>
                         )}
 
-                        {/* Delete Button */}
-                        {message.type !== "buy" && (
+                        {/* Delete Button if confirmation or rejection*/}
+                        {(message.type === "confirmation" ||
+                           message.type === "rejection" ||
+                           message.type === "offerConfirmation" ||
+                           message.type === "offerRejection") && (
                            <Button onClick={() => handleDelete(message)}>
                               Delete
                            </Button>
                         )}
 
+                        {/* Date and time request was sent*/}
                         <Text fontSize={10}>
-                           {message.createdAt.toDate().toLocaleString()}
+                           Sent {message.createdAt.toDate().toLocaleString()}
                         </Text>
                      </Box>
                   ))}
                </VStack>
             </ModalBody>
-            <ModalFooter>
-               <Button colorScheme="blue" mr={3} onClick={onClose}>
-                  Close
-               </Button>
-            </ModalFooter>
          </ModalContent>
       </Modal>
    );

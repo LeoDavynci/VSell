@@ -46,13 +46,20 @@ const Post = ({ post }) => {
    const handleBuyClick = () => {
       setIsPurchaseModalOpen(true);
    };
-   const handleOfferClick = () => {
-      setShowOfferInput(true);
-   };
 
-   const handleOfferSubmit = async () => {
-      await createMessage("offer", offerAmount);
-      console.log(`Offer submitted: ${offerAmount}`);
+   const handleOfferSubmit = async (offerAmount) => {
+      await createMessage(
+         post.createdBy,
+         authUser.uid,
+         post.id,
+         "offer",
+         post.itemName,
+         post.price,
+         userProfile.fullName,
+         authUser.fullName,
+         offerAmount
+      );
+      console.log(`Offer submitted`);
       setShowOfferInput(false);
       setOfferAmount("");
       onClose();
