@@ -5,6 +5,7 @@ import {
    Input,
    InputGroup,
    InputRightElement,
+   Text,
 } from "@chakra-ui/react";
 import React, { useState } from "react";
 import useSignUpWithEmailAndPassword from "../../hooks/useSignUpWithEmailAndPassword";
@@ -106,7 +107,13 @@ const Signup = () => {
          </InputGroup>
 
          {error && (
-            <Alert status="error" fontSize={13} p={2} borderRadius={4}>
+            <Alert
+               status="error"
+               fontSize={13}
+               p={2}
+               borderRadius={4}
+               style={{ whiteSpace: "pre-wrap", wordWrap: "break-word" }}
+            >
                <AlertIcon fontSize={12} />
                {error.message}
             </Alert>
@@ -128,10 +135,18 @@ const Signup = () => {
          </Button>
 
          {!error && (
-            <Alert status="info" fontSize={13} p={2} borderRadius={4}>
-               <AlertIcon fontSize={12} />
-               After signing up, please check your email to verify your account
-               before logging in.
+            <Alert
+               status="info"
+               fontSize={13}
+               p={2}
+               borderRadius={10}
+               w={"280px"}
+               bg={"#79A88E"}
+               color={"white"}
+               style={{ whiteSpace: "pre-wrap", wordWrap: "break-word" }}
+            >
+               <AlertIcon fontSize={12} color={"white"} />
+               After sign up, please check your email to verify your account
             </Alert>
          )}
       </>
