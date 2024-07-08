@@ -1,4 +1,4 @@
-import { Box, Container, Flex } from "@chakra-ui/react";
+import { Box, Container, Flex, Text } from "@chakra-ui/react";
 import Posts from "../../components/Posts/Posts";
 
 const HomePage = () => {
@@ -17,6 +17,16 @@ const HomePage = () => {
             justifyContent={"center"}
          >
             <Box w="full" padding={0} minHeight={"fit-content"}>
+               <Box p={"15px"}>
+                  <Text fontWeight={800}>
+                     {" "}
+                     Announcment: currently buying and selling will just add and
+                     remove posts from the homepage. You will NOT USE REAL MONEY
+                     to pruchase items. It's currently just a way to list things
+                     you are wanting to sell. Try posting something and try
+                     selling something by taking a photo of anything.
+                  </Text>
+               </Box>
                <Posts />
             </Box>
          </Flex>
