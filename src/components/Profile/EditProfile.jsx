@@ -1,3 +1,4 @@
+import React, { useEffect, useRef, useState } from "react";
 import {
    Avatar,
    Button,
@@ -15,7 +16,8 @@ import {
    Stack,
    Text,
 } from "@chakra-ui/react";
-import { useEffect, useRef, useState } from "react";
+import Compressor from "compressorjs";
+import Resizer from "react-image-file-resizer";
 import useAuthStore from "../../store/authStore";
 import usePreviewImg from "../../hooks/usePreviewImg";
 import useEditProfile from "../../hooks/useEditProfile";
@@ -36,10 +38,56 @@ const EditProfile = ({ isOpen, onClose }) => {
          });
       }
    }, [authUser]);
+
    const fileRef = useRef(null);
    const { handleImageChange, selectedFile, setSelectedFile } = usePreviewImg();
    const { isUpdating, editProfile } = useEditProfile();
    const showToast = useShowToast();
+
+   const handleImageChangeWithResize = (event) => {
+      const file = event.target.files[0];
+      if (file) {
+         Resizer.imageFileResizer(
+            file,
+            800, // max width
+            800, // max height
+            "JPEG", // output format
+            80, // quality
+            0, // rotation
+            (uri) => {
+               const blob = dataURLtoBlob(uri);
+               new Compressor(blob, {
+                  quality: 0.8, // quality of the compressed image
+                  success: (compressedResult) => {
+                     const compressedFile = new File(
+                        [compressedResult],
+                        file.name,
+                        { type: compressedResult.type }
+                     );
+                     const fileReader = new FileReader();
+                     fileReader.onload = () => {
+                        setSelectedFile(fileReader.result);
+                     };
+                     fileReader.readAsDataURL(compressedFile);
+                  },
+               });
+            },
+            "base64" // output type
+         );
+      }
+   };
+
+   const dataURLtoBlob = (dataurl) => {
+      const arr = dataurl.split(",");
+      const mime = arr[0].match(/:(.*?);/)[1];
+      const bstr = atob(arr[1]);
+      let n = bstr.length;
+      const u8arr = new Uint8Array(n);
+      while (n--) {
+         u8arr[n] = bstr.charCodeAt(n);
+      }
+      return new Blob([u8arr], { type: mime });
+   };
 
    const handleEditProfile = async () => {
       try {
@@ -91,7 +139,7 @@ const EditProfile = ({ isOpen, onClose }) => {
                                  type="file"
                                  hidden
                                  ref={fileRef}
-                                 onChange={handleImageChange}
+                                 onChange={handleImageChangeWithResize}
                               />
                            </Stack>
                         </FormControl>
