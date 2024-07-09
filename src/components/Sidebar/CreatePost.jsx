@@ -168,7 +168,7 @@ const CreatePost = () => {
                cursor="pointer"
                onClick={onOpen}
             >
-               <IoMdAddCircle color="white" size={40} />
+               <IoMdAddCircle color="white" size={30} />
             </Box>
          </Flex>
 
@@ -259,12 +259,28 @@ const CreatePost = () => {
                   </Flex>
                   <Text mt={2}>Item Quality</Text>
                   <Select
+                     required
                      placeholder="Select quality"
                      borderRadius={15}
-                     borderColor={"black"}
-                     borderWidth={"2px"}
+                     borderColor="black"
+                     borderWidth="2px"
                      value={itemQuality}
                      onChange={(e) => setItemQuality(e.target.value)}
+                     bg="white"
+                     color="gray.800"
+                     sx={{
+                        "& option": {
+                           bg: "white",
+                           color: "gray.800",
+                        },
+                        "& option:hover": {
+                           bg: "#79A88E",
+                        },
+                        "& option:checked": {
+                           bg: "#79A88E !important",
+                           color: "white !important",
+                        },
+                     }}
                   >
                      {qualityOptions.map((option) => (
                         <option key={option.value} value={option.value}>

@@ -7,16 +7,21 @@ const PageLayout = ({ children }) => {
 
    return (
       <Flex direction="column" h="100vh">
-         {/* Top Bar */}
-
-         {pathname !== "/auth" ? (
-            <Box h="70px" position={"sticky"}>
+         {/* Sticky Sidebar */}
+         {pathname !== "/auth" && (
+            <Box
+               position="sticky"
+               top={0}
+               zIndex={1000}
+               bg="white" // Add a background color if needed
+               boxShadow="md" // Optional: adds a shadow for visual separation
+            >
                <Sidebar />
             </Box>
-         ) : null}
+         )}
 
          {/* Page Content */}
-         <Box flex={1} h="calc(100% - 50px)" w={"100%"} bg={"white"}>
+         <Box flex={1} w="100%" bg="white">
             {children}
          </Box>
       </Flex>

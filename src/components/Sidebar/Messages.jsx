@@ -53,7 +53,7 @@ const Messages = () => {
                cursor="pointer"
                onClick={onOpen}
             >
-               <IoChatboxEllipses color="white" size={40} />
+               <IoChatboxEllipses color="white" size={30} />
             </Box>
             {unreadCount > 0 && (
                <Badge
