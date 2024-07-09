@@ -10,7 +10,7 @@ const PageLayout = ({ children }) => {
          {/* Top Bar */}
 
          {pathname !== "/auth" ? (
-            <Box h="70px">
+            <Box h="70px" position={"sticky"}>
                <Sidebar />
             </Box>
          ) : null}
