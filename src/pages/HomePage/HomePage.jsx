@@ -10,26 +10,32 @@ const HomePage = () => {
          bg={"white"}
       >
          <Flex
+            flexDir={{ base: "column", md: "row" }}
+            p={"10px"}
+            w={{ base: "100%", md: "50%" }}
+            bg={"#79A88E"}
+            borderRadius={20}
+            fontWeight={700}
+            gap={3}
+         >
+            <Box borderRadius={10} bg={"#A2C0B0"} p={"10px"}>
+               {" "}
+               Announcment: buying and selling will just add and remove posts
+               from the homepage. You will NOT USE REAL MONEY to purchase items
+            </Box>
+            <Box borderRadius={10} bg={"#A2C0B0"} p={"10px"}>
+               {" "}
+               Latest Updates: added location suggestion and item quality
+            </Box>
+         </Flex>
+
+         <Flex
             gap={10}
-            border={"0px solid red"}
             padding={"2%"}
-            maxW={"container.2xl"}
+            maxW={"container.3xl"}
             justifyContent={"center"}
          >
             <Box w="full" padding={0} minHeight={"fit-content"}>
-               <Box py={"30px"} w={"50%"}>
-                  <Text fontWeight={800}>
-                     {" "}
-                     Announcment: currently buying and selling will just add and
-                     remove posts from the homepage. You will NOT USE REAL MONEY
-                     to purchase items. It's currently just a way to list things
-                     you are wanting to sell.
-                  </Text>
-                  <Text fontWeight={800}>
-                     {" "}
-                     Latest Updates: added location suggestion and item quality
-                  </Text>
-               </Box>
                <Posts />
             </Box>
          </Flex>
