@@ -12,7 +12,7 @@ const HomePage = () => {
          <Flex
             flexDir={{ base: "column", md: "row" }}
             p={"10px"}
-            w={{ base: "100%", md: "50%" }}
+            w={{ base: "100%", md: "70%" }}
             bg={"#79A88E"}
             borderRadius={20}
             fontWeight={700}
@@ -26,6 +26,12 @@ const HomePage = () => {
             <Box borderRadius={10} bg={"#A2C0B0"} p={"10px"}>
                {" "}
                Latest Updates: added location suggestion and item quality
+            </Box>
+            <Box borderRadius={10} bg={"#A2C0B0"} p={"10px"}>
+               {" "}
+               [Offer] will send message to seller to accept for deny. [Buy]
+               will send confirmation to seller in which when they accept will
+               remove the post from the homepage
             </Box>
          </Flex>
 

@@ -11,7 +11,7 @@ import "@fontsource/outfit";
 const styles = {
    global: (props) => ({
       body: {
-         bg: mode("linear-gradient(to right, #5E2BFF, #FC6DAB)")(props),
+         bg: mode("linear-gradient(to right, #79A88E, #79A88E)")(props),
          color: mode("gray.800", "whiteAlpha.900")(props),
          fontFamily: "Outfit, sans-serif",
       },
