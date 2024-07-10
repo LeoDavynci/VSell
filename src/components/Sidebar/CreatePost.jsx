@@ -52,12 +52,12 @@ const CreatePost = () => {
 
    const [itemQuality, setItemQuality] = useState("");
    const qualityOptions = [
-      { value: "new", label: "New" },
-      { value: "likeNew", label: "Like New" },
-      { value: "veryGood", label: "Very Good" },
-      { value: "good", label: "Good" },
-      { value: "fair", label: "Fair" },
-      { value: "poor", label: "Poor" },
+      { value: "New", label: "New" },
+      { value: "Like New", label: "Like New" },
+      { value: "Very Good", label: "Very Good" },
+      { value: "Good", label: "Good" },
+      { value: "Fair", label: "Fair" },
+      { value: "Poor", label: "Poor" },
    ];
 
    const [suggestedLocations, setSuggestedLocations] = useState([]);
