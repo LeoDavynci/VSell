@@ -7,10 +7,10 @@ import Messages from "./Messages";
 
 const SidebarItems = () => {
    return (
-      <Flex justifyContent={"space-between"} px={3}>
+      <Flex justifyContent={"space-between"}>
          <Flex>
             <Home />
-            <Flex height={"100%"} justify={"center"} align={"center"} px={3}>
+            {/* <Flex height={"100%"} justify={"center"} align={"center"} px={3}>
                <Box
                   bg={"#716FE9"}
                   height={{ base: "30%", md: "40%" }}
@@ -24,7 +24,7 @@ const SidebarItems = () => {
                      Beta
                   </Text>
                </Box>
-            </Flex>
+            </Flex> */}
          </Flex>
 
          <Flex>

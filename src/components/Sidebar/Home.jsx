@@ -9,6 +9,7 @@ const Home = () => {
          height={"70px"}
          align={"center"}
          justify={"center"}
+         pl={2}
       >
          <Link to={"/"} as={RouterLink} cursor="pointer">
             <Box>

@@ -13,7 +13,12 @@ const ProfileLink = () => {
                   as={RouterLink}
                   cursor="pointer"
                >
-                  <Avatar size={"md"} src={authUser?.profilePicURL || ""} />
+                  <Avatar
+                     variant="roundedSquare"
+                     size={"md"}
+                     src={authUser?.profilePicURL || ""}
+                     borderRadius="12px"
+                  />
                </Link>
             )}
          </Box>
