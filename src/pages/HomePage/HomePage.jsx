@@ -4,7 +4,7 @@ import Posts from "../../components/Posts/Posts";
 
 const HomePage = () => {
    return (
-      <Box w="100%" minHeight="calc(100vh - 70px)" bg="white">
+      <Box w="100%" minHeight="calc(100vh - 70px)" bg="white" pt={20}>
          <Container maxW="100%" padding="10px">
             <Flex
                gap={10}

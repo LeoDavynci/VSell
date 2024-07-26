@@ -62,6 +62,7 @@ const ProfileHeader = () => {
                alignItems={"center"}
                gap={{ base: 2, sm: 4 }}
                justifyItems={"center"}
+               w={"full"}
             >
                <Text>
                   <Text as={"span"} fontWeight={"bold"} mr={1}>

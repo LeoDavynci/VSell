@@ -76,6 +76,8 @@ const Post = ({ post }) => {
             w="full"
             minW="100px"
             maxW="1fr"
+            bg={"#EBEBEB"}
+            rounded={"xl"}
          >
             <Box>
                <Box

@@ -9,7 +9,7 @@ const PageLayout = ({ children }) => {
    return (
       <Flex direction="column" minHeight="100vh">
          {pathname !== "/auth" && <Sidebar />}
-         <Box paddingTop="70px" flex={1} w="100%" bg="white">
+         <Box flex={1} w="100%" bg="white">
             {children}
          </Box>
       </Flex>

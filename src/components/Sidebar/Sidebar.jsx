@@ -12,6 +12,7 @@ const Sidebar = () => {
          height="70px"
          zIndex={1000}
          p={2}
+         bg={"white"}
       >
          <Box bg="#79A88E" rounded={20} boxShadow="lg">
             <SidebarItems />
