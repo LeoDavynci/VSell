@@ -6,7 +6,7 @@ const Home = () => {
    return (
       <Flex
          width={{ base: "70px", md: "140px" }}
-         height={"70px"}
+         height={"50px"}
          align={"center"}
          justify={"center"}
          pl={2}

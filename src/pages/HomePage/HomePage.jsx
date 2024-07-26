@@ -1,4 +1,5 @@
-import { Box, Container, Flex, Text } from "@chakra-ui/react";
+import React from "react";
+import { Box, Container, Flex } from "@chakra-ui/react";
 import Posts from "../../components/Posts/Posts";
 
 const HomePage = () => {

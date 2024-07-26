@@ -64,6 +64,9 @@ const Messages = () => {
                   justifyContent={"center"}
                   cursor="pointer"
                   onClick={onOpen}
+                  transition="background-color 0.2s"
+                  _hover={{ bg: "#5E8069" }}
+                  _active={{ bg: "#4B664F" }}
                >
                   <IoChatboxEllipses color="white" size={30} />
                </Box>
@@ -72,8 +75,8 @@ const Messages = () => {
                <Badge
                   colorScheme="red"
                   position="absolute"
-                  top="9"
-                  right="4"
+                  top="8"
+                  right="3"
                   borderRadius="full"
                >
                   {unreadCount}

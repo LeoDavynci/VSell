@@ -1,3 +1,4 @@
+import React from "react";
 import { Navigate, Route, Routes } from "react-router-dom";
 import HomePage from "./pages/HomePage/HomePage";
 import AuthPage from "./pages/AuthPage/AuthPage";
@@ -6,6 +7,7 @@ import ProfilePage from "./pages/ProfilePage/ProfilePage";
 import { useAuthState } from "react-firebase-hooks/auth";
 import { auth } from "./firebase/firebase";
 import { Center, Spinner } from "@chakra-ui/react";
+import { SearchProvider } from "./store/searchContext";
 
 function App() {
    const [authUser, loading] = useAuthState(auth);
@@ -19,19 +21,21 @@ function App() {
    }
 
    return (
-      <PageLayout>
-         <Routes>
-            <Route
-               path="/auth"
-               element={!authUser ? <AuthPage /> : <Navigate to="/" />}
-            />
-            <Route
-               path="/"
-               element={authUser ? <HomePage /> : <Navigate to="/auth" />}
-            />
-            <Route path="/:username" element={<ProfilePage />} />
-         </Routes>
-      </PageLayout>
+      <SearchProvider>
+         <PageLayout>
+            <Routes>
+               <Route
+                  path="/auth"
+                  element={!authUser ? <AuthPage /> : <Navigate to="/" />}
+               />
+               <Route
+                  path="/"
+                  element={authUser ? <HomePage /> : <Navigate to="/auth" />}
+               />
+               <Route path="/:username" element={<ProfilePage />} />
+            </Routes>
+         </PageLayout>
+      </SearchProvider>
    );
 }
 

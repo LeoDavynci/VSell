@@ -1,3 +1,4 @@
+import React from "react";
 import { Box } from "@chakra-ui/react";
 import SidebarItems from "./SidebarItems";
 
@@ -18,4 +19,5 @@ const Sidebar = () => {
       </Box>
    );
 };
+
 export default Sidebar;

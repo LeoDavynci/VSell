@@ -1,11 +1,24 @@
+import React, { useContext, useEffect, useState } from "react";
 import { SimpleGrid, Spinner, Center } from "@chakra-ui/react";
 import Post from "./Post";
 import useWindowWidth from "./useWindowWidth";
 import useGetFeedPosts from "../../hooks/useGetFeedPosts";
+import { SearchContext } from "../../store/searchContext";
 
 const Posts = () => {
-   const { isLoading, posts } = useGetFeedPosts();
+   const { isLoading: feedLoading, posts: feedPosts } = useGetFeedPosts();
+   const { searchPosts, isSearching, searchTerm } = useContext(SearchContext);
+   const [displayPosts, setDisplayPosts] = useState([]);
    const width = useWindowWidth();
+
+   useEffect(() => {
+      if (searchTerm.trim()) {
+         setDisplayPosts(searchPosts);
+      } else {
+         setDisplayPosts(feedPosts);
+      }
+   }, [searchTerm, searchPosts, feedPosts]);
+
    const getColumnCount = (width) => {
       if (width >= 2021) return 11;
       if (width >= 1791 && width <= 2020) return 10;
@@ -21,6 +34,8 @@ const Posts = () => {
    };
    const columns = getColumnCount(width);
 
+   const isLoading = isSearching || feedLoading;
+
    return (
       <>
          {isLoading ? (
@@ -29,8 +44,8 @@ const Posts = () => {
             </Center>
          ) : (
             <SimpleGrid columns={columns} spacing={2} justifyContent="center">
-               {posts.length > 0 ? (
-                  posts.map((post) => <Post key={post.id} post={post} />)
+               {displayPosts.length > 0 ? (
+                  displayPosts.map((post) => <Post key={post.id} post={post} />)
                ) : (
                   <Center>No posts available</Center>
                )}
