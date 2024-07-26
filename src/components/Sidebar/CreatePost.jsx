@@ -20,6 +20,7 @@ import {
    Textarea,
    useDisclosure,
    Select,
+   Tooltip,
 } from "@chakra-ui/react";
 import { IoMdAddCircle } from "react-icons/io";
 import useShowToast from "../../hooks/useShowToast";
@@ -152,24 +153,37 @@ const CreatePost = () => {
    return (
       <>
          <Flex
-            width={"70px"}
-            height={"70px"}
+            width={"60px"}
+            height={"60px"}
             align={"center"}
             justify={"center"}
          >
-            <Box
-               width={"50px"}
-               height={"50px"}
-               borderRadius={"50%"}
-               bg={"none"}
-               display={"flex"}
-               alignItems={"center"}
-               justifyContent={"center"}
-               cursor="pointer"
-               onClick={onOpen}
+            <Tooltip
+               label="List an Item"
+               aria-label="List an Item"
+               hasArrow
+               bg="#79A88E"
+               color="white"
+               fontWeight="medium"
+               fontSize="sm"
+               padding="4px 8px"
+               borderRadius="lg"
+               boxShadow="md"
             >
-               <IoMdAddCircle color="white" size={30} />
-            </Box>
+               <Box
+                  width={"50px"}
+                  height={"50px"}
+                  bg={"#719C83"}
+                  display={"flex"}
+                  alignItems={"center"}
+                  justifyContent={"center"}
+                  cursor="pointer"
+                  onClick={onOpen}
+                  borderRadius={15}
+               >
+                  <IoMdAddCircle color="white" size={30} />
+               </Box>
+            </Tooltip>
          </Flex>
 
          <Modal isOpen={isOpen} onClose={onClose} size="xl">

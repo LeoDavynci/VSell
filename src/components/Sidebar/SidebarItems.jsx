@@ -27,7 +27,7 @@ const SidebarItems = () => {
             </Flex> */}
          </Flex>
 
-         <Flex>
+         <Flex paddingX={2} justifyContent={"center"} alignItems={"center"}>
             <Messages />
             <CreatePost />
             <ProfileLink />
