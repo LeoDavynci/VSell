@@ -1,7 +1,9 @@
 import {
    Alert,
    AlertIcon,
+   Box,
    Button,
+   Flex,
    Input,
    InputGroup,
    InputRightElement,
@@ -35,6 +37,9 @@ const Signup = () => {
    };
 
    const { loading, error, signup } = useSignUpWithEmailAndPassword();
+
+   const weakPassword = error?.message?.includes("weak-password");
+   const existingEmail = error?.message?.includes("email-already-in-use");
 
    return (
       <>
@@ -120,6 +125,38 @@ const Signup = () => {
                <AlertIcon fontSize={12} />
                {error.message}
             </Alert>
+         )}
+
+         {weakPassword && (
+            <Flex
+               w={"full"}
+               h={"full"}
+               mt={2}
+               justifyContent={"center"}
+               alignItems={"center"}
+            >
+               <Box bg={"#fed7d7"} borderRadius="10px" pb={2} px={2}>
+                  <Text fontSize={18} color="red.500" mt={2}>
+                     Password should be at least 6 characters.
+                  </Text>
+               </Box>
+            </Flex>
+         )}
+
+         {existingEmail && (
+            <Flex
+               w={"full"}
+               h={"full"}
+               mt={2}
+               justifyContent={"center"}
+               alignItems={"center"}
+            >
+               <Box bg={"#fed7d7"} borderRadius="10px" pb={2} px={2}>
+                  <Text fontSize={18} color="red.500" mt={2}>
+                     Email already in use.
+                  </Text>
+               </Box>
+            </Flex>
          )}
 
          {/* Sign Up Button */}

@@ -28,26 +28,12 @@ const AuthPage = () => {
                <Flex
                   display={{ base: "none", md: "flex" }}
                   flexDir={"column"}
-                  gap={5}
                   alignItems="end"
                   w={"50%"}
+                  h={"200px"}
                >
                   <Box>
-                     <Box
-                        display={"flex"}
-                        justifyContent="center"
-                        alignItems="center"
-                     >
-                        <Text
-                           fontSize="90"
-                           color="White"
-                           as="b"
-                           align={"center"}
-                        >
-                           VSELL
-                        </Text>
-                     </Box>
-                     <Box w={"360px"} right={"10px"} ml={4}>
+                     <Box w={"360px"} right={"10px"} ml={4} top={"30px"}>
                         <Img src={"/GivingW.png"} />
                      </Box>
                   </Box>
@@ -57,9 +43,23 @@ const AuthPage = () => {
                   h={"100%"}
                   justify={{ base: "center", md: "flex-start" }}
                >
-                  <Box>
+                  <Flex
+                     flexDir={"column"}
+                     alignContent={"center"}
+                     justifyContent={"center"}
+                  >
+                     <Text
+                        fontSize="80"
+                        as="b"
+                        align={"center"}
+                        color={"white"}
+                        justify={"center"}
+                        centerContent
+                     >
+                        VSELL
+                     </Text>
                      <AuthForm />
-                  </Box>
+                  </Flex>
                </Flex>
             </Flex>
          </Box>

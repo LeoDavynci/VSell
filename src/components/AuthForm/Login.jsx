@@ -1,7 +1,9 @@
 import {
    Alert,
    AlertIcon,
+   Box,
    Button,
+   Flex,
    Input,
    InputGroup,
    InputRightElement,
@@ -20,6 +22,8 @@ const Login = () => {
    const { loading, error, login } = useLogin();
 
    const isEmailUnverified = error?.message?.includes("verify your email");
+   const invalidEmail = error?.message?.includes("invalid-email");
+   const invalidPassword = error?.message?.includes("invalid-credential");
 
    return (
       <>
@@ -67,18 +71,59 @@ const Login = () => {
             </InputRightElement>
          </InputGroup>
 
-         {error && (
+         {/* {error && (
             <Alert status="error" fontSize={13} p={2} borderRadius={4}>
                <AlertIcon fontSize={12} />
                {error.message}
             </Alert>
+         )} */}
+
+         {invalidEmail && (
+            <Flex
+               w={"full"}
+               h={"full"}
+               mt={2}
+               justifyContent={"center"}
+               alignItems={"center"}
+            >
+               <Box bg={"#fed7d7"} borderRadius="10px" pb={2} px={2}>
+                  <Text fontSize={18} color="red.500" mt={2}>
+                     Invalid email.
+                  </Text>
+               </Box>
+            </Flex>
+         )}
+         {invalidPassword && (
+            <Flex
+               w={"full"}
+               h={"full"}
+               mt={2}
+               justifyContent={"center"}
+               alignItems={"center"}
+            >
+               <Box bg={"#fed7d7"} borderRadius="10px" pb={2} px={2}>
+                  <Text fontSize={18} color="red.500" mt={2}>
+                     Invalid password.
+                  </Text>
+               </Box>
+            </Flex>
          )}
 
          {isEmailUnverified && (
-            <Text fontSize={13} color="red.500" mt={2}>
-               Please check your email and verify your account before logging
-               in.
-            </Text>
+            <Flex
+               w={"full"}
+               h={"full"}
+               mt={2}
+               justifyContent={"center"}
+               alignItems={"center"}
+            >
+               <Box bg={"#fed7d7"} borderRadius="10px" pb={2} px={2}>
+                  <Text fontSize={18} color="red.500" mt={2}>
+                     Please check your email and verify your account before
+                     logging in.
+                  </Text>
+               </Box>
+            </Flex>
          )}
 
          {/* Log In */}
