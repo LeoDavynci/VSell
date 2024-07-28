@@ -4,7 +4,6 @@ import {
    ModalOverlay,
    ModalContent,
    ModalHeader,
-   ModalFooter,
    ModalBody,
    ModalCloseButton,
    Button,
@@ -12,6 +11,7 @@ import {
    Text,
    Box,
    Input,
+   Flex,
 } from "@chakra-ui/react";
 import {
    getFirestore,
@@ -22,316 +22,374 @@ import {
    orderBy,
    updateDoc,
    doc,
-   deleteDoc,
-   addDoc,
+   arrayUnion,
    serverTimestamp,
+   deleteDoc,
    arrayRemove,
 } from "firebase/firestore";
 import useAuthStore from "../../store/authStore";
+import Conversation from "./Conversation";
+import ChatHeader from "./ChatHeader";
+import { IoCloseSharp } from "react-icons/io5";
+import useShowToast from "../../hooks/useShowToast";
 
 const MessagesModal = ({ isOpen, onClose }) => {
-   const [messages, setMessages] = useState([]);
-   const [replyText, setReplyText] = useState("");
+   const [conversations, setConversations] = useState([]);
+   const [selectedConversation, setSelectedConversation] = useState(null);
+   const [messageText, setMessageText] = useState("");
    const authUser = useAuthStore((state) => state.user);
    const db = getFirestore();
+   const showToast = useShowToast();
 
-   const markAsRead = async (messageId) => {
+   const markMessagesAsRead = async (conversationId) => {
+      if (!conversationId) return;
+
       try {
-         await updateDoc(doc(db, "messages", messageId), {
-            status: "read",
-            lastUpdated: serverTimestamp(),
-         });
+         const conversationRef = doc(db, "conversations", conversationId);
+         const conversationSnap = await getDoc(conversationRef);
+
+         if (conversationSnap.exists()) {
+            const conversationData = conversationSnap.data();
+            const updatedMessages = conversationData.messages.map((message) => {
+               if (message.senderId !== authUser.uid && !message.read) {
+                  return { ...message, read: true };
+               }
+               return message;
+            });
+
+            await updateDoc(conversationRef, { messages: updatedMessages });
+         }
       } catch (error) {
-         console.error("Error marking message as read:", error);
+         console.error("Error marking messages as read:", error);
       }
    };
 
-   //    const handleReject = async (message) => {
-   //       try {
-   //          await addDoc(collection(db, "messages"), {
-   //             receiverId: message.senderId,
-   //             senderId: authUser.uid,
-   //             postId: message.postId,
-   //             type: "rejection",
-   //             item: message.item,
-   //             price: message.price,
-   //             seller: message.seller,
-   //             buyer: message.buyer,
-   //             info: replyText,
-   //             status: "unread",
-   //             createdAt: serverTimestamp(),
-   //             lastUpdated: serverTimestamp(),
-   //          });
-
-   //          setReplyText("");
-   //       } catch (error) {
-   //          console.error("Error rejection:", error);
-   //       }
-   //    };
-
-   const handleAccept = async (message) => {
-      try {
-         // Send confirmation to the buyer
-         await addDoc(collection(db, "messages"), {
-            receiverId: message.senderId,
-            senderId: authUser.uid,
-            postId: message.postId,
-            type: "confirmation",
-            item: message.item,
-            price: message.price,
-            seller: message.seller,
-            buyer: message.buyer,
-            info: replyText,
-            status: "unread",
-            createdAt: serverTimestamp(),
-            lastUpdated: serverTimestamp(),
-         });
-
-         // Remove the current message from the database
-         await deleteDoc(doc(db, "messages", message.id));
-
-         setReplyText("");
-         // Remove the post from the database
-         await deleteDoc(doc(db, "posts", message.postId));
-
-         // Update the user's posts array
-         const userRef = doc(db, "users", authUser.uid);
-         await updateDoc(userRef, {
-            posts: arrayRemove(message.postId),
-         });
-      } catch (error) {
-         console.error("Error accepting buy request:", error);
+   useEffect(() => {
+      if (selectedConversation) {
+         markMessagesAsRead(selectedConversation.id);
       }
-   };
-
-   const handleOfferAccept = async (message, newPrice) => {
-      try {
-         // Send confirmation to the buyer
-         await addDoc(collection(db, "messages"), {
-            receiverId: message.senderId,
-            senderId: authUser.uid,
-            postId: message.postId,
-            type: "offerConfirmation",
-            item: message.item,
-            price: message.price,
-            seller: message.seller,
-            buyer: message.buyer,
-            info: newPrice,
-            status: "unread",
-            createdAt: serverTimestamp(),
-            lastUpdated: serverTimestamp(),
-         });
-
-         // Remove the current message from the database
-         await deleteDoc(doc(db, "messages", message.id));
-      } catch (error) {
-         console.error("Error accepting buy request:", error);
-      }
-   };
-
-   const handleOfferReject = async (message, newPrice) => {
-      try {
-         // Send rejection to the buyer
-         await addDoc(collection(db, "messages"), {
-            receiverId: message.senderId,
-            senderId: authUser.uid,
-            postId: message.postId,
-            type: "offerRejection",
-            item: message.item,
-            price: message.price,
-            seller: message.seller,
-            buyer: message.buyer,
-            info: newPrice,
-            status: "unread",
-            createdAt: serverTimestamp(),
-            lastUpdated: serverTimestamp(),
-         });
-
-         // Remove the current message from the database
-         await deleteDoc(doc(db, "messages", message.id));
-      } catch (error) {
-         console.error("Error rejecting buy request:", error);
-      }
-   };
-
-   const handleDelete = async (message) => {
-      try {
-         await deleteDoc(doc(db, "messages", message.id));
-      } catch (error) {
-         console.error("Error deleting message", error);
-      }
-   };
+   }, [selectedConversation]);
 
    useEffect(() => {
       if (!authUser) return;
 
       const q = query(
-         collection(db, "messages"),
-         where("receiverId", "==", authUser.uid),
-         orderBy("createdAt", "desc")
+         collection(db, "conversations"),
+         where("participants", "array-contains", authUser.uid),
+         orderBy("lastMessageTimestamp", "desc")
       );
 
       const unsubscribe = onSnapshot(q, (querySnapshot) => {
-         const messagesArray = [];
-         querySnapshot.forEach((doc) => {
-            messagesArray.push({ id: doc.id, ...doc.data() });
-         });
-         setMessages(messagesArray);
+         const conversationsArray = querySnapshot.docs.map((doc) => ({
+            id: doc.id,
+            ...doc.data(),
+         }));
+         setConversations(conversationsArray);
+
+         // Update selected conversation if it exists in the new data
+         if (selectedConversation) {
+            const updatedSelectedConversation = conversationsArray.find(
+               (conv) => conv.id === selectedConversation.id
+            );
+            if (updatedSelectedConversation) {
+               setSelectedConversation(updatedSelectedConversation);
+            }
+         }
       });
 
       return () => unsubscribe();
-   }, [authUser]);
+   }, [authUser, db]);
+
+   const sendMessage = async (type, content) => {
+      if (!selectedConversation) return;
+
+      const newMessage = {
+         senderId: authUser.uid,
+         type: type,
+         content: content,
+         timestamp: new Date().toISOString(), // Use client-side timestamp for the message
+         read: false,
+      };
+
+      try {
+         const conversationRef = doc(
+            db,
+            "conversations",
+            selectedConversation.id
+         );
+
+         // First, update the messages array and last message
+         await updateDoc(conversationRef, {
+            messages: arrayUnion(newMessage),
+            lastMessage: {
+               type: type,
+               content: getMessageSummary(type, content),
+            },
+         });
+
+         // Then, update the timestamp separately
+         await updateDoc(conversationRef, {
+            lastMessageTimestamp: serverTimestamp(),
+         });
+
+         setMessageText("");
+      } catch (error) {
+         console.error("Error sending message:", error);
+      }
+   };
+
+   const getMessageSummary = (type, content) => {
+      switch (type) {
+         case "TEXT":
+            return typeof content === "string"
+               ? content.length > 50
+                  ? content.substring(0, 47) + "..."
+                  : content
+               : JSON.stringify(content);
+         case "BUY_REQUEST":
+            return `Buy request: $${content.price}`;
+         case "OFFER_REQUEST":
+            return `Offer: $${content.price}`;
+         case "BUY_ACCEPT":
+            return "Offer accepted";
+         case "BUY_REJECT":
+            return "Offer rejected";
+         default:
+            return "New message";
+      }
+   };
+
+   const handleAccept = async (message) => {
+      try {
+         // Remove the post from the database
+         await deleteDoc(doc(db, "posts", message.content.itemId));
+
+         // Update the user's posts array
+         const userRef = doc(db, "users", authUser.uid);
+         await updateDoc(userRef, {
+            posts: arrayRemove(message.content.itemId),
+         });
+
+         await sendMessage("TEXT", "Buy request accepted.");
+      } catch (error) {
+         showToast("Error", "You have already sold this item!", "error");
+      }
+   };
+
+   const closeMessage = () => {
+      setSelectedConversation(null);
+   };
 
    return (
       <Modal
          isOpen={isOpen}
          onClose={onClose}
-         size={{ base: "sm", sm: "sm", md: "3xl", lg: "6xl" }}
+         size={{ base: "sm", md: "3xl", lg: "6xl" }}
       >
          <ModalOverlay />
          <ModalContent borderRadius={{ base: "25px", md: "35px" }} mt={"70px"}>
             <ModalHeader>Your Messages</ModalHeader>
             <ModalCloseButton />
             <ModalBody px={"10px"} pb={"10px"}>
-               <VStack spacing={4} align="stretch">
-                  {messages.map((message) => (
-                     <Box
-                        key={message.id}
-                        p={3}
-                        borderRadius={{ base: "20px", md: "30px" }}
-                        bg={"#EBEBEB"}
-                     >
-                        <Text fontWeight="bold">
-                           {message.type === "buy"
-                              ? `Buy Request from ${message.buyer}`
-                              : message.type === "offer"
-                              ? `Offer from ${message.buyer}`
-                              : message.type === "confirmation"
-                              ? `Confirmation from ${
-                                   message.seller || authUser.displayName
-                                }`
-                              : message.type === "rejection"
-                              ? `Rejection from ${message.seller}`
-                              : message.type === "offerConfirmation"
-                              ? `${message.seller} has accepted your offer`
-                              : message.type === "offerRejection"
-                              ? `${message.seller} has rejected your offer`
-                              : ""}
-                        </Text>
-
-                        {/* Item Name */}
-                        <Text>Item: {message.item}</Text>
-
-                        <Text>
-                           Amount:{" "}
-                           {["buy", "confirmation", "rejection"].includes(
-                              message.type
-                           ) ? (
-                              `$${message.price || "Free"}`
-                           ) : [
-                                "offer",
-                                "offerConfirmation",
-                                "offerRejection",
-                             ].includes(message.type) ? (
-                              <>
-                                 <s>${message.price}</s>{" "}
-                                 {message.info || "Free"}
-                              </>
-                           ) : (
-                              "Free"
-                           )}
-                        </Text>
-
-                        {/* Message */}
-                        {["buy", "confirmation", "rejection"].includes(
-                           message.type
-                        ) && <Text pt={5}>Message: {message.info}</Text>}
-                        <Box pt={5}>
-                           {/* Reply Box if Buy */}
-                           {message.type === "buy" && (
-                              <Input
-                                 variant={"flushed"}
-                                 fontSize={16}
-                                 placeholder="Reply to this message with contact info"
-                                 value={replyText}
-                                 onChange={(e) => {
-                                    const newValue = e.target.value.slice(
-                                       0,
-                                       50
-                                    );
-                                    setReplyText(newValue);
-                                 }}
+               <Flex flexDir={"column"} w={"full"} gap={3}>
+                  {/* Selected conversation */}
+                  <Box width="full" bg={"#EBEBEB"} rounded={"xl"}>
+                     {selectedConversation ? (
+                        <>
+                           <Flex>
+                              <ChatHeader
+                                 conversation={selectedConversation}
+                                 authUserId={authUser.uid}
                               />
-                           )}
-                        </Box>
-                        <Box pt={5}>
-                           {/* Accept Button if buy */}
-                           {message.type === "buy" && (
                               <Button
-                                 onClick={() => handleAccept(message)}
-                                 bg="#79A88E"
-                                 _hover={{ bg: "#A2C0B0" }}
-                                 variant="solid"
-                                 color="white"
-                                 borderRadius={"15px"}
+                                 position={"absolute"}
+                                 right={5}
+                                 top={20}
+                                 bg={"none"}
+                                 _hover={{ bg: "none" }}
+                                 _active={{ bg: "none" }}
+                                 onClick={closeMessage}
                               >
-                                 Accept
+                                 <IoCloseSharp size={30} />
                               </Button>
-                           )}
+                           </Flex>
+                           <VStack
+                              spacing={2}
+                              align="stretch"
+                              maxHeight="400px"
+                              overflowY="auto"
+                              p={2}
+                           >
+                              {selectedConversation.messages?.map(
+                                 (message, index) => (
+                                    <Box
+                                       key={index}
+                                       p={2}
+                                       bg={
+                                          message.senderId === authUser.uid
+                                             ? "#A2C0B0"
+                                             : "#F5F5F5"
+                                       }
+                                       borderRadius="lg"
+                                       alignSelf={
+                                          message.senderId === authUser.uid
+                                             ? "flex-end"
+                                             : "flex-start"
+                                       }
+                                    >
+                                       {/* Text message */}
+                                       {message.type === "TEXT" && (
+                                          <Box>
+                                             <Text>{message.content}</Text>
+                                          </Box>
+                                       )}
 
-                           {/* Accept Button if offer*/}
-                           {message.type === "offer" && (
+                                       {/* Offer request message */}
+                                       {message.type === "OFFER_REQUEST" && (
+                                          <Box>
+                                             <Box
+                                                p={2}
+                                                bg={"#A2C0B0"}
+                                                rounded={"sm"}
+                                             >
+                                                <Text fontWeight="bold">
+                                                   Offer
+                                                </Text>
+                                                <img
+                                                   src={message.content.itemPic}
+                                                   width="150px"
+                                                   height="150px"
+                                                />
+                                                <Text>
+                                                   {message.content.itemName}
+                                                </Text>
+                                                <Text>
+                                                   Offer Price: $
+                                                   {message.content
+                                                      .offerPrice || "0"}
+                                                </Text>
+                                                <Text>
+                                                   Original Price:
+                                                   {
+                                                      message.content
+                                                         .currentPrice
+                                                   }
+                                                </Text>
+                                             </Box>
+                                          </Box>
+                                       )}
+
+                                       {/* Buy request message */}
+                                       {message.type === "BUY_REQUEST" && (
+                                          <Box>
+                                             <Box
+                                                p={2}
+                                                bg={"#A2C0B0"}
+                                                rounded={"sm"}
+                                             >
+                                                <Text fontWeight="bold">
+                                                   Buying
+                                                </Text>
+                                                <img
+                                                   src={message.content.itemPic}
+                                                   width="150px"
+                                                   height="150px"
+                                                />
+
+                                                <Text>
+                                                   {message.content.itemName}
+                                                </Text>
+                                                <Text>
+                                                   Price: $
+                                                   {
+                                                      message.content
+                                                         .currentPrice
+                                                   }
+                                                </Text>
+
+                                                {message.senderId !==
+                                                   authUser.uid && (
+                                                   <Flex
+                                                      w={"full"}
+                                                      flexDir={"row"}
+                                                      justify={"center"}
+                                                   >
+                                                      <Button
+                                                         size="sm"
+                                                         bg={"#79A88E"}
+                                                         _hover={{
+                                                            bg: "#5C7F6C",
+                                                         }}
+                                                         color={"white"}
+                                                         onClick={() =>
+                                                            handleAccept(
+                                                               message
+                                                            )
+                                                         }
+                                                         mt={2}
+                                                      >
+                                                         Accept
+                                                      </Button>
+                                                   </Flex>
+                                                )}
+                                             </Box>
+                                             <Text mt={2}>
+                                                {message.content.info}
+                                             </Text>
+                                          </Box>
+                                       )}
+                                    </Box>
+                                 )
+                              )}
+                           </VStack>
+
+                           {/* Message input */}
+                           <Flex mt={4} p={2}>
+                              <Input
+                                 value={messageText}
+                                 onChange={(e) =>
+                                    setMessageText(e.target.value)
+                                 }
+                                 placeholder="Type a message..."
+                                 mr={2}
+                                 borderRadius={2}
+                                 borderColor={"black"}
+                                 rounded={"md"}
+                              />
                               <Button
                                  onClick={() =>
-                                    handleOfferAccept(message, message.info)
+                                    sendMessage("TEXT", messageText)
                                  }
-                                 bg="#79A88E"
-                                 _hover={{ bg: "#A2C0B0" }}
-                                 variant="solid"
-                                 color="white"
-                                 borderRadius={"15px"}
+                                 bg={"#79A88E"}
+                                 _hover={{ bg: "#6A937C" }}
+                                 _active={{ bg: "#6A937C" }}
+                                 color={"white"}
                               >
-                                 Accept
+                                 Send
                               </Button>
-                           )}
+                           </Flex>
+                        </>
+                     ) : (
+                        <Text></Text>
+                     )}
+                  </Box>
 
-                           {/* Reject Button if offer*/}
-                           {message.type === "offer" && (
-                              <Button
-                                 onClick={() =>
-                                    handleOfferReject(message, message.info)
-                                 }
-                                 borderRadius={"15px"}
-                              >
-                                 Reject
-                              </Button>
-                           )}
-
-                           {/* Delete Button if confirmation or rejection*/}
-                           {(message.type === "confirmation" ||
-                              message.type === "rejection" ||
-                              message.type === "offerConfirmation" ||
-                              message.type === "offerRejection") && (
-                              <Button
-                                 onClick={() => handleDelete(message)}
-                                 bg="#716FE9"
-                                 _hover={{ bg: "#A5A4F8" }}
-                                 variant="solid"
-                                 color="white"
-                                 borderRadius={"15px"}
-                              >
-                                 Delete
-                              </Button>
-                           )}
-                        </Box>
-
-                        {/* Date and time request was sent*/}
-                        <Text fontSize={10} pt={2}>
-                           Sent {message.createdAt.toDate().toLocaleString()}
-                        </Text>
-                     </Box>
-                  ))}
-               </VStack>
+                  <Box fontWeight={"bold"}>All Messages</Box>
+                  {/* All conversations */}
+                  <VStack spacing={4} align="stretch" width="full">
+                     {conversations.map((conversation) => (
+                        <Conversation
+                           key={conversation.id}
+                           conversation={conversation}
+                           authUserId={authUser.uid}
+                           isSelected={
+                              selectedConversation?.id === conversation.id
+                           }
+                           onClick={() => setSelectedConversation(conversation)}
+                        />
+                     ))}
+                  </VStack>
+               </Flex>
             </ModalBody>
          </ModalContent>
       </Modal>

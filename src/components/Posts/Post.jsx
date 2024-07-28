@@ -6,14 +6,9 @@ import PurchaseModal from "./PurchaseModal";
 import useGetUserProfileById from "../../hooks/useGetuserProfileById";
 import useLikePost from "./../../hooks/useLikePost";
 import useAuthStore from "../../store/authStore";
-import { createMessage } from "../../services/messageService";
+import { createOrUpdateConversation } from "../../services/conversationService";
 
-import {
-   addDoc,
-   collection,
-   getFirestore,
-   serverTimestamp,
-} from "firebase/firestore";
+import { getFirestore, serverTimestamp } from "firebase/firestore";
 
 const Post = ({ post }) => {
    const { isOpen, onOpen, onClose } = useDisclosure();
@@ -22,22 +17,23 @@ const Post = ({ post }) => {
    const [showOfferInput, setShowOfferInput] = useState(false);
    const [offerAmount, setOfferAmount] = useState("");
    const [isPurchaseModalOpen, setIsPurchaseModalOpen] = useState(false);
-   const [selectedDate, setSelectedDate] = useState("");
-   const [selectedTime, setSelectedTime] = useState("");
-   const [meetupLocation, setMeetupLocation] = useState("");
    const db = getFirestore();
 
    const handlePurchaseSubmit = async (info) => {
-      await createMessage(
+      await createOrUpdateConversation(
          post.createdBy,
          authUser.uid,
          post.id,
-         "buy",
-         post.itemName,
-         post.price,
-         userProfile.fullName,
+         "BUY_REQUEST",
+         {
+            itemId: post.id,
+            itemPic: post.imageURLs[0],
+            itemName: post.itemName,
+            currentPrice: post.price,
+            info: info,
+         },
          authUser.fullName,
-         info
+         userProfile.fullName
       );
       setIsPurchaseModalOpen(false);
       onClose();
@@ -45,24 +41,6 @@ const Post = ({ post }) => {
 
    const handleBuyClick = () => {
       setIsPurchaseModalOpen(true);
-   };
-
-   const handleOfferSubmit = async (offerAmount) => {
-      await createMessage(
-         post.createdBy,
-         authUser.uid,
-         post.id,
-         "offer",
-         post.itemName,
-         post.price,
-         userProfile.fullName,
-         authUser.fullName,
-         offerAmount
-      );
-      console.log(`Offer submitted`);
-      setShowOfferInput(false);
-      setOfferAmount("");
-      onClose();
    };
 
    return (
@@ -109,7 +87,6 @@ const Post = ({ post }) => {
             userProfile={userProfile}
             authUser={authUser}
             handleBuyClick={handleBuyClick}
-            handleOfferSubmit={handleOfferSubmit}
          />
 
          {/* Buying page */}

@@ -13,7 +13,6 @@ import {
    Text,
    FormControl,
    FormLabel,
-   Input,
    Textarea,
 } from "@chakra-ui/react";
 
@@ -65,7 +64,7 @@ const PurchaseModal = ({
                            borderRadius={{ base: "5", md: "15" }}
                            border="2px solid black"
                            type="text"
-                           placeholder="Contact info, offer amount if OBO, meet time, location, date, etc"
+                           placeholder="Contact info, meet time, location, date, etc"
                            value={info}
                            onChange={(e) => setInfo(e.target.value)}
                         ></Textarea>
@@ -96,4 +95,5 @@ const PurchaseModal = ({
       </Modal>
    );
 };
+
 export default PurchaseModal;

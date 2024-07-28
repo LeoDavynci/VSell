@@ -21,17 +21,24 @@ const Messages = () => {
       if (!authUser) return;
 
       const q = query(
-         collection(db, "messages"),
-         where("receiverId", "==", authUser.uid),
-         where("status", "==", "unread")
+         collection(db, "conversations"),
+         where("participants", "array-contains", authUser.uid)
       );
 
       const unsubscribe = onSnapshot(q, (querySnapshot) => {
-         setUnreadCount(querySnapshot.size);
+         let count = 0;
+         querySnapshot.forEach((doc) => {
+            const conversation = doc.data();
+            const unreadMessages = conversation.messages.filter(
+               (message) => message.senderId !== authUser.uid && !message.read
+            );
+            count += unreadMessages.length;
+         });
+         setUnreadCount(count);
       });
 
       return () => unsubscribe();
-   }, [authUser]);
+   }, [authUser, db]);
 
    return (
       <>

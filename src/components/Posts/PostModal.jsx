@@ -23,6 +23,9 @@ import useLikePost from "../../hooks/useLikePost";
 import { getTimeDifference } from "../../utils/getTimeDifference";
 import { useSwipeable } from "react-swipeable";
 import { IoIosArrowDropleft, IoIosArrowDropright } from "react-icons/io";
+import { createOrUpdateConversation } from "../../services/conversationService";
+import useGetUserProfileById from "../../hooks/useGetuserProfileById";
+import useShowToast from "../../hooks/useShowToast";
 
 const PostModal = ({
    isOpen,
@@ -31,13 +34,17 @@ const PostModal = ({
    userProfile,
    authUser,
    handleBuyClick,
-   handleOfferSubmit,
 }) => {
    const { handleLikePost, isLiked, likes } = useLikePost(post);
    const [showOfferInput, setShowOfferInput] = useState(false);
    const [offerAmount, setOfferAmount] = useState("");
    const [currentImageIndex, setCurrentImageIndex] = useState(0);
    const [swipeDirection, setSwipeDirection] = useState(null);
+   const sellerName = userProfile?.fullName;
+   const [lastOfferTime, setLastOfferTime] = useState(0);
+   const [offerCount, setOfferCount] = useState(0);
+   const [isOfferButtonDisabled, setIsOfferButtonDisabled] = useState(false);
+   const showToast = useShowToast();
 
    const nextImage = () => {
       setCurrentImageIndex(
@@ -75,15 +82,55 @@ const PostModal = ({
    );
 
    const handleOfferClick = () => {
+      const currentTime = Date.now();
+      const cooldownPeriod = 5 * 60 * 1000; // 5 minutes in milliseconds
+      const maxOffers = 3;
+
+      if (currentTime - lastOfferTime < cooldownPeriod) {
+         showToast(
+            "Error",
+            "Please wait 5 minutes before making another offer.",
+            "error"
+         );
+         return;
+      }
+
+      if (offerCount >= maxOffers) {
+         showToast(
+            "Error",
+            "You've reached the maximum number of offers for this item.",
+            "error"
+         );
+         return;
+      }
+
       setShowOfferInput(true);
    };
 
-   const submitOffer = () => {
-      handleOfferSubmit(offerAmount);
+   const submitOffer = async () => {
+      setIsOfferButtonDisabled(true);
+      await createOrUpdateConversation(
+         post.createdBy,
+         authUser.uid,
+         post.id,
+         "OFFER_REQUEST",
+         {
+            itemId: post.id,
+            itemPic: post.imageURLs[0],
+            itemName: post.itemName,
+            currentPrice: post.price,
+            offerPrice: parseFloat(offerAmount),
+         },
+         authUser.fullName,
+         sellerName
+      );
       setShowOfferInput(false);
       setOfferAmount("");
+      setLastOfferTime(Date.now());
+      setOfferCount((prevCount) => prevCount + 1);
+      onClose();
+      showToast("Offer Submitted", "Your offer has been submitted.", "success");
    };
-
    return (
       <Modal
          isOpen={isOpen}
@@ -313,6 +360,7 @@ const PostModal = ({
                                        borderWidth={{ base: "4px", md: "4px" }}
                                        fontSize={{ base: "24px", md: "32px" }}
                                        onClick={handleOfferClick}
+                                       disabled={isOfferButtonDisabled}
                                     >
                                        Offer
                                     </Button>
