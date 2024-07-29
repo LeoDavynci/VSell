@@ -485,6 +485,7 @@ const PostModal = ({
                            {userProfile && (
                               <Avatar
                                  src={userProfile.profilePicURL}
+                                 name={userProfile?.fullName || "User"}
                                  size="sm"
                               />
                            )}

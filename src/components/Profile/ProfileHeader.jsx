@@ -12,6 +12,23 @@ import useAuthStore from "../../store/authStore";
 import EditProfile from "./EditProfile";
 import useLogout from "../../hooks/useLogout";
 
+const convertTimestampToDate = (timestamp) => {
+   const date = new Date(timestamp);
+
+   // Extract the components of the date
+   const year = date.getFullYear();
+   const month = date.getMonth() + 1; // Months are zero-indexed
+   const day = date.getDate();
+
+   // Format the date as MM/DD/YYYY
+   return `${month}/${day}/${year}`;
+};
+
+const DateDisplay = ({ timestamp }) => {
+   const formattedDate = convertTimestampToDate(timestamp);
+   return <div>Joined: {formattedDate}</div>;
+};
+
 const ProfileHeader = () => {
    const { userProfile } = useUserProfileStore();
    const authUser = useAuthStore((state) => state.user);
@@ -34,7 +51,7 @@ const ProfileHeader = () => {
             mx={"auto"}
          >
             <Avatar
-               name={""}
+               name={userProfile?.fullName || "User"}
                src={userProfile.profilePicURL}
                variant={"rounded"}
             />
@@ -56,6 +73,10 @@ const ProfileHeader = () => {
                <Text fontSize={{ base: "20px", md: "30px" }}>
                   {userProfile.fullName}
                </Text>
+            </Flex>
+
+            <Flex w={"full"}>
+               <DateDisplay timestamp={userProfile.createdAt} />
             </Flex>
 
             <Flex

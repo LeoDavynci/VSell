@@ -56,7 +56,11 @@ const PostFooter = ({ post, userProfile }) => {
             pt={1}
          >
             {userProfile && (
-               <Avatar src={userProfile.profilePicURL} size="2xs" />
+               <Avatar
+                  src={userProfile.profilePicURL}
+                  size="2xs"
+                  name={userProfile?.fullName || "User"}
+               />
             )}
             {userProfile ? userProfile.fullName : "Loading..."}
          </Flex>

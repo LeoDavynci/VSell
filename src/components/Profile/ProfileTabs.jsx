@@ -10,12 +10,10 @@ const ProfileTabs = () => {
          gap={{ base: 4, sm: 10 }}
          textTransform={"uppercase"}
          fontWeight={"bold"}
-         pt={2}
       >
          <Flex
-            borderTop={"1px solid black"}
             justifyContent={"center"}
-            p="2"
+            py={2}
             gap={1}
             cursor={"pointer"}
             flexDirection={"column"}

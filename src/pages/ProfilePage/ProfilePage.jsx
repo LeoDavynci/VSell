@@ -21,8 +21,13 @@ const ProfilePage = () => {
    if (userNotFound) return <UserNotFound />;
 
    return (
-      <Container maxW={"100%"} bg={"white"} pt={20}>
-         <Container maxW={"80%"} minHeight={"100vh"} bg={"white"} pb={20}>
+      <Container maxW={"100%"} py={20} bg={"white"}>
+         <Container
+            maxW={{ base: "100%", md: "80%" }}
+            minHeight={"100vh"}
+            bg={"white"}
+            pb={20}
+         >
             <Flex
                py={10}
                px={4}

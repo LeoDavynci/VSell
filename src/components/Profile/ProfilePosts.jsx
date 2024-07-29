@@ -11,7 +11,7 @@ const ProfilePosts = () => {
    return (
       <Grid
          templateColumns={{
-            sm: "repeat(2, 1fr)",
+            base: "repeat(2, 1fr)",
             md: "repeat(4, 1fr)",
          }}
          gap={3}
