@@ -1,9 +1,9 @@
-import { Box, Flex, Text } from "@chakra-ui/react";
+import { Avatar, Box, Flex, Text } from "@chakra-ui/react";
 import { useState } from "react";
 import { FaRegHeart, FaHeart } from "react-icons/fa";
 import useLikePost from "../../hooks/useLikePost";
 
-const PostFooter = ({ post }) => {
+const PostFooter = ({ post, userProfile }) => {
    const { handleLikePost, isLiked, likes } = useLikePost(post);
 
    const displayPrice = post.price ? (
@@ -19,8 +19,6 @@ const PostFooter = ({ post }) => {
          alignItems={"center"}
          gap={0}
          w={"full"}
-         pt={0}
-         mb={2}
          mt={"auto"}
          flexDirection={"column"}
       >
@@ -29,6 +27,7 @@ const PostFooter = ({ post }) => {
                {post.itemName || "Item"}
             </Text>
          </Flex>
+
          <Flex
             w={"full"}
             justifyContent={"space-between"}
@@ -47,6 +46,21 @@ const PostFooter = ({ post }) => {
                {post.isOBO ? " OBO" : ""}
             </Text>
          </Flex>
+
+         <Flex
+            justifyItems="center"
+            alignItems="center"
+            gap={1}
+            fontSize={"12"}
+            w={"full"}
+            pt={1}
+         >
+            {userProfile && (
+               <Avatar src={userProfile.profilePicURL} size="2xs" />
+            )}
+            {userProfile ? userProfile.fullName : "Loading..."}
+         </Flex>
+
          <Flex
             w={"full"}
             justifyContent={"space-between"}
@@ -57,7 +71,7 @@ const PostFooter = ({ post }) => {
                {post.pickupLocation || "Anywhere"}
             </Text>
             <Flex flexDirection={"row"} justifyContent={"center"}>
-               <Box
+               {/* <Box
                   onClick={handleLikePost}
                   cursor={"pointer"}
                   fontSize={{ base: "12px", md: "16px" }}
@@ -72,7 +86,7 @@ const PostFooter = ({ post }) => {
                   pr={1}
                >
                   {likes}
-               </Text>
+               </Text> */}
             </Flex>
          </Flex>
       </Flex>

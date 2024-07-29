@@ -17,6 +17,7 @@
     "@fontsource/outfit": "^5.0.13",
     "@fontsource/raleway": "^5.0.19",
     "@vercel/speed-insights": "^1.0.12",
+    "chakra-react-select": "^4.9.1",
     "compressorjs": "^1.2.1",
     "firebase": "^10.12.2",
     "framer-motion": "^11.2.10",

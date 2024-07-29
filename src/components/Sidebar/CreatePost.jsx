@@ -19,7 +19,6 @@ import {
    Text,
    Textarea,
    useDisclosure,
-   Select,
    Tooltip,
 } from "@chakra-ui/react";
 import { IoMdAddCircle } from "react-icons/io";
@@ -38,6 +37,7 @@ import {
 import { firestore, storage } from "../../firebase/firebase";
 import { getDownloadURL, ref, uploadString } from "firebase/storage";
 import { handleImageChange } from "../../utils/imageUtils";
+import { Select } from "chakra-react-select";
 
 const CreatePost = () => {
    const { isOpen, onOpen, onClose } = useDisclosure();
@@ -61,9 +61,28 @@ const CreatePost = () => {
       { value: "Poor", label: "Poor" },
    ];
 
+   const [category, setCategory] = useState("");
+   const categoryOptions = [
+      { value: "Misc", label: "Misc" },
+      { value: "Course Materials", label: "Course Materials" },
+      { value: "Electronics", label: "Electronics" },
+      { value: "Dorm Essentials", label: "Dorm Essentials" },
+      { value: "Office Supplies", label: "School Supplies" },
+      { value: "Furniture", label: "Furniture" },
+      { value: "Clothing & Accessories", label: "Clothing & Accessories" },
+      { value: "Vehicles", label: "Vehicles" },
+      { value: "Fitness Equipment", label: "Fitness Equipment" },
+      { value: "Entertainment", label: "Entertainment" },
+      { value: "Kitchen & Dining", label: "Kitchen & Dining" },
+      { value: "Event Tickets", label: "Event Tickets" },
+      { value: "Books", label: "Books" },
+      { value: "Beauty & Personal Care", label: "Beauty & Personal Care" },
+      { value: "Collectibles & Art", label: "Collectibles & Art" },
+   ];
+
    const [suggestedLocations, setSuggestedLocations] = useState([]);
    const fetchSuggestedLocations = (input) => {
-      // This is a mock function. In a real scenario, you'd call an API here.
+      // This is a list of locations, no API was found for this list.
       const mockLocations = [
          "Crawford House",
          "East House",
@@ -135,7 +154,8 @@ const CreatePost = () => {
             price,
             pickupLocation,
             isOBO,
-            itemQuality
+            itemQuality,
+            category
          );
          onClose();
          setCaption("");
@@ -145,6 +165,7 @@ const CreatePost = () => {
          setIsOBO(false);
          setSelectedFiles([]);
          setItemQuality("");
+         setCategory("");
       } catch (error) {
          showToast("Error", error.message, "error");
       }
@@ -198,12 +219,13 @@ const CreatePost = () => {
                <ModalHeader fontSize={30}>Sell an item</ModalHeader>
                <ModalCloseButton borderRadius={15} />
                <ModalBody>
+                  {/* Item Name */}
                   <Text mt={-2}>Item Name</Text>
                   <Input
                      autoCapitalize=""
                      maxLength={40}
-                     borderRadius={15}
-                     borderColor={"black"}
+                     borderRadius={10}
+                     borderColor="#E6E6E6"
                      borderWidth={"2px"}
                      value={itemName}
                      onChange={(e) => {
@@ -211,145 +233,238 @@ const CreatePost = () => {
                         setItemName(newValue);
                      }}
                   />
-                  <Text mt={2}>Price</Text>
-                  <Flex align="center">
-                     <InputGroup width="150px">
-                        <InputLeftElement
-                           pointerEvents="none"
-                           color="gray.300"
-                           fontSize="1.2em"
-                        >
-                           $
-                        </InputLeftElement>
-                        <Input
-                           value={price}
-                           onChange={(e) => {
-                              const value = e.target.value;
-
-                              // Allow empty input
-                              if (value === "") {
-                                 setPrice("");
-                                 return;
-                              }
-
-                              // Only allow numbers and one decimal point
-                              const regex = /^\d*\.?\d{0,2}$/;
-                              if (regex.test(value)) {
-                                 const numValue = parseFloat(value);
-                                 if (
-                                    !isNaN(numValue) &&
-                                    numValue >= 0 &&
-                                    numValue <= 9999.99
-                                 ) {
-                                    setPrice(value);
-                                 }
-                              }
-                           }}
-                           onKeyPress={(e) => {
-                              const charCode = e.which ? e.which : e.keyCode;
-                              if (
-                                 charCode > 31 &&
-                                 (charCode < 48 || charCode > 57) &&
-                                 charCode !== 46
-                              ) {
-                                 e.preventDefault();
-                              }
-                           }}
-                           inputMode="decimal"
-                           borderRadius={15}
-                           borderColor="black"
-                           borderWidth="2px"
-                        />
-                     </InputGroup>
-                     <Checkbox
-                        colorScheme={"green"}
-                        color={"#79A88E"}
-                        ml={4}
-                        isChecked={isOBO}
-                        onChange={(e) => setIsOBO(e.target.checked)}
-                     >
-                        OBO
-                     </Checkbox>
-                  </Flex>
-                  <Text mt={2}>Item Quality</Text>
-                  <Select
-                     required
-                     placeholder="Select quality"
-                     borderRadius={15}
-                     borderColor="black"
-                     borderWidth="2px"
-                     value={itemQuality}
-                     onChange={(e) => setItemQuality(e.target.value)}
-                     bg="white"
-                     color="gray.800"
-                     sx={{
-                        "& option": {
-                           bg: "white",
-                           color: "gray.800",
-                        },
-                        "& option:hover": {
-                           bg: "#79A88E",
-                        },
-                        "& option:checked": {
-                           bg: "#79A88E !important",
-                           color: "white !important",
-                        },
-                     }}
-                  >
-                     {qualityOptions.map((option) => (
-                        <option key={option.value} value={option.value}>
-                           {option.label}
-                        </option>
-                     ))}
-                  </Select>
-                  <Text mt={2}>Pickup Location</Text>
-                  <Input
-                     borderRadius={15}
-                     borderColor={"black"}
-                     borderWidth={"2px"}
-                     value={pickupLocation}
-                     onChange={(e) => {
-                        const newValue = e.target.value.slice(0, 20);
-                        setPickupLocation(newValue);
-                        if (newValue.length > 1) {
-                           const suggestions =
-                              fetchSuggestedLocations(newValue);
-                           setSuggestedLocations(suggestions);
-                        } else {
-                           setSuggestedLocations([]);
-                        }
-                     }}
-                  />
-                  {suggestedLocations.length > 0 && (
-                     <Box
-                        mt={2}
-                        borderWidth={1}
-                        borderRadius={15}
-                        maxH="200px"
-                        overflowY="auto"
-                     >
-                        {suggestedLocations.map((location, index) => (
-                           <Box
-                              key={index}
-                              p={2}
-                              _hover={{ bg: "gray.100" }}
-                              cursor="pointer"
-                              onClick={() => {
-                                 setPickupLocation(location);
-                                 setSuggestedLocations([]);
-                              }}
+                  {/* Price and OBO checkbox and Quality*/}
+                  <Flex flexDir={"row"} w={"full"}>
+                     <Flex flexDir={"column"} w={"full"}>
+                        <Text mt={2}>Price</Text>
+                        <InputGroup width="full">
+                           <InputLeftElement
+                              pointerEvents="none"
+                              color="gray.300"
+                              fontSize="1.2em"
                            >
-                              {location}
+                              $
+                           </InputLeftElement>
+                           <Input
+                              w={"full"}
+                              value={price}
+                              onChange={(e) => {
+                                 const value = e.target.value;
+
+                                 // Allow empty input
+                                 if (value === "") {
+                                    setPrice("");
+                                    return;
+                                 }
+
+                                 // Only allow numbers and one decimal point
+                                 const regex = /^\d*\.?\d{0,2}$/;
+                                 if (regex.test(value)) {
+                                    // Check if the value is within the allowed range
+                                    const numValue = parseFloat(value);
+                                    if (
+                                       !isNaN(numValue) &&
+                                       numValue >= 0 &&
+                                       numValue <= 9999.99
+                                    ) {
+                                       setPrice(value);
+                                    }
+                                 }
+                              }}
+                              onBlur={() => {
+                                 // On blur, format the price to always show two decimal places
+                                 if (price !== "") {
+                                    const formattedPrice =
+                                       parseFloat(price).toFixed(2);
+                                    setPrice(formattedPrice);
+                                 }
+                              }}
+                              onKeyPress={(e) => {
+                                 const charCode = e.which ? e.which : e.keyCode;
+                                 if (
+                                    charCode > 31 &&
+                                    (charCode < 48 || charCode > 57) &&
+                                    charCode !== 46
+                                 ) {
+                                    e.preventDefault();
+                                 }
+                              }}
+                              inputMode="decimal"
+                              borderRadius={10}
+                              borderColor="#E6E6E6"
+                              borderWidth="2px"
+                           />
+                        </InputGroup>
+                     </Flex>
+
+                     {/* OBO checkbox */}
+                     <Flex
+                        flexDir={"column"}
+                        justify={"center"}
+                        pb={2}
+                        pr={4}
+                        pl={2}
+                     >
+                        <Tooltip
+                           label="Or Best Offer"
+                           borderRadius={50}
+                           top={-15}
+                        >
+                           <Text>OBO</Text>
+                        </Tooltip>
+                        <Checkbox
+                           pt={2}
+                           colorScheme={"green"}
+                           color={"#79A88E"}
+                           ml={4}
+                           isChecked={isOBO}
+                           onChange={(e) => setIsOBO(e.target.checked)}
+                        ></Checkbox>
+                     </Flex>
+
+                     {/* Item Quality */}
+                     <Flex flexDir={"column"} w={"full"}>
+                        <Text mt={2}>Condition</Text>
+                        <Select
+                           required
+                           placeholder="Select"
+                           options={qualityOptions}
+                           value={qualityOptions.find(
+                              (option) => option.value === itemQuality
+                           )}
+                           onChange={(selectedOption) =>
+                              setItemQuality(selectedOption.value)
+                           }
+                           chakraStyles={{
+                              control: (provided) => ({
+                                 ...provided,
+                                 borderRadius: 10,
+                                 borderColor: "#E6E6E6",
+                                 borderWidth: "2px",
+                                 backgroundColor: "white",
+                              }),
+                              option: (provided, state) => ({
+                                 ...provided,
+                                 backgroundColor: state.isSelected
+                                    ? "#79A88E"
+                                    : "79A88E",
+                                 color: state.isSelected ? "white" : "gray.800",
+                                 "&:hover": {
+                                    backgroundColor: "#79A88E",
+                                    color: "white",
+                                 },
+                              }),
+                              menu: (provided) => ({
+                                 ...provided,
+                                 maxHeight: "300px", // Set the max height for the scrollable area
+                                 overflowY: "auto", // Enable vertical scrolling
+                              }),
+                           }}
+                        />
+                     </Flex>
+                  </Flex>
+
+                  {/* Category and Quality */}
+                  <Flex flexDir={"row"} w={"full"} gap={4}>
+                     <Flex flexDir={"column"} w={"full"}>
+                        <Text mt={2}>Category</Text>
+                        <Box width="100%">
+                           <Select
+                              required
+                              placeholder="Select"
+                              options={categoryOptions}
+                              value={categoryOptions.find(
+                                 (option) => option.value === category
+                              )}
+                              onChange={(selectedOption) =>
+                                 setCategory(selectedOption.value)
+                              }
+                              chakraStyles={{
+                                 control: (provided) => ({
+                                    ...provided,
+                                    borderRadius: 10,
+                                    borderColor: "#E6E6E6",
+                                    borderWidth: "2px",
+                                    backgroundColor: "white",
+                                 }),
+                                 option: (provided, state) => ({
+                                    ...provided,
+                                    backgroundColor: state.isSelected
+                                       ? "#79A88E"
+                                       : "79A88E",
+                                    color: state.isSelected
+                                       ? "white"
+                                       : "gray.800",
+                                    "&:hover": {
+                                       backgroundColor: "#79A88E",
+                                       color: "white",
+                                    },
+                                 }),
+                                 menu: (provided) => ({
+                                    ...provided,
+                                    maxHeight: "190px", // Set the max height for the scrollable area
+                                    overflowY: "auto", // Enable vertical scrolling
+                                    minWidth: "200px",
+                                 }),
+                              }}
+                           />
+                        </Box>
+                     </Flex>
+
+                     <Flex flexDir={"column"} w={"full"}>
+                        {/* Pickup Location */}
+                        <Text mt={2}>Pickup Location</Text>
+                        <Input
+                           borderRadius={10}
+                           borderColor="#E6E6E6"
+                           borderWidth="2px"
+                           value={pickupLocation}
+                           onChange={(e) => {
+                              const newValue = e.target.value.slice(0, 20);
+                              setPickupLocation(newValue);
+                              if (newValue.length > 1) {
+                                 const suggestions =
+                                    fetchSuggestedLocations(newValue);
+                                 setSuggestedLocations(suggestions);
+                              } else {
+                                 setSuggestedLocations([]);
+                              }
+                           }}
+                        />
+                        {suggestedLocations.length > 0 && (
+                           <Box
+                              mt={2}
+                              borderWidth={1}
+                              borderRadius={15}
+                              maxH="200px"
+                              overflowY="auto"
+                           >
+                              {suggestedLocations.map((location, index) => (
+                                 <Box
+                                    key={index}
+                                    p={2}
+                                    _hover={{ bg: "gray.100" }}
+                                    cursor="pointer"
+                                    onClick={() => {
+                                       setPickupLocation(location);
+                                       setSuggestedLocations([]);
+                                    }}
+                                 >
+                                    {location}
+                                 </Box>
+                              ))}
                            </Box>
-                        ))}
-                     </Box>
-                  )}
+                        )}
+                     </Flex>
+                  </Flex>
+
+                  {/* Description */}
                   <Text mt={2}>Description</Text>
                   <Textarea
                      maxLength={250}
-                     borderRadius={15}
-                     borderColor={"black"}
-                     borderWidth={"2px"}
+                     borderRadius={10}
+                     borderColor="#E6E6E6"
+                     borderWidth="2px"
                      value={caption}
                      onChange={(e) => {
                         const newValue = e.target.value.slice(0, 250);
@@ -357,16 +472,16 @@ const CreatePost = () => {
                      }}
                   />
 
+                  {/* Upload photos */}
                   <Input
                      type="file"
                      hidden
                      ref={imageRef}
                      onChange={handleImageChangeWrapper}
                   />
-
                   <Text mt={2}>Upload up to 4 photos</Text>
                   <Button
-                     borderRadius={15}
+                     borderRadius={10}
                      onClick={() => imageRef.current.click()}
                   >
                      Upload Photo
@@ -411,7 +526,8 @@ const CreatePost = () => {
                      variant="solid"
                      color={"white"}
                      size={"lg"}
-                     borderRadius={15}
+                     borderRadius={10}
+                     w={"full"}
                      onClick={handlePostCreation}
                      isLoading={isLoading}
                   >
@@ -442,7 +558,8 @@ function useCreatePost() {
       price,
       pickupLocation,
       isOBO,
-      itemQuality
+      itemQuality,
+      category
    ) => {
       if (isLoading) return;
       if (selectedFiles.length === 0)
@@ -455,6 +572,7 @@ function useCreatePost() {
          isOBO: isOBO,
          caption: caption,
          itemQuality: itemQuality,
+         category: category,
          likes: [],
          createdAt: Date.now(),
          createdBy: authUser.uid,

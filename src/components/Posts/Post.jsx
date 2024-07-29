@@ -75,7 +75,7 @@ const Post = ({ post }) => {
                      h="10rem"
                   />
                </Box>
-               <PostFooter post={post} />
+               <PostFooter post={post} userProfile={userProfile} />
             </Box>
          </VStack>
 

@@ -21,12 +21,12 @@ import {
 import { FaLocationDot, FaRegHeart, FaHeart } from "react-icons/fa6";
 import useLikePost from "../../hooks/useLikePost";
 import { getTimeDifference } from "../../utils/getTimeDifference";
-import { useSwipeable } from "react-swipeable";
 import { IoIosArrowDropleft, IoIosArrowDropright } from "react-icons/io";
 import { createOrUpdateConversation } from "../../services/conversationService";
 import useGetUserProfileById from "../../hooks/useGetuserProfileById";
 import useShowToast from "../../hooks/useShowToast";
 import SwipeableGallery from "./SwipeableGallery";
+import { useNavigate } from "react-router-dom";
 
 const PostModal = ({
    isOpen,
@@ -45,6 +45,7 @@ const PostModal = ({
    const [offerCount, setOfferCount] = useState(0);
    const [isOfferButtonDisabled, setIsOfferButtonDisabled] = useState(false);
    const showToast = useShowToast();
+   const navigate = useNavigate();
 
    const nextImage = () => {
       setCurrentImageIndex(
@@ -116,6 +117,31 @@ const PostModal = ({
       onClose();
       showToast("Offer Submitted", "Your offer has been submitted.", "success");
    };
+
+   const qualityColor = (quality) => {
+      switch (quality) {
+         case "New":
+            return "#716FE9";
+         case "Like New":
+            return "#47C243";
+         case "Very Good":
+            return "#8FD078";
+         case "Good":
+            return "#CBDC6A";
+         case "Fair":
+            return "#FFA72C";
+         case "Poor":
+            return "#F44336";
+         default:
+            return "#716FE9";
+      }
+   };
+
+   const goToProfile = () => {
+      onClose();
+      navigate(`/${userProfile?.username}`);
+   };
+
    return (
       <Modal
          isOpen={isOpen}
@@ -246,6 +272,20 @@ const PostModal = ({
                         </Box>
                      </Flex>
 
+                     {/* Category */}
+                     {post.category && (
+                        <Box>
+                           <Flex
+                              fontSize={{ base: 12, md: 16 }}
+                              flexDir={"row"}
+                           >
+                              <Box borderRadius={50} color={"gray"}>
+                                 {post.category}
+                              </Box>
+                           </Flex>
+                        </Box>
+                     )}
+
                      {/* Quality */}
                      {post.itemQuality && (
                         <Box>
@@ -254,17 +294,22 @@ const PostModal = ({
                               fontWeight="semibold"
                               flexDir={"row"}
                               gap={"5px"}
+                              alignItems={"center"}
                            >
                               <Box>Quality:</Box>
-                              <Box
-                                 bg={"#716FE9"}
-                                 px={2}
+                              <Flex
+                                 bg={qualityColor(post.itemQuality)}
+                                 px={{ base: 2, md: 4 }}
+                                 h={{ base: "20px", md: "30px" }}
                                  borderRadius={50}
                                  color={"white"}
+                                 fontSize={{ base: "10px", md: "15px" }}
+                                 justifyContent={"center"}
+                                 alignItems={"center"}
                               >
                                  {" "}
                                  {post.itemQuality}
-                              </Box>
+                              </Flex>
                            </Flex>
                         </Box>
                      )}
@@ -430,7 +475,13 @@ const PostModal = ({
                         fontSize="24px"
                         py={3}
                      >
-                        <Flex justifyItems="center" alignItems="center" gap={2}>
+                        <Flex
+                           justifyItems="center"
+                           alignItems="center"
+                           gap={2}
+                           onClick={goToProfile}
+                           cursor="pointer"
+                        >
                            {userProfile && (
                               <Avatar
                                  src={userProfile.profilePicURL}
