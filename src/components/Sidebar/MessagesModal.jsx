@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useRef } from "react";
 import {
    Modal,
    ModalOverlay,
@@ -26,6 +26,7 @@ import {
    serverTimestamp,
    deleteDoc,
    arrayRemove,
+   getDoc,
 } from "firebase/firestore";
 import useAuthStore from "../../store/authStore";
 import Conversation from "./Conversation";
@@ -40,6 +41,11 @@ const MessagesModal = ({ isOpen, onClose }) => {
    const authUser = useAuthStore((state) => state.user);
    const db = getFirestore();
    const showToast = useShowToast();
+   const messagesEndRef = useRef(null);
+
+   const scrollToBottom = () => {
+      messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
+   };
 
    const markMessagesAsRead = async (conversationId) => {
       if (!conversationId) return;
@@ -65,10 +71,11 @@ const MessagesModal = ({ isOpen, onClose }) => {
    };
 
    useEffect(() => {
-      if (selectedConversation) {
+      if (isOpen && selectedConversation) {
          markMessagesAsRead(selectedConversation.id);
+         scrollToBottom();
       }
-   }, [selectedConversation]);
+   }, [isOpen, selectedConversation]);
 
    useEffect(() => {
       if (!authUser) return;
@@ -100,25 +107,48 @@ const MessagesModal = ({ isOpen, onClose }) => {
       return () => unsubscribe();
    }, [authUser, db]);
 
+   useEffect(() => {
+      if (!selectedConversation) return;
+
+      console.log(
+         "Setting up listener for selected conversation:",
+         selectedConversation.id
+      );
+
+      const conversationRef = doc(db, "conversations", selectedConversation.id);
+      const unsubscribe = onSnapshot(conversationRef, (doc) => {
+         if (doc.exists()) {
+            console.log("Received update for conversation:", doc.id);
+            console.log("New data:", doc.data());
+            setSelectedConversation({ id: doc.id, ...doc.data() });
+            scrollToBottom();
+         }
+      });
+
+      return () => unsubscribe();
+   }, [selectedConversation?.id, db]);
+
    const sendMessage = async (type, content) => {
       if (!selectedConversation) return;
 
-      const newMessage = {
-         senderId: authUser.uid,
-         type: type,
-         content: content,
-         timestamp: new Date().toISOString(), // Use client-side timestamp for the message
-         read: false,
-      };
-
       try {
+         console.log("Sending message:", { type, content });
+
          const conversationRef = doc(
             db,
             "conversations",
             selectedConversation.id
          );
 
-         // First, update the messages array and last message
+         const newMessage = {
+            senderId: authUser.uid,
+            type: type,
+            content: content,
+            timestamp: new Date().toISOString(), // Use a string timestamp for the array
+            read: false,
+         };
+
+         // Update Firestore
          await updateDoc(conversationRef, {
             messages: arrayUnion(newMessage),
             lastMessage: {
@@ -127,12 +157,13 @@ const MessagesModal = ({ isOpen, onClose }) => {
             },
          });
 
-         // Then, update the timestamp separately
          await updateDoc(conversationRef, {
             lastMessageTimestamp: serverTimestamp(),
          });
 
          setMessageText("");
+         scrollToBottom();
+         console.log("Message sent successfully");
       } catch (error) {
          console.error("Error sending message:", error);
       }
@@ -341,6 +372,7 @@ const MessagesModal = ({ isOpen, onClose }) => {
                                     </Box>
                                  )
                               )}
+                              <div ref={messagesEndRef} />
                            </VStack>
 
                            {/* Message input */}
