@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import {
    Modal,
    ModalOverlay,
@@ -26,6 +26,7 @@ import { IoIosArrowDropleft, IoIosArrowDropright } from "react-icons/io";
 import { createOrUpdateConversation } from "../../services/conversationService";
 import useGetUserProfileById from "../../hooks/useGetuserProfileById";
 import useShowToast from "../../hooks/useShowToast";
+import SwipeableGallery from "./SwipeableGallery";
 
 const PostModal = ({
    isOpen,
@@ -39,7 +40,6 @@ const PostModal = ({
    const [showOfferInput, setShowOfferInput] = useState(false);
    const [offerAmount, setOfferAmount] = useState("");
    const [currentImageIndex, setCurrentImageIndex] = useState(0);
-   const [swipeDirection, setSwipeDirection] = useState(null);
    const sellerName = userProfile?.fullName;
    const [lastOfferTime, setLastOfferTime] = useState(0);
    const [offerCount, setOfferCount] = useState(0);
@@ -58,21 +58,6 @@ const PostModal = ({
             (prevIndex - 1 + post.imageURLs.length) % post.imageURLs.length
       );
    };
-
-   const handlers = useSwipeable({
-      onSwipedLeft: () => {
-         nextImage();
-         setSwipeDirection("left");
-         setTimeout(() => setSwipeDirection(null), 500);
-      },
-      onSwipedRight: () => {
-         prevImage();
-         setSwipeDirection("right");
-         setTimeout(() => setSwipeDirection(null), 500);
-      },
-      preventDefaultTouchmoveEvent: true,
-      trackMouse: true,
-   });
 
    const timeAgo = getTimeDifference(post.createdAt);
    const displayPrice = post.price ? (
@@ -155,7 +140,7 @@ const PostModal = ({
                   {/* Picture */}
 
                   <Box
-                     {...handlers}
+                     // {...handlers}
                      borderRadius={30}
                      position="relative"
                      overflow="hidden"
@@ -166,23 +151,7 @@ const PostModal = ({
                         pt: { base: "100%", md: "56.25%" },
                      }}
                   >
-                     <Image
-                        src={post.imageURLs[currentImageIndex]}
-                        objectFit="cover"
-                        position="absolute"
-                        top="0"
-                        left="0"
-                        width="100%"
-                        height="100%"
-                        transition="transform 0.3s ease-out"
-                        transform={
-                           swipeDirection === "left"
-                              ? "translateX(-10%)"
-                              : swipeDirection === "right"
-                              ? "translateX(10%)"
-                              : "translateX(0)"
-                        }
-                     />
+                     <SwipeableGallery images={post.imageURLs} />
                      {post.imageURLs.length > 1 && (
                         <>
                            <Button
