@@ -152,6 +152,19 @@ const CreatePost = () => {
    };
 
    const handlePostCreation = async () => {
+      if (!itemName.trim()) {
+         showToast("Error", "Item name is required", "error");
+         return;
+      }
+      if (!itemQuality) {
+         showToast("Error", "Condition is required", "error");
+         return;
+      }
+      if (!category) {
+         showToast("Error", "Category is required", "error");
+         return;
+      }
+
       try {
          await handleCreatePost(
             selectedFiles,
@@ -226,8 +239,12 @@ const CreatePost = () => {
                <ModalCloseButton borderRadius={15} />
                <ModalBody>
                   {/* Item Name */}
-                  <Text mt={-2}>Item Name</Text>
+                  <Text mt={-2}>
+                     Item Name <span style={{ color: "red" }}>*</span>
+                  </Text>
+
                   <Input
+                     isRequired
                      autoCapitalize=""
                      maxLength={40}
                      borderRadius={10}
@@ -330,9 +347,12 @@ const CreatePost = () => {
 
                      {/* Item Quality */}
                      <Flex flexDir={"column"} w={"full"}>
-                        <Text mt={2}>Condition</Text>
+                        <Text mt={2}>
+                           Condition <span style={{ color: "red" }}>*</span>
+                        </Text>
                         <Select
                            required
+                           isRequired
                            placeholder="Select"
                            options={qualityOptions}
                            value={qualityOptions.find(
@@ -373,9 +393,12 @@ const CreatePost = () => {
                   {/* Category and Quality */}
                   <Flex flexDir={"row"} w={"full"} gap={4}>
                      <Flex flexDir={"column"} w={"full"}>
-                        <Text mt={2}>Category</Text>
+                        <Text mt={2}>
+                           Category <span style={{ color: "red" }}>*</span>
+                        </Text>
                         <Box width="100%">
                            <Select
+                              isRequired
                               required
                               placeholder="Select"
                               options={categoryOptions}
