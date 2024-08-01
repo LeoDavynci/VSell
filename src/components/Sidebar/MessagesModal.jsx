@@ -406,10 +406,12 @@ const MessagesModal = ({ isOpen, onClose }) => {
                      )}
                   </Box>
 
-                  {authUser === null && (
+                  {authUser ? (
                      <Box alignSelf={"center"} color={"#848484"}>
                         Login to see your messages
                      </Box>
+                  ) : (
+                     <></>
                   )}
 
                   {/* All conversations */}
