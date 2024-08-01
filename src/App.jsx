@@ -8,6 +8,7 @@ import { useAuthState } from "react-firebase-hooks/auth";
 import { auth } from "./firebase/firebase";
 import { Center, Spinner } from "@chakra-ui/react";
 import { SearchProvider } from "./store/searchContext";
+import ForgotPassword from "./components/AuthForm/ForgotPassword";
 
 function App() {
    const [authUser, loading] = useAuthState(auth);
@@ -32,6 +33,7 @@ function App() {
       <SearchProvider>
          <PageLayout>
             <Routes>
+               <Route path="/forgot-password" element={<ForgotPassword />} />
                <Route path="/auth" element={<AuthPage />} />
                <Route path="/" element={<HomePage />} />
                <Route path="/:username" element={<ProfilePage />} />

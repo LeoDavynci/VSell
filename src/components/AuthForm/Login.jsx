@@ -12,7 +12,7 @@ import {
 import React, { useEffect, useState } from "react";
 import useLogin from "../../hooks/useLogin";
 import useAuthStore from "../../store/authStore";
-import { useNavigate } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 
 const Login = () => {
    const [show, setShow] = React.useState(false);
@@ -88,6 +88,16 @@ const Login = () => {
                </Button>
             </InputRightElement>
          </InputGroup>
+         <Box w={"full"} mt={-5}>
+            <Link
+               to="/forgot-password"
+               style={{ color: "black", fontSize: "14px" }}
+            >
+               <Text textAlign="left" position={"relative"} top={0} right={0}>
+                  Forgot Password?
+               </Text>
+            </Link>
+         </Box>
 
          {/* {error && (
             <Alert status="error" fontSize={13} p={2} borderRadius={4}>
