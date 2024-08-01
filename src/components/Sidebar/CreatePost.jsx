@@ -26,7 +26,7 @@ import useShowToast from "../../hooks/useShowToast";
 import useAuthStore from "../../store/authStore";
 import usePostStore from "../../store/postStore";
 import useUserProfileStore from "../../store/userProfileStore";
-import { useLocation } from "react-router-dom";
+import { useLocation, useNavigate } from "react-router-dom";
 import {
    addDoc,
    arrayUnion,
@@ -40,6 +40,7 @@ import { handleImageChange } from "../../utils/imageUtils";
 import { Select } from "chakra-react-select";
 
 const CreatePost = () => {
+   const authUser = useAuthStore((state) => state.user);
    const { isOpen, onOpen, onClose } = useDisclosure();
    const [itemName, setItemName] = useState("");
    const [price, setPrice] = useState("");
@@ -50,6 +51,11 @@ const CreatePost = () => {
    const imageRef = useRef(null);
    const showToast = useShowToast();
    const { isLoading, handleCreatePost } = useCreatePost();
+   const navigate = useNavigate();
+
+   const redirectToLogin = () => {
+      navigate("/auth");
+   };
 
    const [itemQuality, setItemQuality] = useState("");
    const qualityOptions = [
@@ -473,19 +479,21 @@ const CreatePost = () => {
                   />
 
                   {/* Upload photos */}
-                  <Input
-                     type="file"
-                     hidden
-                     ref={imageRef}
-                     onChange={handleImageChangeWrapper}
-                  />
-                  <Text mt={2}>Upload up to 4 photos</Text>
-                  <Button
-                     borderRadius={10}
-                     onClick={() => imageRef.current.click()}
-                  >
-                     Upload Photo
-                  </Button>
+                  <Flex flexDir={"column"}>
+                     <Input
+                        type="file"
+                        hidden
+                        ref={imageRef}
+                        onChange={handleImageChangeWrapper}
+                     />
+                     <Text mt={2}>Upload up to 4 photos</Text>
+                     <Button
+                        borderRadius={10}
+                        onClick={() => imageRef.current.click()}
+                     >
+                        Upload Photo
+                     </Button>
+                  </Flex>
 
                   {selectedFiles.length > 0 && (
                      <Flex
@@ -520,19 +528,34 @@ const CreatePost = () => {
                </ModalBody>
 
                <ModalFooter>
-                  <Button
-                     bg={"#79A88E"}
-                     _hover={{ bg: "#A2C0B0" }}
-                     variant="solid"
-                     color={"white"}
-                     size={"lg"}
-                     borderRadius={10}
-                     w={"full"}
-                     onClick={handlePostCreation}
-                     isLoading={isLoading}
-                  >
-                     Post
-                  </Button>
+                  {(authUser && (
+                     <Button
+                        bg={"#79A88E"}
+                        _hover={{ bg: "#A2C0B0" }}
+                        variant="solid"
+                        color={"white"}
+                        size={"lg"}
+                        borderRadius={10}
+                        w={"full"}
+                        onClick={handlePostCreation}
+                        isLoading={isLoading}
+                     >
+                        Post
+                     </Button>
+                  )) || (
+                     <Button
+                        bg={"#716FE9"}
+                        _hover={{ bg: "#A2C0B0" }}
+                        variant="solid"
+                        color={"white"}
+                        size={"lg"}
+                        borderRadius={10}
+                        w={"full"}
+                        onClick={redirectToLogin}
+                     >
+                        Login to Post
+                     </Button>
+                  )}
                </ModalFooter>
             </ModalContent>
          </Modal>

@@ -34,9 +34,9 @@ const PostFooter = ({ post, userProfile }) => {
             alignItems={"center"}
             h={"25px"}
          >
-            <Text fontSize={{ base: "20px", md: "20px" }} fontWeight={700}>
+            <Flex fontSize={{ base: "20px", md: "20px" }} fontWeight={700}>
                {displayPrice}
-            </Text>
+            </Flex>
 
             <Text
                fontWeight={700}

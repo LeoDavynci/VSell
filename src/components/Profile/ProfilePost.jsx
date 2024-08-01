@@ -28,6 +28,7 @@ import usePostStore from "../../store/postStore";
 import useLikePost from "./../../hooks/useLikePost";
 import { useSwipeable } from "react-swipeable";
 import { IoIosArrowDropleft, IoIosArrowDropright } from "react-icons/io";
+import SwipeableGallery from "../Posts/SwipeableGallery";
 
 const ProfilePost = ({ post }) => {
    const { isOpen, onOpen, onClose } = useDisclosure();
@@ -42,7 +43,18 @@ const ProfilePost = ({ post }) => {
    const { handleLikePost, isLiked, likes } = useLikePost(post);
    const timeAgo = getTimeDifference(post.createdAt);
    const [currentImageIndex, setCurrentImageIndex] = useState(0);
-   const [swipeDirection, setSwipeDirection] = useState(null);
+
+   const prevImage = () => {
+      if (currentImageIndex > 0) {
+         setCurrentImageIndex(currentImageIndex - 1);
+      }
+   };
+
+   const nextImage = () => {
+      if (currentImageIndex < post.imageURLs.length - 1) {
+         setCurrentImageIndex(currentImageIndex + 1);
+      }
+   };
 
    const handleDeletePost = async () => {
       if (!window.confirm("Are you sure you want to delete this post?")) return;
@@ -71,33 +83,6 @@ const ProfilePost = ({ post }) => {
       } finally {
          setIsDeleting(false);
       }
-   };
-
-   const handlers = useSwipeable({
-      onSwipedLeft: () => {
-         nextImage();
-         setSwipeDirection("left");
-         setTimeout(() => setSwipeDirection(null), 500);
-      },
-      onSwipedRight: () => {
-         prevImage();
-         setSwipeDirection("right");
-         setTimeout(() => setSwipeDirection(null), 500);
-      },
-      preventDefaultTouchmoveEvent: true,
-      trackMouse: true,
-   });
-
-   const prevImage = () => {
-      setCurrentImageIndex((prevIndex) =>
-         prevIndex === 0 ? post.imageURLs.length - 1 : prevIndex - 1
-      );
-   };
-
-   const nextImage = () => {
-      setCurrentImageIndex(
-         (prevIndex) => (prevIndex + 1) % post.imageURLs.length
-      );
    };
 
    return (
@@ -159,7 +144,6 @@ const ProfilePost = ({ post }) => {
                <ModalBody py={3} px={3}>
                   <Flex flexDirection={{ base: "column", md: "row" }}>
                      <Box
-                        {...handlers}
                         borderRadius={30}
                         position="relative"
                         overflow="hidden"
@@ -170,28 +154,16 @@ const ProfilePost = ({ post }) => {
                            pt: { base: "100%", md: "56.25%" },
                         }}
                      >
-                        <Image
-                           src={post.imageURLs[currentImageIndex]}
-                           objectFit="cover"
-                           position="absolute"
-                           top="0"
-                           left="0"
-                           width="100%"
-                           height="100%"
-                           transition="transform 0.3s ease-out"
-                           transform={
-                              swipeDirection === "left"
-                                 ? "translateX(-10%)"
-                                 : swipeDirection === "right"
-                                 ? "translateX(10%)"
-                                 : "translateX(0)"
-                           }
+                        <SwipeableGallery
+                           images={post.imageURLs}
+                           currentIndex={currentImageIndex}
+                           setCurrentIndex={setCurrentImageIndex}
                         />
                         {post.imageURLs.length > 1 && (
                            <>
                               <Button
                                  position="absolute"
-                                 left="39%"
+                                 left="30%"
                                  bottom="10px"
                                  onClick={prevImage}
                                  bg="rgba(0, 0, 0, 0.4)"
@@ -206,7 +178,7 @@ const ProfilePost = ({ post }) => {
                               </Button>
                               <Button
                                  position="absolute"
-                                 right="38%"
+                                 left="60%"
                                  bottom="10px"
                                  onClick={nextImage}
                                  bg="rgba(0, 0, 0, 0.4)"
@@ -223,7 +195,7 @@ const ProfilePost = ({ post }) => {
                                  position="absolute"
                                  height={"30px"}
                                  bottom="10px"
-                                 left="45%"
+                                 left="41%"
                                  bg="rgba(0, 0, 0, 0.4)"
                                  color="white"
                                  px={4}
@@ -339,25 +311,27 @@ const ProfilePost = ({ post }) => {
                            </Flex>
                         </Flex>
 
-                        {authUser?.user.uid === userProfile?.uid && (
+                        {authUser && (
                            <Flex
                               gap={{ base: 3, md: 15 }}
                               flexDir={"row"}
                               mt={{ base: "10px", md: "20px" }}
                            >
-                              <Button
-                                 bg="#D9D9D9"
-                                 variant="solid"
-                                 color={"black"}
-                                 borderRadius={{ base: 35, md: 25 }}
-                                 fontSize="36px"
-                                 py={9}
-                                 px={14}
-                                 onClick={handleDeletePost}
-                                 isLoading={isDeleting}
-                              >
-                                 Delete
-                              </Button>
+                              {authUser?.user?.uid === userProfile?.uid && (
+                                 <Button
+                                    bg="#D9D9D9"
+                                    variant="solid"
+                                    color={"black"}
+                                    borderRadius={{ base: 35, md: 25 }}
+                                    fontSize="36px"
+                                    py={9}
+                                    px={14}
+                                    onClick={handleDeletePost}
+                                    isLoading={isDeleting}
+                                 >
+                                    Delete
+                                 </Button>
+                              )}
                            </Flex>
                         )}
 

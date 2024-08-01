@@ -9,21 +9,39 @@ import {
    InputRightElement,
    Text,
 } from "@chakra-ui/react";
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import useLogin from "../../hooks/useLogin";
+import useAuthStore from "../../store/authStore";
+import { useNavigate } from "react-router-dom";
 
 const Login = () => {
    const [show, setShow] = React.useState(false);
+   const authUser = useAuthStore((state) => state.user);
    const handleClick = () => setShow(!show);
+
    const [inputs, setInputs] = useState({
       email: "",
       password: "",
    });
    const { loading, error, login } = useLogin();
-
    const isEmailUnverified = error?.message?.includes("verify your email");
    const invalidEmail = error?.message?.includes("invalid-email");
    const invalidPassword = error?.message?.includes("invalid-credential");
+   const navigate = useNavigate();
+
+   useEffect(() => {
+      if (authUser) {
+         navigate("/");
+      }
+   }, [authUser, navigate]);
+
+   const handleLogin = async () => {
+      await login(inputs);
+   };
+
+   const redirectToHome = () => {
+      navigate("/");
+   };
 
    return (
       <>
@@ -136,10 +154,25 @@ const Login = () => {
             fontSize={16}
             borderRadius="10px"
             isLoading={loading}
-            onClick={() => login(inputs)}
+            onClick={handleLogin}
          >
             Log in
          </Button>
+
+         {authUser === null && (
+            <Button
+               w={"full"}
+               h={"2.25rem"}
+               color="white"
+               bg="black"
+               size={"sm"}
+               fontSize={14}
+               borderRadius="10px"
+               onClick={redirectToHome}
+            >
+               Browse as Guest
+            </Button>
+         )}
       </>
    );
 };

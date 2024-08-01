@@ -406,7 +406,12 @@ const MessagesModal = ({ isOpen, onClose }) => {
                      )}
                   </Box>
 
-                  <Box fontWeight={"bold"}>All Messages</Box>
+                  {authUser === null && (
+                     <Box alignSelf={"center"} color={"#848484"}>
+                        Login to see your messages
+                     </Box>
+                  )}
+
                   {/* All conversations */}
                   <VStack spacing={4} align="stretch" width="full">
                      {conversations.map((conversation) => (

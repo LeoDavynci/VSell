@@ -1,12 +1,4 @@
-import {
-   Box,
-   Container,
-   Flex,
-   VStack,
-   Text,
-   useTheme,
-   Img,
-} from "@chakra-ui/react";
+import { Box, Flex, Text, useTheme, Img } from "@chakra-ui/react";
 import AuthForm from "../../components/AuthForm/AuthForm";
 
 const AuthPage = () => {

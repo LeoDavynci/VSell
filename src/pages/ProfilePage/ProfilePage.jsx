@@ -13,11 +13,14 @@ import ProfilePosts from "../../components/Profile/ProfilePosts";
 import useGetUserProfileByUsername from "../../hooks/useGetUserProfileByUsername";
 import { useParams } from "react-router-dom";
 import { Link as RouterLink } from "react-router-dom";
+import useAuthStore from "../../store/authStore";
 
 const ProfilePage = () => {
    const { username } = useParams();
    const { isLoading, userProfile } = useGetUserProfileByUsername(username);
    const userNotFound = !isLoading && !userProfile;
+   const authUser = useAuthStore((state) => state.user);
+
    if (userNotFound) return <UserNotFound />;
 
    return (

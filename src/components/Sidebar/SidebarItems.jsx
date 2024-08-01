@@ -1,21 +1,35 @@
 import React, { useState, useContext } from "react";
-import { useLocation } from "react-router-dom";
+import { useLocation, useNavigate } from "react-router-dom";
 import Home from "./Home";
 import ProfileLink from "./ProfileLink";
 import CreatePost from "./CreatePost";
-import { Flex, Box, Input, IconButton, useMediaQuery } from "@chakra-ui/react";
+import {
+   Flex,
+   Box,
+   Input,
+   IconButton,
+   useMediaQuery,
+   Button,
+} from "@chakra-ui/react";
 import Messages from "./Messages";
 import Search from "./Search";
 import { CloseIcon } from "@chakra-ui/icons";
 import { SearchContext } from "../../store/searchContext";
 import { IoSearchCircle } from "react-icons/io5";
+import useAuthStore from "../../store/authStore";
 
 const SidebarItems = () => {
+   const authUser = useAuthStore((state) => state.user);
    const [isSearchOpen, setIsSearchOpen] = useState(false);
    const [searchInputValue, setSearchInputValue] = useState("");
    const location = useLocation();
    const [isMobile] = useMediaQuery("(max-width: 768px)");
    const { setSearchTerm } = useContext(SearchContext);
+   const navigate = useNavigate();
+
+   const redirectToLogin = () => {
+      navigate("/auth");
+   };
 
    const toggleSearch = () => {
       setIsSearchOpen(!isSearchOpen);
@@ -102,7 +116,22 @@ const SidebarItems = () => {
                )}
                <Messages />
                <CreatePost />
-               <ProfileLink />
+               {authUser && <ProfileLink />}
+               {!authUser && (
+                  <Button
+                     bg={"#716FE9"}
+                     _hover={{ bg: "#A2C0B0" }}
+                     variant="solid"
+                     color={"white"}
+                     size={"lg"}
+                     borderRadius={15}
+                     w={"70px"}
+                     onClick={redirectToLogin}
+                     ml={1}
+                  >
+                     Login
+                  </Button>
+               )}
             </Flex>
          )}
       </Flex>

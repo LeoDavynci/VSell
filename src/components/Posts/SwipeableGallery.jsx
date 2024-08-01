@@ -2,8 +2,7 @@ import React, { useState, useEffect } from "react";
 import { Box, Image } from "@chakra-ui/react";
 import { useSwipeable } from "react-swipeable";
 
-const SwipeableGallery = ({ images }) => {
-   const [currentIndex, setCurrentIndex] = useState(0);
+const SwipeableGallery = ({ images, currentIndex, setCurrentIndex }) => {
    const [offset, setOffset] = useState(0);
 
    const handlers = useSwipeable({

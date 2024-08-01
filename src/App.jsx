@@ -32,14 +32,8 @@ function App() {
       <SearchProvider>
          <PageLayout>
             <Routes>
-               <Route
-                  path="/auth"
-                  element={!authUser ? <AuthPage /> : <Navigate to="/" />}
-               />
-               <Route
-                  path="/"
-                  element={authUser ? <HomePage /> : <Navigate to="/auth" />}
-               />
+               <Route path="/auth" element={<AuthPage />} />
+               <Route path="/" element={<HomePage />} />
                <Route path="/:username" element={<ProfilePage />} />
             </Routes>
          </PageLayout>

@@ -47,19 +47,6 @@ const PostModal = ({
    const showToast = useShowToast();
    const navigate = useNavigate();
 
-   const nextImage = () => {
-      setCurrentImageIndex(
-         (prevIndex) => (prevIndex + 1) % post.imageURLs.length
-      );
-   };
-
-   const prevImage = () => {
-      setCurrentImageIndex(
-         (prevIndex) =>
-            (prevIndex - 1 + post.imageURLs.length) % post.imageURLs.length
-      );
-   };
-
    const timeAgo = getTimeDifference(post.createdAt);
    const displayPrice = post.price ? (
       `$${post.price}`
@@ -67,6 +54,17 @@ const PostModal = ({
       <Text color="#79A88E">Free</Text>
    );
 
+   const prevImage = () => {
+      if (currentImageIndex > 0) {
+         setCurrentImageIndex(currentImageIndex - 1);
+      }
+   };
+
+   const nextImage = () => {
+      if (currentImageIndex < post.imageURLs.length - 1) {
+         setCurrentImageIndex(currentImageIndex + 1);
+      }
+   };
    const handleOfferClick = () => {
       const currentTime = Date.now();
       const cooldownPeriod = 5 * 60 * 1000; // 5 minutes in milliseconds
@@ -150,24 +148,26 @@ const PostModal = ({
          size={{ base: "sm", sm: "sm", md: "3xl", lg: "6xl" }}
       >
          <ModalOverlay backdropFilter="blur(10px)" />
-         <ModalContent
-            bg="white"
-            borderRadius={{ base: "25px", md: "35px" }}
-            mt="10%"
-         >
-            <ModalHeader py={5}>
-               <Box position="static" top="10px" left="10px">
-                  <ModalCloseButton size="lg" _hover={{ bg: "none" }} />
+         <ModalContent bg="white" borderRadius={{ base: "25px", md: "35px" }}>
+            <ModalHeader>
+               <Box>
+                  <ModalCloseButton
+                     position="absolute"
+                     top={{ base: "10px", md: "25px" }}
+                     right={{ base: "15px", md: "25px" }}
+                     size="xl"
+                     _hover={{ bg: "none" }}
+                     zIndex={100}
+                  />
                </Box>
             </ModalHeader>
 
-            <ModalBody py={3} px={3}>
+            <ModalBody px={{ base: "10px", md: "26px" }}>
                <Flex flexDirection={{ base: "column", md: "row" }}>
                   {/* Picture */}
 
                   <Box
-                     // {...handlers}
-                     borderRadius={30}
+                     borderRadius={{ base: "10px", md: "15px" }}
                      position="relative"
                      overflow="hidden"
                      w={{ base: "100%", md: "50%" }}
@@ -177,7 +177,11 @@ const PostModal = ({
                         pt: { base: "100%", md: "56.25%" },
                      }}
                   >
-                     <SwipeableGallery images={post.imageURLs} />
+                     <SwipeableGallery
+                        images={post.imageURLs}
+                        currentIndex={currentImageIndex}
+                        setCurrentIndex={setCurrentImageIndex}
+                     />
                      {post.imageURLs.length > 1 && (
                         <>
                            <Button
@@ -341,35 +345,41 @@ const PostModal = ({
                      </Box>
 
                      {/* Buttons */}
-                     {authUser?.uid !== post.createdBy && (
+                     {authUser?.uid !== post.createdBy && authUser && (
                         <Box
                            h={{ base: "64px", md: "64px" }}
                            alignContent="center"
                         >
-                           <Flex gap={{ base: 7, md: 19 }} align="center">
-                              <Box h="64px">
+                           <Flex
+                              gap={{ base: 6, md: 19 }}
+                              justify={"space-between"}
+                              align="center"
+                              flexDir="row"
+                              h={"full"}
+                           >
+                              <Box h="full" w="full">
                                  <Button
-                                    h="100%"
                                     bg="#79A88E"
                                     _hover={{ bg: "#A2C0B0" }}
                                     variant="solid"
                                     color="white"
-                                    borderRadius={{ base: 45, md: 35 }}
+                                    borderRadius={{ base: 30, md: 20 }}
                                     fontSize={{ base: "24px", md: "32px" }}
                                     onClick={handleBuyClick}
+                                    p={7}
                                  >
                                     Buy
                                  </Button>
                               </Box>
 
-                              <Box h="64px">
+                              <Box h="full" w="full">
                                  {post.isOBO && !showOfferInput && (
                                     <Button
-                                       h="100%"
                                        bg="clear"
                                        variant="outline"
                                        color="#79A88E"
-                                       borderRadius={{ base: 45, md: 35 }}
+                                       borderRadius={{ base: 30, md: 20 }}
+                                       p={6}
                                        borderColor="#79A88E"
                                        borderWidth={{ base: "4px", md: "4px" }}
                                        fontSize={{ base: "24px", md: "32px" }}
@@ -383,6 +393,7 @@ const PostModal = ({
                                  {post.isOBO && showOfferInput && (
                                     <Box
                                        h="64px"
+                                       display={"flex"}
                                        alignContent="center"
                                        w={"140px"}
                                     >
@@ -427,13 +438,12 @@ const PostModal = ({
                                                 }
                                              }}
                                              inputMode="decimal"
-                                             h="64px"
+                                             h="60px"
                                              fontSize={{
                                                 base: "18px",
                                                 md: "24px",
                                              }}
-                                             height="64px"
-                                             borderRadius={{ base: 45, md: 35 }}
+                                             borderRadius={{ base: 30, md: 20 }}
                                              borderColor="#79A88E"
                                              borderWidth={{
                                                 base: "4px",
@@ -449,14 +459,19 @@ const PostModal = ({
                                              height="64px"
                                           >
                                              <Button
-                                                h="50px"
+                                                h="52px"
                                                 size="sm"
                                                 onClick={submitOffer}
                                                 bg="#79A88E"
                                                 color="white"
                                                 _hover={{ bg: "#A2C0B0" }}
-                                                borderRadius="25px"
-                                                mr={1}
+                                                borderRadius={{
+                                                   base: 30,
+                                                   md: 15,
+                                                }}
+                                                top={-0.5}
+                                                right={-2}
+                                                mr={2}
                                              >
                                                 Offer
                                              </Button>
@@ -464,6 +479,27 @@ const PostModal = ({
                                        </InputGroup>
                                     </Box>
                                  )}
+                              </Box>
+
+                              <Box
+                                 h="64px"
+                                 cursor="pointer"
+                                 onClick={handleLikePost}
+                                 display="flex"
+                                 flexDir="row"
+                                 alignItems="center"
+                                 justifyItems="space-between"
+                                 gap={1}
+                                 px={4}
+                              >
+                                 <Box>
+                                    {!isLiked ? (
+                                       <FaRegHeart size={30} />
+                                    ) : (
+                                       <FaHeart size={30} />
+                                    )}
+                                 </Box>
+                                 <Box fontSize={"20px"}>{likes}</Box>
                               </Box>
                            </Flex>
                         </Box>
@@ -491,19 +527,6 @@ const PostModal = ({
                            )}
                            {userProfile ? userProfile.fullName : "Loading..."}
                         </Flex>
-
-                        <Flex
-                           cursor="pointer"
-                           pr={1}
-                           onClick={handleLikePost}
-                           flexDir="row"
-                           alignItems="center"
-                           justifyItems="center"
-                           gap={1}
-                        >
-                           {!isLiked ? <FaRegHeart /> : <FaHeart />}
-                           {likes}
-                        </Flex>
                      </Flex>
 
                      {/* Description */}
@@ -516,7 +539,7 @@ const PostModal = ({
                   </Flex>
                </Flex>
             </ModalBody>
-            <ModalFooter py={5}></ModalFooter>
+            <ModalFooter></ModalFooter>
          </ModalContent>
       </Modal>
    );

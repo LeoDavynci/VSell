@@ -39,7 +39,7 @@ const PurchaseModal = ({
             setInfo("");
          }}
          isCentered
-         size={{ base: "sm", sm: "sm", md: "3xl", lg: "6xl" }}
+         size={{ base: "sm", sm: "sm", md: "md", lg: "lg" }}
       >
          <ModalOverlay />
          <ModalContent borderRadius={{ base: "25", md: "35" }}>
@@ -57,9 +57,9 @@ const PurchaseModal = ({
                         <Text>Pickup at {post.pickupLocation}</Text>
                      )}
                   </Box>
-                  <Box pt={8}>
+                  <Box>
                      <FormControl isRequired>
-                        <FormLabel>Contact Information</FormLabel>
+                        <FormLabel>Message Buyer</FormLabel>
                         <Textarea
                            borderRadius={{ base: "5", md: "15" }}
                            border="2px solid black"
@@ -72,11 +72,11 @@ const PurchaseModal = ({
                   </Box>
                </Stack>
             </ModalBody>
-            <ModalFooter gap={5} pt={16}>
+            <ModalFooter gap={5} pt={8}>
                <Button
                   bg="#79A88E"
                   color="white"
-                  borderRadius={{ base: "25", md: "35" }}
+                  borderRadius={{ base: "10", md: "15" }}
                   onClick={handleSubmit}
                >
                   Confirm Purchase
@@ -85,7 +85,7 @@ const PurchaseModal = ({
                   variant="outline"
                   border="3px solid #79A88E"
                   color="#79A88E"
-                  borderRadius={{ base: "25", md: "35" }}
+                  borderRadius={{ base: "10", md: "15" }}
                   onClick={onClose}
                >
                   Cancel

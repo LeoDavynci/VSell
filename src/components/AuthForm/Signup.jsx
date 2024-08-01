@@ -12,9 +12,11 @@ import {
 import React, { useState } from "react";
 import useSignUpWithEmailAndPassword from "../../hooks/useSignUpWithEmailAndPassword";
 import { useNavigate } from "react-router-dom";
+import useAuthStore from "../../store/authStore";
 
 const Signup = () => {
    const navigate = useNavigate();
+   const authUser = useAuthStore((state) => state.user);
    const [show, setShow] = React.useState(false);
    const handleClick = () => setShow(!show);
    const [inputs, setInputs] = useState({
@@ -37,9 +39,12 @@ const Signup = () => {
    };
 
    const { loading, error, signup } = useSignUpWithEmailAndPassword();
-
    const weakPassword = error?.message?.includes("weak-password");
    const existingEmail = error?.message?.includes("email-already-in-use");
+
+   const redirectToHome = () => {
+      navigate("/");
+   };
 
    return (
       <>
@@ -173,6 +178,20 @@ const Signup = () => {
          >
             Sign Up
          </Button>
+         {authUser === null && (
+            <Button
+               w={"full"}
+               h={"2.25rem"}
+               color="white"
+               bg="black"
+               size={"sm"}
+               fontSize={14}
+               borderRadius="10px"
+               onClick={redirectToHome}
+            >
+               Browse as Guest
+            </Button>
+         )}
 
          {!error && (
             <Alert
