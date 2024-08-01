@@ -406,6 +406,19 @@ const MessagesModal = ({ isOpen, onClose }) => {
                      )}
                   </Box>
 
+                  <Flex
+                     w={"full"}
+                     h={"4px"}
+                     align={"center"}
+                     justify={"center"}
+                  >
+                     <Box
+                        w={"98%"}
+                        h={"4px"}
+                        bg={"#EBEBEB"}
+                        rounded={"full"}
+                     ></Box>
+                  </Flex>
                   {/* All conversations */}
                   <VStack spacing={4} align="stretch" width="full">
                      {conversations.map((conversation) => (
