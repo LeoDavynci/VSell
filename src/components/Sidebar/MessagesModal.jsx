@@ -110,16 +110,9 @@ const MessagesModal = ({ isOpen, onClose }) => {
    useEffect(() => {
       if (!selectedConversation) return;
 
-      console.log(
-         "Setting up listener for selected conversation:",
-         selectedConversation.id
-      );
-
       const conversationRef = doc(db, "conversations", selectedConversation.id);
       const unsubscribe = onSnapshot(conversationRef, (doc) => {
          if (doc.exists()) {
-            console.log("Received update for conversation:", doc.id);
-            console.log("New data:", doc.data());
             setSelectedConversation({ id: doc.id, ...doc.data() });
             scrollToBottom();
          }
@@ -163,7 +156,6 @@ const MessagesModal = ({ isOpen, onClose }) => {
 
          setMessageText("");
          scrollToBottom();
-         console.log("Message sent successfully");
       } catch (error) {
          console.error("Error sending message:", error);
       }
