@@ -7,17 +7,30 @@ import { SearchContext } from "../../store/searchContext";
 
 const Posts = () => {
    const { isLoading: feedLoading, posts: feedPosts } = useGetFeedPosts();
-   const { searchPosts, isSearching, searchTerm } = useContext(SearchContext);
+   const {
+      searchPosts,
+      isSearching,
+      searchTerm,
+      filteredCategories,
+      filteredPosts,
+   } = useContext(SearchContext);
    const [displayPosts, setDisplayPosts] = useState([]);
    const width = useWindowWidth();
 
    useEffect(() => {
-      if (searchTerm.trim()) {
-         setDisplayPosts(searchPosts);
-      } else {
-         setDisplayPosts(feedPosts);
+      let filteredPosts = searchTerm.trim() ? searchPosts : feedPosts;
+
+      if (
+         filteredCategories.length > 0 &&
+         !filteredCategories.includes("All")
+      ) {
+         filteredPosts = filteredPosts.filter((post) =>
+            filteredCategories.includes(post.category)
+         );
       }
-   }, [searchTerm, searchPosts, feedPosts]);
+
+      setDisplayPosts(filteredPosts);
+   }, [searchTerm, searchPosts, feedPosts, filteredCategories]);
 
    const getColumnCount = (width) => {
       if (width >= 2021) return 11;
@@ -38,7 +51,7 @@ const Posts = () => {
 
    return (
       <>
-         {isLoading ? (
+         {feedLoading || isSearching ? (
             <Center>
                <Spinner size="xl" />
             </Center>

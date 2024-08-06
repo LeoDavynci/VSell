@@ -509,12 +509,12 @@ const CreatePost = () => {
                         ref={imageRef}
                         onChange={handleImageChangeWrapper}
                      />
-                     <Text mt={2}>Upload up to 4 photos</Text>
                      <Button
+                        mt={4}
                         borderRadius={10}
                         onClick={() => imageRef.current.click()}
                      >
-                        Upload Photo
+                        Upload Photo {"(up to 4)"}
                      </Button>
                   </Flex>
 

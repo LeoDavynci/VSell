@@ -14,7 +14,7 @@ const Sidebar = () => {
          p={2}
          bg={"white"}
       >
-         <Box bg="#79A88E" rounded={20} boxShadow="lg">
+         <Box bg="#79A88E" rounded={20} boxShadow="lg" height={"66px"}>
             <SidebarItems />
          </Box>
       </Box>
