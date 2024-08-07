@@ -1,5 +1,12 @@
 import React, { useContext, useEffect, useState } from "react";
-import { SimpleGrid, Spinner, Center } from "@chakra-ui/react";
+import {
+   SimpleGrid,
+   Spinner,
+   Center,
+   Button,
+   Flex,
+   Text,
+} from "@chakra-ui/react";
 import Post from "./Post";
 import useWindowWidth from "./useWindowWidth";
 import useGetFeedPosts from "../../hooks/useGetFeedPosts";
@@ -15,7 +22,10 @@ const Posts = () => {
       filteredPosts,
    } = useContext(SearchContext);
    const [displayPosts, setDisplayPosts] = useState([]);
+   const [currentPage, setCurrentPage] = useState(1);
    const width = useWindowWidth();
+
+   const postsPerPage = 24;
 
    useEffect(() => {
       let filteredPosts = searchTerm.trim() ? searchPosts : feedPosts;
@@ -30,6 +40,7 @@ const Posts = () => {
       }
 
       setDisplayPosts(filteredPosts);
+      setCurrentPage(1);
    }, [searchTerm, searchPosts, feedPosts, filteredCategories]);
 
    const getColumnCount = (width) => {
@@ -49,20 +60,63 @@ const Posts = () => {
 
    const isLoading = isSearching || feedLoading;
 
+   // Pagination logic
+   const indexOfLastPost = currentPage * postsPerPage;
+   const indexOfFirstPost = indexOfLastPost - postsPerPage;
+   const currentPosts = displayPosts.slice(indexOfFirstPost, indexOfLastPost);
+
+   const totalPages = Math.ceil(displayPosts.length / postsPerPage);
+
+   const nextPage = () => {
+      setCurrentPage((prev) => Math.min(prev + 1, totalPages));
+   };
+
+   const prevPage = () => {
+      setCurrentPage((prev) => Math.max(prev - 1, 1));
+   };
+
    return (
       <>
-         {feedLoading || isSearching ? (
+         {isLoading ? (
             <Center>
                <Spinner size="xl" />
             </Center>
          ) : (
-            <SimpleGrid columns={columns} spacing={2} justifyContent="center">
-               {displayPosts.length > 0 ? (
-                  displayPosts.map((post) => <Post key={post.id} post={post} />)
-               ) : (
-                  <Center>No posts available</Center>
+            <>
+               <SimpleGrid
+                  columns={columns}
+                  spacing={2}
+                  justifyContent="center"
+               >
+                  {currentPosts.length > 0 ? (
+                     currentPosts.map((post) => (
+                        <Post key={post.id} post={post} />
+                     ))
+                  ) : (
+                     <Center>No posts available</Center>
+                  )}
+               </SimpleGrid>
+               {displayPosts.length > postsPerPage && (
+                  <Flex justifyContent="center" alignItems="center" mt={4}>
+                     <Button
+                        onClick={prevPage}
+                        disabled={currentPage === 1}
+                        mr={2}
+                     >
+                        Previous
+                     </Button>
+                     <Text mx={4}>
+                        Page {currentPage} of {totalPages}
+                     </Text>
+                     <Button
+                        onClick={nextPage}
+                        disabled={currentPage === totalPages}
+                     >
+                        Next
+                     </Button>
+                  </Flex>
                )}
-            </SimpleGrid>
+            </>
          )}
       </>
    );

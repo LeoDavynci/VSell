@@ -11,7 +11,7 @@ const Conversation = ({ conversation, authUserId, isSelected, onClick }) => {
    return (
       <Box
          p={3}
-         borderRadius={{ base: "20px", md: "30px" }}
+         borderRadius={{ base: "10px", md: "20px" }}
          bg={isSelected ? "#A2C0B0" : "#EBEBEB"}
          onClick={onClick}
          cursor="pointer"

@@ -46,6 +46,7 @@ const PostModal = ({
    const [isOfferButtonDisabled, setIsOfferButtonDisabled] = useState(false);
    const showToast = useShowToast();
    const navigate = useNavigate();
+   const [isBuyButtonClicked, setIsBuyButtonClicked] = useState(false);
 
    const timeAgo = getTimeDifference(post.createdAt);
    const displayPrice = post.price ? (
@@ -148,7 +149,7 @@ const PostModal = ({
          size={{ base: "sm", sm: "sm", md: "3xl", lg: "6xl" }}
       >
          <ModalOverlay backdropFilter="blur(10px)" />
-         <ModalContent bg="white" borderRadius={{ base: "25px", md: "35px" }}>
+         <ModalContent bg="white" borderRadius={{ base: "15px", md: "25px" }}>
             <ModalHeader>
                <Box>
                   <ModalCloseButton
@@ -358,18 +359,34 @@ const PostModal = ({
                               h={"full"}
                            >
                               <Box h="full" w="full">
-                                 <Button
-                                    bg="#79A88E"
-                                    _hover={{ bg: "#A2C0B0" }}
-                                    variant="solid"
-                                    color="white"
-                                    borderRadius={{ base: 30, md: 20 }}
-                                    fontSize={{ base: "24px", md: "32px" }}
-                                    onClick={handleBuyClick}
-                                    p={7}
-                                 >
-                                    Buy
-                                 </Button>
+                                 {!isBuyButtonClicked && (
+                                    <Button
+                                       bg="#79A88E"
+                                       _hover={{ bg: "#A2C0B0" }}
+                                       variant="solid"
+                                       color="white"
+                                       borderRadius={{ base: 30, md: 20 }}
+                                       fontSize={{ base: "24px", md: "32px" }}
+                                       onClick={() => {
+                                          handleBuyClick();
+                                          setIsBuyButtonClicked(true);
+                                       }}
+                                       p={7}
+                                       isDisabled={isBuyButtonClicked}
+                                    >
+                                       Buy
+                                    </Button>
+                                 )}
+
+                                 {isBuyButtonClicked && (
+                                    <Button
+                                       fontSize={{ base: "24px", md: "32px" }}
+                                       p={7}
+                                       borderRadius={{ base: 30, md: 20 }}
+                                    >
+                                       Buying
+                                    </Button>
+                                 )}
                               </Box>
 
                               <Box h="full" w="full">

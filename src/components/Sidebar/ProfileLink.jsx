@@ -5,7 +5,13 @@ import useAuthStore from "../../store/authStore";
 const ProfileLink = () => {
    const authUser = useAuthStore((state) => state.user);
    return (
-      <Flex width={"60px"} height={"60px"} align={"center"} justify={"center"}>
+      <Flex
+         width={"60px"}
+         height={"60px"}
+         align={"center"}
+         justify={"center"}
+         mr={-1}
+      >
          <Box>
             {authUser && (
                <Link

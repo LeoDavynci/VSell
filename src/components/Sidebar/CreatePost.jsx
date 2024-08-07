@@ -199,7 +199,7 @@ const CreatePost = () => {
             justify={"center"}
          >
             <Tooltip
-               label="List an Item"
+               label="Listing"
                aria-label="List an Item"
                hasArrow
                bg="#79A88E"
@@ -232,7 +232,7 @@ const CreatePost = () => {
             <ModalContent
                bg={"white"}
                border={"1px solid gray"}
-               borderRadius={30}
+               borderRadius={{ base: "15px", md: "25px" }}
                pb={2}
             >
                <ModalHeader fontSize={30}>Sell an item</ModalHeader>

@@ -170,9 +170,9 @@ const MessagesModal = ({ isOpen, onClose }) => {
                   : content
                : JSON.stringify(content);
          case "BUY_REQUEST":
-            return `Buy request: $${content.price}`;
+            return `Buy request: $${content.price || "0"}`;
          case "OFFER_REQUEST":
-            return `Offer: $${content.price}`;
+            return `Offer: $${content.price || "0"}`;
          case "BUY_ACCEPT":
             return "Offer accepted";
          case "BUY_REJECT":
@@ -184,8 +184,17 @@ const MessagesModal = ({ isOpen, onClose }) => {
 
    const handleAccept = async (message) => {
       try {
+         // Check if the post still exists
+         const postRef = doc(db, "posts", message.content.itemId);
+         const postSnap = await getDoc(postRef);
+
+         if (!postSnap.exists()) {
+            showToast("Error", "You have already sold this item!", "error");
+            return;
+         }
+
          // Remove the post from the database
-         await deleteDoc(doc(db, "posts", message.content.itemId));
+         await deleteDoc(postRef);
 
          // Update the user's posts array
          const userRef = doc(db, "users", authUser.uid);
@@ -193,9 +202,19 @@ const MessagesModal = ({ isOpen, onClose }) => {
             posts: arrayRemove(message.content.itemId),
          });
 
-         await sendMessage("TEXT", "Buy request accepted.");
+         await sendMessage(
+            "TEXT",
+            "✅ Buy request accepted for " + message.content.itemName
+         );
+
+         showToast("Success", "Item sold successfully!", "success");
       } catch (error) {
-         showToast("Error", "You have already sold this item!", "error");
+         // console.error("Error in handleAccept:", error);
+         showToast(
+            "Error",
+            "An unexpected error occurred. Please try again.",
+            "error"
+         );
       }
    };
 
@@ -210,7 +229,7 @@ const MessagesModal = ({ isOpen, onClose }) => {
          size={{ base: "sm", md: "3xl", lg: "6xl" }}
       >
          <ModalOverlay />
-         <ModalContent borderRadius={{ base: "25px", md: "35px" }} mt={"70px"}>
+         <ModalContent borderRadius={{ base: "15px", md: "25px" }} mt={"70px"}>
             <ModalHeader>Your Messages</ModalHeader>
             <ModalCloseButton />
             <ModalBody px={"10px"} pb={"10px"}>
@@ -293,10 +312,8 @@ const MessagesModal = ({ isOpen, onClose }) => {
                                                 </Text>
                                                 <Text>
                                                    Original Price:
-                                                   {
-                                                      message.content
-                                                         .currentPrice
-                                                   }
+                                                   {message.content
+                                                      .currentPrice || "0"}
                                                 </Text>
                                              </Box>
                                           </Box>
@@ -324,10 +341,8 @@ const MessagesModal = ({ isOpen, onClose }) => {
                                                 </Text>
                                                 <Text>
                                                    Price: $
-                                                   {
-                                                      message.content
-                                                         .currentPrice
-                                                   }
+                                                   {message.content
+                                                      .currentPrice || "0"}
                                                 </Text>
 
                                                 {message.senderId !==
@@ -374,6 +389,12 @@ const MessagesModal = ({ isOpen, onClose }) => {
                                  onChange={(e) =>
                                     setMessageText(e.target.value)
                                  }
+                                 onKeyPress={(e) => {
+                                    if (e.key === "Enter") {
+                                       e.preventDefault();
+                                       sendMessage("TEXT", messageText);
+                                    }
+                                 }}
                                  placeholder="Type a message..."
                                  mr={2}
                                  borderRadius={2}

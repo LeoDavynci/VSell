@@ -8,7 +8,12 @@ import useLikePost from "./../../hooks/useLikePost";
 import useAuthStore from "../../store/authStore";
 import { createOrUpdateConversation } from "../../services/conversationService";
 
-import { getFirestore, serverTimestamp } from "firebase/firestore";
+import {
+   deleteDoc,
+   doc,
+   getFirestore,
+   serverTimestamp,
+} from "firebase/firestore";
 
 const Post = ({ post }) => {
    const { isOpen, onOpen, onClose } = useDisclosure();
@@ -29,7 +34,7 @@ const Post = ({ post }) => {
             itemId: post.id,
             itemPic: post.imageURLs[0],
             itemName: post.itemName,
-            currentPrice: post.price,
+            currentPrice: post.price || 0,
             info: info,
          },
          authUser.fullName,
@@ -37,6 +42,8 @@ const Post = ({ post }) => {
       );
       setIsPurchaseModalOpen(false);
       onClose();
+
+      // await deleteDoc(doc(db, "posts", post.id));
    };
 
    const handleBuyClick = () => {
