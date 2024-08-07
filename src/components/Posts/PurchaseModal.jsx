@@ -42,7 +42,7 @@ const PurchaseModal = ({
          size={{ base: "sm", sm: "sm", md: "md", lg: "lg" }}
       >
          <ModalOverlay />
-         <ModalContent borderRadius={{ base: "25", md: "35" }}>
+         <ModalContent borderRadius={{ base: "15", md: "25" }}>
             <ModalHeader fontSize={28}>Confirm Purchase</ModalHeader>
             <ModalCloseButton />
             <ModalBody color="black" fontWeight={500}>
