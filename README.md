@@ -18,7 +18,7 @@ To prevent the need of asking the group chat if anyone was selling a specific it
 
 **Unlimited Users**
 
-The old groupme has a member limit of 500 users and in a campus with over 7,500 students a large number of students were unable to even access the groupme.
+The old groupme has a member limit of 5000 users and in a campus with over 7,500 students a large number of students were unable to even access the groupme.
 
 **Marketplace Showcase**
 
