@@ -2,7 +2,6 @@ import React, { useState, useContext } from "react";
 import { useLocation, useNavigate } from "react-router-dom";
 import Home from "./Home";
 import ProfileLink from "./ProfileLink";
-import CreatePost from "./CreatePost";
 import {
    Flex,
    Box,
@@ -27,6 +26,7 @@ import { SearchContext } from "../../store/searchContext";
 import { IoSearchCircle } from "react-icons/io5";
 import useAuthStore from "../../store/authStore";
 import { FaFilter } from "react-icons/fa";
+import CreatePost from "../CreatePost/CreatePost";
 
 const SidebarItems = () => {
    const authUser = useAuthStore((state) => state.user);
