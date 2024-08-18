@@ -33,10 +33,10 @@ const useSignUpWithEmailAndPassword = () => {
          return;
       }
 
-      // if (!inputs.email.endsWith("@vanderbilt.edu")) {
-      //    showToast("Error", "Please use a Vanderbilt email address", "error");
-      //    return;
-      // }
+      if (!inputs.email.endsWith("@vanderbilt.edu")) {
+         showToast("Error", "Please use a Vanderbilt email address", "error");
+         return;
+      }
 
       const usersRef = collection(firestore, "users");
       const q = query(usersRef, where("username", "==", inputs.username));

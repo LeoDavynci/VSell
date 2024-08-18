@@ -26,7 +26,7 @@ const ChatHeader = ({ conversation, authUserId }) => {
                   src={userProfile?.profilePicURL}
                   name={userProfile?.fullName || "Unknown User"}
                />
-               <Text fontWeight="bold" w={"max-content"}>
+               <Text fontWeight="bold" w={"max-content"} color={"white"}>
                   {userProfile ? userProfile.fullName : "Loading..."}
                </Text>
             </Flex>

@@ -85,7 +85,9 @@ const ProfileHeader = () => {
                         <Text as={"span"} fontWeight={"bold"} mr={1}>
                            {userProfile.posts.length}
                         </Text>
-                        Listings
+                        {userProfile.posts.length === 1
+                           ? "Listing"
+                           : "Listings"}
                      </Text>
                   </Flex>
 
