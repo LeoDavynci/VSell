@@ -44,6 +44,7 @@ const LocationSuggestions = ({ value, onChange }) => {
                         onChange(location);
                         setSuggestedLocations([]);
                      }}
+                     borderRadius={5}
                   >
                      {location}
                   </Box>

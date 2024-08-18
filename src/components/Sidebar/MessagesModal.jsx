@@ -206,6 +206,8 @@ const MessagesModal = ({ isOpen, onClose }) => {
             "TEXT",
             "✅ Buy request accepted for " + message.content.itemName
          );
+         await sendMessage("RATE_SELLER", "Rate the seller for this item");
+         await sendMessage("RATE_BUYER", "Rate the buyer for this item");
 
          showToast("Success", "Item sold successfully!", "success");
       } catch (error) {
@@ -376,6 +378,40 @@ const MessagesModal = ({ isOpen, onClose }) => {
                                              </Text>
                                           </Box>
                                        )}
+
+                                       {/* Seller rating message */}
+                                       {message.type === "RATE_SELLER" &&
+                                          authUser.uid !== message.senderId && (
+                                             <Box>
+                                                <Box
+                                                   p={2}
+                                                   bg={"#A2C0B0"}
+                                                   rounded={"sm"}
+                                                >
+                                                   <Text fontWeight="bold">
+                                                      Rate the seller
+                                                   </Text>
+                                                   <Box></Box>
+                                                </Box>
+                                             </Box>
+                                          )}
+
+                                       {/* Buyer rating message */}
+                                       {message.type === "RATE_BUYER" &&
+                                          authUser.uid !== message.senderId && (
+                                             <Box>
+                                                <Box
+                                                   p={2}
+                                                   bg={"#A2C0B0"}
+                                                   rounded={"sm"}
+                                                >
+                                                   <Text fontWeight="bold">
+                                                      Rate the buyer
+                                                   </Text>
+                                                   <Box></Box>
+                                                </Box>
+                                             </Box>
+                                          )}
                                     </Box>
                                  )
                               )}

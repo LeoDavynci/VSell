@@ -73,32 +73,35 @@ const CreatePostModal = ({
                   handleInputChange={handleInputChange}
                />
 
-               <Flex>
-                  <Text mt={2}>
-                     Condition <span style={{ color: "red" }}>*</span>
-                  </Text>
-                  <Select
-                     options={qualityOptions}
-                     value={qualityOptions.find(
-                        (option) => option.value === formState.itemQuality
-                     )}
-                     onChange={(option) =>
-                        handleInputChange("itemQuality", option.value)
-                     }
-                  />
-
-                  <Text mt={2}>
-                     Category <span style={{ color: "red" }}>*</span>
-                  </Text>
-                  <Select
-                     options={categoryOptions}
-                     value={categoryOptions.find(
-                        (option) => option.value === formState.category
-                     )}
-                     onChange={(option) =>
-                        handleInputChange("category", option.value)
-                     }
-                  />
+               <Flex gap={6} w={"full"}>
+                  <Flex flexDir={"column"} style={{ width: "40%" }}>
+                     <Text mt={2}>
+                        Condition <span style={{ color: "red" }}>*</span>
+                     </Text>
+                     <Select
+                        options={qualityOptions}
+                        value={qualityOptions.find(
+                           (option) => option.value === formState.itemQuality
+                        )}
+                        onChange={(option) =>
+                           handleInputChange("itemQuality", option.value)
+                        }
+                     />
+                  </Flex>
+                  <Flex flexDir={"column"} style={{ width: "60%" }}>
+                     <Text mt={2}>
+                        Category <span style={{ color: "red" }}>*</span>
+                     </Text>
+                     <Select
+                        options={categoryOptions}
+                        value={categoryOptions.find(
+                           (option) => option.value === formState.category
+                        )}
+                        onChange={(option) =>
+                           handleInputChange("category", option.value)
+                        }
+                     />
+                  </Flex>
                </Flex>
 
                <LocationSuggestions
