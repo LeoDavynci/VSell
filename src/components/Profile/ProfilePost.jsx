@@ -21,7 +21,13 @@ import { FaLocationDot, FaRegHeart } from "react-icons/fa6";
 import useUserProfileStore from "../../store/userProfileStore";
 import useAuthStore from "../../store/authStore";
 import useShowToast from "../../hooks/useShowToast";
-import { deleteObject, ref } from "firebase/storage";
+import {
+   deleteObject,
+   getMetadata,
+   getStorage,
+   listAll,
+   ref,
+} from "firebase/storage";
 import { firestore, storage } from "../../firebase/firebase";
 import { arrayRemove, deleteDoc, doc, updateDoc } from "firebase/firestore";
 import usePostStore from "../../store/postStore";
@@ -62,10 +68,26 @@ const ProfilePost = ({ post }) => {
       setIsDeleting(true);
 
       try {
-         // Delete all images associated with the post
-         for (const imageURL of post.imageURLs) {
-            const imageRef = ref(storage, imageURL);
-            await deleteObject(imageRef);
+         // 1. Delete images from Storage
+         const storage = getStorage();
+
+         for (let i = 0; i < 4; i++) {
+            const imageRef = ref(storage, `posts/${post.id}_${i}`);
+
+            // Check if the file exists before attempting to delete
+            try {
+               await getMetadata(imageRef);
+               // If getMetadata succeeds, the file exists, so we can delete it
+               await deleteObject(imageRef);
+            } catch (error) {
+               // If getMetadata fails, the file doesn't exist, so we skip deletion
+               if (error.code === "storage/object-not-found") {
+                  console.log(``);
+               } else {
+                  // If it's a different error, we might want to log it
+                  console.error(``);
+               }
+            }
          }
 
          const userRef = doc(firestore, "users", authUser.user.uid);
@@ -77,6 +99,7 @@ const ProfilePost = ({ post }) => {
 
          deletePost(post.id);
          decrementPostsCount(post.id);
+
          showToast("Success", "Post deleted successfully", "success");
       } catch (error) {
          showToast("Error", error.message, "error");

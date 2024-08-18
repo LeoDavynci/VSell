@@ -64,12 +64,15 @@ const useSignUpWithEmailAndPassword = () => {
                fullName: inputs.fullName,
                profilePicURL: "",
                posts: [],
+               sold: "",
                createdAt: Date.now(),
                emailVerified: false,
-               BuyerRating: "",
-               SellerRating: "",
-               BuyerReviews: [],
-               SellerReviews: [],
+               buyerRating: "",
+               sellerRating: "",
+               buyerReviews: [],
+               sellerReviews: [],
+               major: "",
+               year: "",
             };
             await setDoc(doc(firestore, "users", newUser.user.uid), userDoc);
 

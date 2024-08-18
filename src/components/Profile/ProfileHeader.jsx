@@ -11,6 +11,7 @@ import useUserProfileStore from "../../store/userProfileStore";
 import useAuthStore from "../../store/authStore";
 import EditProfile from "./EditProfile";
 import useLogout from "../../hooks/useLogout";
+import { FaBug } from "react-icons/fa";
 
 const convertTimestampToDate = (timestamp) => {
    const date = new Date(timestamp);
@@ -39,60 +40,66 @@ const ProfileHeader = () => {
    const { isOpen, onOpen, onClose } = useDisclosure();
    const { handleLogout, isLoggingOut } = useLogout();
    return (
-      <Flex
-         gap={{ base: 4, sm: 10 }}
-         py={10}
-         direction={{ base: "column", sm: "row" }}
-      >
-         <AvatarGroup
-            size={{ base: "xl", md: "2xl" }}
-            justifySelf={"center"}
-            alignSelf={"flex-start"}
-            mx={"auto"}
-         >
-            <Avatar
-               name={userProfile?.fullName || "User"}
-               src={userProfile.profilePicURL}
-               variant={"rounded"}
-            />
-         </AvatarGroup>
-
-         <VStack
-            alignItems={"start"}
-            gap={2}
-            mx={"auto"}
-            flex={1}
-            justifyContent={"center"}
-         >
-            <Flex
-               direction={{ base: "column", sm: "row" }}
-               justifyContent={{ base: "flex-start", md: "flex-start" }}
-               alignItems={"center"}
-               w={"full"}
-            >
-               <Text fontSize={{ base: "20px", md: "30px" }}>
-                  {userProfile.fullName}
-               </Text>
+      <Flex gap={{ base: 4, sm: 10 }} py={10} direction={"column"} w={"full"}>
+         <Flex flexDirection="row" justify={"center"} align={"center"} gap={5}>
+            <Flex>
+               <AvatarGroup
+                  size={{ base: "xl", md: "2xl" }}
+                  justifySelf={"center"}
+                  alignSelf={"flex-start"}
+                  mx={"auto"}
+               >
+                  <Avatar
+                     name={userProfile?.fullName || "User"}
+                     src={userProfile.profilePicURL}
+                     variant={"rounded"}
+                  />
+               </AvatarGroup>
             </Flex>
+            <Flex>
+               <VStack
+                  alignItems={"start"}
+                  gap={0}
+                  mx={"auto"}
+                  flex={1}
+                  justifyContent={"center"}
+               >
+                  <Flex
+                     direction={{ base: "column", sm: "row" }}
+                     justifyContent={{ base: "flex-start", md: "flex-start" }}
+                     alignItems={"start"}
+                     w={"full"}
+                  >
+                     <Text fontSize={{ base: "20px", md: "30px" }}>
+                        {userProfile.fullName}
+                     </Text>
+                  </Flex>
 
-            <Flex w={"full"}>
-               <DateDisplay timestamp={userProfile.createdAt} />
+                  <Flex
+                     alignItems={"center"}
+                     gap={{ base: 2, sm: 4 }}
+                     justifyItems={"center"}
+                     w={"full"}
+                  >
+                     <Text>
+                        <Text as={"span"} fontWeight={"bold"} mr={1}>
+                           {userProfile.posts.length}
+                        </Text>
+                        Listings
+                     </Text>
+                  </Flex>
+
+                  <Flex w={"full"}>
+                     <Text fontSize={"15px"}>{userProfile.email}</Text>
+                  </Flex>
+
+                  <Flex w={"full"} fontSize={"15px"}>
+                     <DateDisplay timestamp={userProfile.createdAt} />
+                  </Flex>
+               </VStack>
             </Flex>
-
-            <Flex
-               alignItems={"center"}
-               gap={{ base: 2, sm: 4 }}
-               justifyItems={"center"}
-               w={"full"}
-            >
-               <Text>
-                  <Text as={"span"} fontWeight={"bold"} mr={1}>
-                     {userProfile.posts.length}
-                  </Text>
-                  Listings
-               </Text>
-            </Flex>
-
+         </Flex>
+         <Flex alignItems={"center"} justifyContent={"center"}>
             {visitingOwnProfileAndAuth && (
                <Flex
                   gap={4}
@@ -129,7 +136,8 @@ const ProfileHeader = () => {
                   justifyContent={"center"}
                ></Flex>
             )}
-         </VStack>
+         </Flex>
+
          {isOpen && <EditProfile isOpen={isOpen} onClose={onClose} />}
       </Flex>
    );

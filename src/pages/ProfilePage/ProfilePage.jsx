@@ -14,6 +14,7 @@ import useGetUserProfileByUsername from "../../hooks/useGetUserProfileByUsername
 import { useParams } from "react-router-dom";
 import { Link as RouterLink } from "react-router-dom";
 import useAuthStore from "../../store/authStore";
+import { FaBug } from "react-icons/fa";
 
 const ProfilePage = () => {
    const { username } = useParams();
@@ -52,6 +53,18 @@ const ProfilePage = () => {
             >
                <ProfileTabs />
                <ProfilePosts />
+               <Flex
+                  flexDir={"row"}
+                  justify={"center"}
+                  align={"center"}
+                  gap={5}
+                  pt={40}
+               >
+                  <FaBug size={20} />
+                  <Text fontSize={"12px"}>
+                     Bug report or suggestions? Email us at vsell.web@gmail.com
+                  </Text>
+               </Flex>
             </Flex>
          </Container>
       </Container>

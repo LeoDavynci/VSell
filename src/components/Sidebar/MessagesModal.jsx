@@ -31,8 +31,9 @@ import {
 import useAuthStore from "../../store/authStore";
 import Conversation from "./Conversation";
 import ChatHeader from "./ChatHeader";
-import { IoCloseSharp } from "react-icons/io5";
+import { IoChevronBack, IoCloseSharp } from "react-icons/io5";
 import useShowToast from "../../hooks/useShowToast";
+import { IoMdArrowBack } from "react-icons/io";
 
 const MessagesModal = ({ isOpen, onClose }) => {
    const [conversations, setConversations] = useState([]);
@@ -124,6 +125,8 @@ const MessagesModal = ({ isOpen, onClose }) => {
    const sendMessage = async (type, content) => {
       if (!selectedConversation) return;
 
+      if (content.length === 0) return;
+
       try {
          console.log("Sending message:", { type, content });
 
@@ -206,8 +209,8 @@ const MessagesModal = ({ isOpen, onClose }) => {
             "TEXT",
             "✅ Buy request accepted for " + message.content.itemName
          );
-         await sendMessage("RATE_SELLER", "Rate the seller for this item");
-         await sendMessage("RATE_BUYER", "Rate the buyer for this item");
+         // await sendMessage("RATE_SELLER", "Rate the seller for this item");
+         // await sendMessage("RATE_BUYER", "Rate the buyer for this item");
 
          showToast("Success", "Item sold successfully!", "success");
       } catch (error) {
@@ -241,21 +244,20 @@ const MessagesModal = ({ isOpen, onClose }) => {
                      {selectedConversation ? (
                         <>
                            <Flex>
-                              <ChatHeader
-                                 conversation={selectedConversation}
-                                 authUserId={authUser.uid}
-                              />
                               <Button
                                  position={"absolute"}
-                                 right={5}
                                  top={20}
                                  bg={"none"}
                                  _hover={{ bg: "none" }}
                                  _active={{ bg: "none" }}
                                  onClick={closeMessage}
                               >
-                                 <IoCloseSharp size={30} />
+                                 <IoChevronBack size={30} /> Back
                               </Button>
+                              <ChatHeader
+                                 conversation={selectedConversation}
+                                 authUserId={authUser.uid}
+                              />
                            </Flex>
                            <VStack
                               spacing={2}
@@ -380,7 +382,7 @@ const MessagesModal = ({ isOpen, onClose }) => {
                                        )}
 
                                        {/* Seller rating message */}
-                                       {message.type === "RATE_SELLER" &&
+                                       {/* {message.type === "RATE_SELLER" &&
                                           authUser.uid !== message.senderId && (
                                              <Box>
                                                 <Box
@@ -394,10 +396,10 @@ const MessagesModal = ({ isOpen, onClose }) => {
                                                    <Box></Box>
                                                 </Box>
                                              </Box>
-                                          )}
+                                          )} */}
 
                                        {/* Buyer rating message */}
-                                       {message.type === "RATE_BUYER" &&
+                                       {/* {message.type === "RATE_BUYER" &&
                                           authUser.uid !== message.senderId && (
                                              <Box>
                                                 <Box
@@ -411,7 +413,7 @@ const MessagesModal = ({ isOpen, onClose }) => {
                                                    <Box></Box>
                                                 </Box>
                                              </Box>
-                                          )}
+                                          )} */}
                                     </Box>
                                  )
                               )}
@@ -455,33 +457,26 @@ const MessagesModal = ({ isOpen, onClose }) => {
                      )}
                   </Box>
 
-                  <Flex
-                     w={"full"}
-                     h={"4px"}
-                     align={"center"}
-                     justify={"center"}
-                  >
-                     <Box
-                        w={"98%"}
-                        h={"4px"}
-                        bg={"#EBEBEB"}
-                        rounded={"full"}
-                     ></Box>
-                  </Flex>
                   {/* All conversations */}
-                  <VStack spacing={4} align="stretch" width="full">
-                     {conversations.map((conversation) => (
-                        <Conversation
-                           key={conversation.id}
-                           conversation={conversation}
-                           authUserId={authUser.uid}
-                           isSelected={
-                              selectedConversation?.id === conversation.id
-                           }
-                           onClick={() => setSelectedConversation(conversation)}
-                        />
-                     ))}
-                  </VStack>
+                  {!selectedConversation ? (
+                     <VStack spacing={4} align="stretch" width="full">
+                        {conversations.map((conversation) => (
+                           <Conversation
+                              key={conversation.id}
+                              conversation={conversation}
+                              authUserId={authUser.uid}
+                              isSelected={
+                                 selectedConversation?.id === conversation.id
+                              }
+                              onClick={() =>
+                                 setSelectedConversation(conversation)
+                              }
+                           />
+                        ))}
+                     </VStack>
+                  ) : (
+                     <></>
+                  )}
                </Flex>
             </ModalBody>
          </ModalContent>

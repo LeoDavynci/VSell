@@ -9,11 +9,6 @@ import {
    IconButton,
    useMediaQuery,
    Button,
-   Menu,
-   MenuButton,
-   MenuList,
-   MenuItem,
-   Checkbox,
    Wrap,
    WrapItem,
    Tag,
@@ -26,7 +21,7 @@ import { SearchContext } from "../../store/searchContext";
 import { IoSearchCircle } from "react-icons/io5";
 import useAuthStore from "../../store/authStore";
 import { FaFilter } from "react-icons/fa";
-import CreatePost from "../CreatePost/CreatePost";
+import CreatePost from "./CreatePost";
 
 const SidebarItems = () => {
    const authUser = useAuthStore((state) => state.user);

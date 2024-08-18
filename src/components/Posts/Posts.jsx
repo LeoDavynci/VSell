@@ -54,7 +54,7 @@ const Posts = () => {
       if (width >= 701 && width <= 880) return 4;
       if (width >= 531 && width <= 700) return 3;
       if (width >= 360 && width <= 530) return 2;
-      return 1;
+      return 2;
    };
    const columns = getColumnCount(width);
 
