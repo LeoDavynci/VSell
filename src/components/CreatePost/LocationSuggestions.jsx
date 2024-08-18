@@ -22,9 +22,9 @@ const LocationSuggestions = ({ value, onChange }) => {
          <Input
             value={value}
             onChange={handleInputChange}
-            borderRadius={10}
+            borderRadius={5}
             borderColor="#E6E6E6"
-            borderWidth="2px"
+            borderWidth="1px"
          />
          {suggestedLocations.length > 0 && (
             <Box

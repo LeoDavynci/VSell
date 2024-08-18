@@ -11,6 +11,7 @@ import {
    Text,
    Input,
    Textarea,
+   Flex,
 } from "@chakra-ui/react";
 import PriceInput from "./PriceInput";
 import ImageUploader from "./ImageUploader";
@@ -61,9 +62,9 @@ const CreatePostModal = ({
                   onChange={(e) =>
                      handleInputChange("itemName", e.target.value)
                   }
-                  borderRadius={10}
+                  borderRadius={5}
                   borderColor="#E6E6E6"
-                  borderWidth="2px"
+                  borderWidth="1px"
                />
 
                <PriceInput
@@ -72,31 +73,33 @@ const CreatePostModal = ({
                   handleInputChange={handleInputChange}
                />
 
-               <Text mt={2}>
-                  Condition <span style={{ color: "red" }}>*</span>
-               </Text>
-               <Select
-                  options={qualityOptions}
-                  value={qualityOptions.find(
-                     (option) => option.value === formState.itemQuality
-                  )}
-                  onChange={(option) =>
-                     handleInputChange("itemQuality", option.value)
-                  }
-               />
+               <Flex>
+                  <Text mt={2}>
+                     Condition <span style={{ color: "red" }}>*</span>
+                  </Text>
+                  <Select
+                     options={qualityOptions}
+                     value={qualityOptions.find(
+                        (option) => option.value === formState.itemQuality
+                     )}
+                     onChange={(option) =>
+                        handleInputChange("itemQuality", option.value)
+                     }
+                  />
 
-               <Text mt={2}>
-                  Category <span style={{ color: "red" }}>*</span>
-               </Text>
-               <Select
-                  options={categoryOptions}
-                  value={categoryOptions.find(
-                     (option) => option.value === formState.category
-                  )}
-                  onChange={(option) =>
-                     handleInputChange("category", option.value)
-                  }
-               />
+                  <Text mt={2}>
+                     Category <span style={{ color: "red" }}>*</span>
+                  </Text>
+                  <Select
+                     options={categoryOptions}
+                     value={categoryOptions.find(
+                        (option) => option.value === formState.category
+                     )}
+                     onChange={(option) =>
+                        handleInputChange("category", option.value)
+                     }
+                  />
+               </Flex>
 
                <LocationSuggestions
                   value={formState.pickupLocation}
@@ -110,6 +113,9 @@ const CreatePostModal = ({
                   maxLength={250}
                   value={formState.caption}
                   onChange={(e) => handleInputChange("caption", e.target.value)}
+                  borderRadius={5}
+                  borderColor="#E6E6E6"
+                  borderWidth="1px"
                />
 
                <ImageUploader

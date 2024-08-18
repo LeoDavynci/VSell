@@ -47,9 +47,9 @@ const PriceInput = ({ price, isOBO, handleInputChange }) => {
                      }
                   }}
                   inputMode="decimal"
-                  borderRadius={10}
+                  borderRadius={5}
                   borderColor="#E6E6E6"
-                  borderWidth="2px"
+                  borderWidth="1px"
                />
             </InputGroup>
          </Flex>
