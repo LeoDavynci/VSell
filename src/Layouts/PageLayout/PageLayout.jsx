@@ -9,9 +9,9 @@ const PageLayout = ({ children }) => {
 
    return (
       <Flex direction="column" minHeight="100vh">
-         {pathname !== "/auth" && pathname !== "/forgot-password" && (
-            <Sidebar />
-         )}
+         {pathname !== "/auth" &&
+            pathname !== "/forgot-password" &&
+            pathname !== "/welcome" && <Sidebar />}
          <Box flex={1} w="100%" bg="white">
             {children}
             <Analytics />

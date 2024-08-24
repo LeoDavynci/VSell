@@ -9,6 +9,7 @@ import { auth } from "./firebase/firebase";
 import { Center, Spinner } from "@chakra-ui/react";
 import { SearchProvider } from "./store/searchContext";
 import ForgotPassword from "./components/AuthForm/ForgotPassword";
+import { LandingPage } from "./pages/LandingPage/LandingPage";
 
 function App() {
    const [authUser, loading] = useAuthState(auth);
@@ -37,6 +38,7 @@ function App() {
                <Route path="/auth" element={<AuthPage />} />
                <Route path="/" element={<HomePage />} />
                <Route path="/:username" element={<ProfilePage />} />
+               <Route path="/welcome" element={<LandingPage />} />
             </Routes>
          </PageLayout>
       </SearchProvider>

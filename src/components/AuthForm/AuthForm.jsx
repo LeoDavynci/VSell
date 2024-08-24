@@ -3,8 +3,8 @@ import { useState } from "react";
 import Signup from "./Signup";
 import Login from "./Login";
 
-const AuthForm = () => {
-   const [isLogin, setIsLogin] = useState(true);
+const AuthForm = ({ initialIsLogin = true }) => {
+   const [isLogin, setIsLogin] = useState(initialIsLogin);
 
    return (
       <>

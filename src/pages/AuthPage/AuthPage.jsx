@@ -1,8 +1,11 @@
 import { Box, Flex, Text, useTheme, Img } from "@chakra-ui/react";
 import AuthForm from "../../components/AuthForm/AuthForm";
+import { useLocation } from "react-router-dom";
 
 const AuthPage = () => {
    const theme = useTheme();
+   const location = useLocation();
+   const isLogin = location.state?.isLogin ?? true;
    return (
       <Flex
          minH={"100vh"}
@@ -50,7 +53,7 @@ const AuthPage = () => {
                      >
                         VSELL
                      </Text>
-                     <AuthForm />
+                     <AuthForm initialIsLogin={isLogin} />
                   </Flex>
                </Flex>
             </Flex>
