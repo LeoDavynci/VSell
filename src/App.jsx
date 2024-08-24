@@ -1,5 +1,11 @@
-import React from "react";
-import { Navigate, Route, Routes } from "react-router-dom";
+import React, { useEffect } from "react";
+import {
+   Navigate,
+   Route,
+   Routes,
+   useLocation,
+   useNavigate,
+} from "react-router-dom";
 import HomePage from "./pages/HomePage/HomePage";
 import AuthPage from "./pages/AuthPage/AuthPage";
 import PageLayout from "./Layouts/PageLayout/PageLayout";
@@ -13,6 +19,19 @@ import { LandingPage } from "./pages/LandingPage/LandingPage";
 
 function App() {
    const [authUser, loading] = useAuthState(auth);
+   const navigate = useNavigate();
+   const location = useLocation();
+
+   useEffect(() => {
+      if (!loading) {
+         if (isFirstVisit() && authUser === null) {
+            if (location.pathname !== "/welcome") {
+               navigate("/welcome");
+            }
+            setHasVisited();
+         }
+      }
+   }, [loading, authUser, navigate, location]);
 
    if (loading) {
       return (
@@ -46,3 +65,11 @@ function App() {
 }
 
 export default App;
+
+const isFirstVisit = () => {
+   return !localStorage.getItem("hasVisited");
+};
+
+const setHasVisited = () => {
+   localStorage.setItem("hasVisited", "true");
+};
