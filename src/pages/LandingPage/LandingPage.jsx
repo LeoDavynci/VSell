@@ -12,7 +12,7 @@ import { useNavigate } from "react-router-dom";
 
 export const LandingPage = () => {
    const imageSrc = useBreakpointValue({
-      base: "/cover2.png",
+      base: "/cover.png",
       md: "/cover2.png",
    });
    const navigate = useNavigate();
@@ -73,7 +73,7 @@ export const LandingPage = () => {
                >
                   <Text
                      color="white"
-                     fontSize={{ base: "12px", md: "20px" }}
+                     fontSize={{ base: "14px", md: "20px" }}
                      fontWeight={600}
                   >
                      Log In
@@ -83,7 +83,7 @@ export const LandingPage = () => {
          </Flex>
          <Flex
             maxW="100%"
-            h={{ base: "350px", md: "400px" }}
+            h={{ base: "320px", md: "400px" }}
             pt={20}
             alignItems={"center"}
             flexDir={"column"}
@@ -139,7 +139,7 @@ export const LandingPage = () => {
             >
                <Text
                   color="white"
-                  fontSize={{ base: "12px", md: "20px" }}
+                  fontSize={{ base: "14px", md: "20px" }}
                   fontWeight={600}
                >
                   Get Started. It’s FREE
@@ -156,7 +156,7 @@ export const LandingPage = () => {
             <Image
                src={imageSrc}
                alt="banner"
-               rounded={{ base: "5px", md: "20px" }}
+               rounded={{ base: "20px", md: "20px" }}
                boxShadow="0px 0px 60px rgba(121, 168, 142, 0.9)"
             />
          </Flex>
