@@ -205,7 +205,8 @@ const Signup = () => {
                style={{ whiteSpace: "pre-wrap", wordWrap: "break-word" }}
             >
                <AlertIcon fontSize={12} color={"white"} />
-               After sign up, please check your email to verify your account
+               After sign up, please check your email to verify your account,
+               allow up to 2 minutes as servers are backed up.
             </Alert>
          )}
       </>
