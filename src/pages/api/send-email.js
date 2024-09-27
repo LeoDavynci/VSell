@@ -4,7 +4,6 @@ sgMail.setApiKey(process.env.SENDGRID_API_KEY);
 
 export default async function handler(req, res) {
    if (req.method === "POST") {
-      console.log(sellerEmail);
       const { buyerName, sellerEmail, messageContent } = req.body;
 
       if (!buyerName || !sellerEmail || !messageContent) {
@@ -29,6 +28,6 @@ export default async function handler(req, res) {
             .json({ error: "Failed to send email", details: error.message });
       }
    } else {
-      return res.status(405).json({ error: "Method Not Allowed" });
+      return res.status(405).json({ error: "Method Not Allowed" }); // Ensure method not allowed responses are sent
    }
 }
