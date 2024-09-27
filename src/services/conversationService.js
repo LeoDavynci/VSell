@@ -12,6 +12,7 @@ import {
 } from "firebase/firestore";
 
 const db = getFirestore();
+const { sendNotificationEmail } = require("./emailService");
 
 export const createOrUpdateConversation = async (
    sellerId,
@@ -20,7 +21,8 @@ export const createOrUpdateConversation = async (
    messageType,
    messageContent,
    buyerName,
-   sellerName
+   sellerName,
+   sellerEmail
 ) => {
    try {
       // Check if a conversation already exists
@@ -28,6 +30,7 @@ export const createOrUpdateConversation = async (
       const q = query(
          conversationsRef,
          where("participants", "array-contains", sellerId),
+         where("participants", "array-contains", buyerId),
          where("itemId", "==", itemId)
       );
       const querySnapshot = await getDocs(q);
@@ -36,7 +39,6 @@ export const createOrUpdateConversation = async (
       let existingConversation;
 
       if (!querySnapshot.empty) {
-         // Conversation exists, update it
          existingConversation = querySnapshot.docs[0];
          conversationId = existingConversation.id;
       }
@@ -45,7 +47,7 @@ export const createOrUpdateConversation = async (
          senderId: buyerId,
          type: messageType,
          content: messageContent,
-         timestamp: new Date().toISOString(), // Use ISO string instead of serverTimestamp
+         timestamp: serverTimestamp(),
          read: false,
       };
 
@@ -73,11 +75,13 @@ export const createOrUpdateConversation = async (
             },
             lastMessageTimestamp: serverTimestamp(),
          };
-
          await addDoc(conversationsRef, newConversation);
       }
 
-      console.log("Conversation created or updated successfully");
+      if (messageType === "BUY_REQUEST" || messageType === "OFFER_REQUEST") {
+         const emailContent = getMessageSummary(messageType, messageContent);
+         await sendNotificationEmail(buyerName, sellerEmail, emailContent);
+      }
    } catch (error) {
       console.error("Error in createOrUpdateConversation:", error);
       throw error;
