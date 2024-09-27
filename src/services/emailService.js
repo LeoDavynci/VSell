@@ -1,4 +1,4 @@
-export const sendNotificationEmail = async (
+const sendNotificationEmail = async (
    buyerName,
    sellerEmail,
    messageContent
