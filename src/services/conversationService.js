@@ -72,6 +72,7 @@ export const createOrUpdateConversation = async (
                content: getMessageSummary(messageType, messageContent),
             },
             lastMessageTimestamp: new Date().toISOString(),
+            sellerEmail: sellerEmail,
          };
          await addDoc(conversationsRef, newConversation);
       }
