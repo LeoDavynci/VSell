@@ -9,23 +9,12 @@ export const sendNotificationEmail = async (
          headers: {
             "Content-Type": "application/json",
          },
-         body: JSON.stringify({ buyerName, sellerEmail, messageContent }), // Properly structured body
+         body: JSON.stringify({ buyerName, sellerEmail, messageContent }),
       });
 
-      const contentType = response.headers.get("content-type");
-
-      if (response.status === 204 || !contentType) {
-         console.log("No content to parse");
-         return;
-      }
-
-      if (contentType.includes("application/json")) {
-         const responseData = await response.json();
-         console.log("Response data:", responseData);
-      }
-
       if (!response.ok) {
-         throw new Error("Failed to send email");
+         const errorMessage = await response.text(); // Use text() instead of JSON for non-JSON responses
+         throw new Error(errorMessage || "Failed to send email");
       }
 
       console.log("Email sent successfully");

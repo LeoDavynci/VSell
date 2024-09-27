@@ -12,7 +12,7 @@ export default async function handler(req, res) {
 
       const msg = {
          to: sellerEmail,
-         from: "vsell.web@gmail.com",
+         from: "vsell.web@gmail.com", // Your verified sender email
          subject: "New Buy or Offer Request",
          text: `Hi ${buyerName},\n\n${messageContent}`,
          html: `<strong>Hi ${buyerName},</strong><br/><p>${messageContent}</p>`,
@@ -23,11 +23,10 @@ export default async function handler(req, res) {
          return res.status(200).json({ message: "Email sent successfully" });
       } catch (error) {
          console.error("Error sending email:", error);
-         return res
-            .status(500)
-            .json({ error: "Failed to send email", details: error.message });
+         return res.status(500).json({ error: "Failed to send email" });
       }
    } else {
-      return res.status(405).json({ error: "Method Not Allowed" }); // Ensure method not allowed responses are sent
+      // Return 405 Method Not Allowed if not a POST request
+      return res.status(405).json({ error: "Method Not Allowed" });
    }
 }
