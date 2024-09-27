@@ -10,9 +10,8 @@ import {
    arrayUnion,
    serverTimestamp,
 } from "firebase/firestore";
-
+import { sendNotificationEmail } from "./emailService";
 const db = getFirestore();
-const { sendNotificationEmail } = require("./emailService");
 
 export const createOrUpdateConversation = async (
    sellerId,
