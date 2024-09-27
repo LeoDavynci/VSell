@@ -12,15 +12,25 @@ export const sendNotificationEmail = async (
          body: JSON.stringify({ buyerName, sellerEmail, messageContent }),
       });
 
-      // Check if the response status indicates success
+      // Check if response has content and is a JSON response
+      const contentType = response.headers.get("content-type");
+
+      // Handle no content (e.g., 204 status or empty response)
+      if (response.status === 204 || !contentType) {
+         console.log("No content to parse");
+         return;
+      }
+
+      // Only parse as JSON if the response content-type is JSON
+      if (contentType.includes("application/json")) {
+         const responseData = await response.json();
+         console.log("Response data:", responseData);
+      } else {
+         console.log("Non-JSON response received");
+      }
+
       if (!response.ok) {
-         // Try to parse the response if it's not empty
-         let errorMessage = "Failed to send email";
-         if (response.headers.get("content-length") > 0) {
-            const errorData = await response.json();
-            errorMessage = errorData.error || errorMessage;
-         }
-         throw new Error(errorMessage);
+         throw new Error("Failed to send email");
       }
 
       console.log("Email sent successfully");
