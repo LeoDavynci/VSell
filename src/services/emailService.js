@@ -13,6 +13,8 @@ export const sendNotificationEmail = async (
       });
 
       if (!response.ok) {
+         const errorDetails = await response.json();
+         console.error("Failed to send email:", errorDetails);
          throw new Error("Failed to send email");
       }
 
