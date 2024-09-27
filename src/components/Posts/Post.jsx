@@ -38,7 +38,8 @@ const Post = ({ post }) => {
             info: info,
          },
          authUser.fullName,
-         userProfile.fullName
+         userProfile.fullName,
+         userProfile.email
       );
       setIsPurchaseModalOpen(false);
       onClose();
