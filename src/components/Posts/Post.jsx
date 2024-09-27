@@ -25,7 +25,6 @@ const Post = ({ post }) => {
    const db = getFirestore();
 
    const handlePurchaseSubmit = async (info) => {
-      console.log(userProfile.email);
       await createOrUpdateConversation(
          post.createdBy,
          authUser.uid,
