@@ -28,7 +28,6 @@ export const createOrUpdateConversation = async (
       const conversationsRef = collection(db, "conversations");
       const q = query(
          conversationsRef,
-         where("participants", "array-contains", sellerId),
          where("participants", "array-contains", buyerId),
          where("itemId", "==", itemId)
       );
