@@ -45,7 +45,7 @@ export const createOrUpdateConversation = async (
          senderId: buyerId,
          type: messageType,
          content: messageContent,
-         timestamp: serverTimestamp(),
+         timestamp: new Date().toISOString(),
          read: false,
       };
 
@@ -57,7 +57,7 @@ export const createOrUpdateConversation = async (
                type: messageType,
                content: getMessageSummary(messageType, messageContent),
             },
-            lastMessageTimestamp: serverTimestamp(),
+            lastMessageTimestamp: new Date().toISOString(),
          });
       } else {
          // Create new conversation
@@ -71,7 +71,7 @@ export const createOrUpdateConversation = async (
                type: messageType,
                content: getMessageSummary(messageType, messageContent),
             },
-            lastMessageTimestamp: serverTimestamp(),
+            lastMessageTimestamp: new Date().toISOString(),
          };
          await addDoc(conversationsRef, newConversation);
       }
