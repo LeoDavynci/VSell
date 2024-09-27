@@ -107,7 +107,8 @@ const PostModal = ({
             offerPrice: parseFloat(offerAmount),
          },
          authUser.fullName,
-         sellerName
+         sellerName,
+         sellerEmail
       );
       setShowOfferInput(false);
       setOfferAmount("");
